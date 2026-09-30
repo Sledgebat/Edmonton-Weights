@@ -1,30 +1,166 @@
 @import "tailwindcss";
+@import "../styles/themes.css";
 
-/* Phase 1 placeholder palette. Phase 2 replaces this with styles/themes.css
-   (Dynasty, Copper & Blue, Gear eras; light and dark). */
-:root {
-  --surface: #f6f7f9;
-  --text: #0b1d3a;
-  --brand-primary: #041e42;
-  --brand-accent: #ff4c00;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: #041e42;
-    --text: #f1f3f6;
-  }
-}
-
+/* Map theme variables to Tailwind utilities: bg-surface, text-fg, border-line, bg-button, ... */
 @theme inline {
   --color-surface: var(--surface);
-  --color-text: var(--text);
-  --color-brand: var(--brand-primary);
+  --color-raised: var(--surface-raised);
+  --color-sunken: var(--surface-sunken);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--text);
+  --color-fg-muted: var(--text-muted);
+  --color-accent-ink: var(--accent-ink);
+  --color-primary: var(--brand-primary);
   --color-accent: var(--brand-accent);
+  --color-trim: var(--brand-trim);
+  --color-header: var(--header-bg);
+  --color-header-fg: var(--header-text);
+  --color-header-accent: var(--header-accent);
+  --color-button: var(--button-bg);
+  --color-button-fg: var(--button-text);
+  --color-win: var(--win);
+  --color-loss: var(--loss);
+
+  --font-display: "Saira Extra Condensed", "Arial Narrow", sans-serif;
+  --font-number: "Oswald", "Arial Narrow", sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Any element carrying an era + mode repaints itself (html, and style-guide previews). */
+[data-era][data-mode] {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--surface);
+  background-color: var(--surface);
+  background-image: var(--page-pattern);
   color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+@layer components {
+  /* Headlines: tall, heavy arena signage. Saira has no italic, so the hero slant is synthesised. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+  }
+  .display-hero {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-synthesis: style;
+    text-transform: uppercase;
+    line-height: 0.9;
+  }
+  /* Jersey numbers and scores. */
+  .numeral {
+    font-family: var(--font-number);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Sleeve stripes: outer / inner / outer on the band colour. */
+  .sleeve-stripes {
+    height: 22px;
+    background: linear-gradient(
+      to bottom,
+      var(--stripe-band) 0 3px,
+      var(--stripe-outer) 3px 8px,
+      var(--stripe-inner) 8px 14px,
+      var(--stripe-outer) 14px 19px,
+      var(--stripe-band) 19px 22px
+    );
+  }
+  .sleeve-stripes-thin {
+    height: 8px;
+    background: linear-gradient(
+      to bottom,
+      var(--stripe-outer) 0 2px,
+      var(--stripe-inner) 2px 6px,
+      var(--stripe-outer) 6px 8px
+    );
+  }
+
+  /* Faked metallic silver: headers and badges only, never body text. */
+  .metal {
+    background-image: var(--metal);
+    color: #041e42;
+  }
+
+  /* Gear era: the wordmark accent gets the faked metallic finish (large display type only). */
+  [data-era="gear"] .wordmark-accent {
+    background-image: var(--metal);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Primary button: accent fill with contrast-checked text. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    transition: filter 120ms ease, transform 120ms ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    background: var(--button-bg);
+    color: var(--button-text);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+  .btn-secondary {
+    border: 2px solid var(--border-strong);
+    color: var(--text);
+    background: transparent;
+  }
+  .btn-secondary:hover {
+    background: var(--surface-sunken);
+  }
+
+  .card {
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  /* Spoiler-free mode: anything marked .spoiler is hidden until tapped. */
+  [data-spoilers="on"] .spoiler:not([data-revealed]) {
+    filter: blur(7px);
+    user-select: none;
+    cursor: pointer;
+  }
 }

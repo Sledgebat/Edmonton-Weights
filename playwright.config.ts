@@ -6,7 +6,11 @@ export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: true,
   reporter: "list",
-  use: { baseURL: `http://localhost:${PORT}` },
+  use: {
+    baseURL: `http://localhost:${PORT}`,
+    // Optional: point at an already-installed Chromium instead of `npx playwright install`.
+    launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
+  },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "phone", use: { ...devices["Pixel 7"] } },
