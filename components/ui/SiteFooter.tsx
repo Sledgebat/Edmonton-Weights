@@ -16,7 +16,7 @@ export function SiteFooter() {
           </div>
           <nav aria-label="Footer">
             <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-              {[...ALL_NAV, { href: "/styleguide", label: "Style guide" }].map((i) => (
+              {[...ALL_NAV, { href: "/styleguide", label: "Style guide" }, { href: "/data", label: "Data status" }].map((i) => (
                 <li key={i.href}>
                   <Link href={i.href} className="opacity-85 hover:underline hover:opacity-100">
                     {i.label}

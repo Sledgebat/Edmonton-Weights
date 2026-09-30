@@ -10,6 +10,7 @@ const ROUTES = [
   "/on-this-day",
   "/blog",
   "/styleguide",
+  "/data",
 ];
 const ERAS = ["dynasty", "copper", "gear"] as const;
 const DISCLAIMER = "Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainment Group or the NHL.";
@@ -60,4 +61,17 @@ test("theme, mode and spoiler choices persist across reloads", async ({ page }) 
   await expect(html).toHaveAttribute("data-mode", after);
   await expect(html).toHaveAttribute("data-spoilers", "on");
   await expect(page.getByRole("radio", { name: /Copper & Blue/ })).toHaveAttribute("aria-checked", "true");
+});
+
+test("API routes return validated data with a last-updated stamp", async ({ request }) => {
+  for (const route of ["/api/standings", "/api/schedule", "/api/score", "/api/roster", "/api/club-stats", "/api/player/8478402"]) {
+    const res = await request.get(route);
+    expect(res.status(), route).toBe(200);
+    const body = await res.json();
+    expect(body.data, route).toBeTruthy();
+    expect(body.meta.source, route).toBe("fixture");
+    expect(body.meta.fetchedAt, route).toBeGreaterThan(0);
+  }
+  const bad = await request.get("/api/game/123");
+  expect(bad.status()).toBe(400);
 });

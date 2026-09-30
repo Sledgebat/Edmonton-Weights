@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "fixtures:capture": "tsx scripts/capture-fixtures.ts",
     "worker": "tsx worker/index.ts",
-    "themes:build": "tsx scripts/build-themes.ts"
+    "themes:build": "tsx scripts/build-themes.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.3.0",

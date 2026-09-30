@@ -18,6 +18,8 @@ export default defineConfig({
   webServer: {
     command: `npm run build && npx next start -p ${PORT}`,
     url: `http://localhost:${PORT}`,
+    // Offline and deterministic: saved fixtures, throwaway database.
+    env: { NHL_MODE: "fixtures", DATABASE_URL: "db/e2e.sqlite" },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },

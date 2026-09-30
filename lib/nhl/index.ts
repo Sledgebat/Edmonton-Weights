@@ -1,0 +1,42 @@
+/**
+ * Public, typed NHL data API for server components, route handlers and the worker.
+ *
+ *   const { data, meta } = await nhl.standings();
+ *   meta.fetchedAt  -> "last updated" stamp
+ *   meta.stale      -> true when the NHL couldn't be reached and a cached copy is shown
+ */
+import { getResource } from "./client";
+import { TEAM, endpoints, type GameType } from "./endpoints";
+import "./replay"; // registers the replay hook
+import {
+  Boxscore,
+  ClubSchedule,
+  ClubStats,
+  GameLanding,
+  PlayByPlay,
+  PlayerGameLog,
+  PlayerLanding,
+  Prospects,
+  Roster,
+  Scoreboard,
+  Standings,
+} from "./schemas";
+
+export const nhl = {
+  standings: () => getResource(endpoints.standingsNow(), Standings),
+  schedule: (team = TEAM) => getResource(endpoints.scheduleNow(team), ClubSchedule),
+  scheduleSeason: (season: number, team = TEAM) => getResource(endpoints.scheduleSeason(season, team), ClubSchedule),
+  score: () => getResource(endpoints.scoreNow(), Scoreboard),
+  gameLanding: (gameId: number) => getResource(endpoints.gameLanding(gameId), GameLanding),
+  playByPlay: (gameId: number) => getResource(endpoints.gamePlayByPlay(gameId), PlayByPlay),
+  boxscore: (gameId: number) => getResource(endpoints.gameBoxscore(gameId), Boxscore),
+  roster: (team = TEAM) => getResource(endpoints.rosterCurrent(team), Roster),
+  clubStats: (team = TEAM) => getResource(endpoints.clubStatsNow(team), ClubStats),
+  player: (playerId: number) => getResource(endpoints.playerLanding(playerId), PlayerLanding),
+  gameLog: (playerId: number, season: number, gameType: GameType = 2) =>
+    getResource(endpoints.playerGameLog(playerId, season, gameType), PlayerGameLog),
+  prospects: (team = TEAM) => getResource(endpoints.prospects(team), Prospects),
+};
+
+export { NhlError, cacheStatus, nhlMode, type Meta, type NhlMode, type Result, type Source } from "./client";
+export * from "./schemas";

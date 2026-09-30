@@ -147,6 +147,8 @@ async function main() {
   if (next) {
     picks.nextGameId = next.id;
     await capture("game", "Game landing (upcoming)", endpoints.gameLanding(next.id));
+    await capture("game", "Play-by-play (upcoming)", endpoints.gamePlayByPlay(next.id));
+    await capture("game", "Boxscore (upcoming)", endpoints.gameBoxscore(next.id));
   }
 
   // 3. Players: McDavid, Draisaitl and one goalie (goalie stats have a different shape).

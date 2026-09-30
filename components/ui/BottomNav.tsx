@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
+  Database,
   Ellipsis,
   History,
   House,
@@ -29,9 +30,14 @@ const ICONS: Record<string, LucideIcon> = {
   "/on-this-day": History,
   "/blog": Newspaper,
   "/styleguide": Palette,
+  "/data": Database,
 };
 
-const MORE = [...SECONDARY_NAV, { href: "/styleguide", label: "Style guide", phase: 2 }];
+const MORE = [
+  ...SECONDARY_NAV,
+  { href: "/styleguide", label: "Style guide", phase: 2 },
+  { href: "/data", label: "Data status", phase: 3 },
+];
 
 /** Phone and tablet navigation, pinned to the bottom of the screen. */
 export function BottomNav() {

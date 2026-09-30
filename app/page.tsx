@@ -49,7 +49,7 @@ export default async function Home() {
   await connection(); // read the report on every request, not at build time
   const report = await loadReport();
 
-  const done = 2; // phases complete
+  const done = 3; // phases complete
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
@@ -58,8 +58,12 @@ export default async function Home() {
       </p>
       <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Oil Country Hub</h1>
       <p className="mt-3 max-w-2xl text-lg text-fg-muted">
-        The design system and site shell are in. Try the jersey swatches in the header, then see every colour, font and
-        component in the{" "}
+        The data layer is in: a typed, validated NHL client with a local cache, plus offline and game-replay modes. See it
+        working on the{" "}
+        <Link href="/data" className="font-semibold text-accent-ink underline">
+          data status
+        </Link>{" "}
+        page, and every colour and component in the{" "}
         <Link href="/styleguide" className="font-semibold text-accent-ink underline">
           style guide
         </Link>
