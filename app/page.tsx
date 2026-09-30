@@ -1,69 +1,123 @@
-import Image from "next/image";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { connection } from "next/server";
 
-export default function Home() {
+/**
+ * Phase 1 placeholder home page: confirms the app runs and shows the
+ * endpoint report from `npm run fixtures:capture`. Phase 4 replaces it
+ * with the real Home dashboard.
+ */
+
+type CaptureResult = {
+  group: string;
+  path: string;
+  ok: boolean;
+  status: number | null;
+  bytes: number;
+  error?: string;
+};
+
+type CaptureReport = {
+  capturedAt: string;
+  totals: { requested: number; ok: number; failed: number };
+  picks: Record<string, unknown>;
+  results: CaptureResult[];
+};
+
+async function loadReport(): Promise<CaptureReport | null> {
+  try {
+    const raw = await readFile(path.join(process.cwd(), "fixtures", "_report.json"), "utf8");
+    return JSON.parse(raw) as CaptureReport;
+  } catch {
+    return null;
+  }
+}
+
+const PHASES = [
+  "Setup",
+  "Design system and site shell",
+  "Data layer",
+  "Core pages",
+  "Game Day Hub",
+  "Models and trackers",
+  "History, fan ratings and polish",
+  "Blog",
+];
+
+export default async function Home() {
+  await connection(); // read the report on every request, not at build time
+  const report = await loadReport();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6">
+      <p className="text-sm font-semibold uppercase tracking-widest text-accent">Prototype · Phase 1 of 8</p>
+      <h1 className="mt-2 text-4xl font-extrabold italic tracking-tight sm:text-5xl">Oil Country Hub</h1>
+      <p className="mt-3 max-w-2xl opacity-80">
+        The project is set up. This page is a temporary status board; the real home dashboard arrives in Phase 4.
+      </p>
+
+      <ol className="mt-8 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4" aria-label="Build phases">
+        {PHASES.map((name, i) => (
+          <li
+            key={name}
+            className={`rounded-md border px-3 py-2 ${
+              i === 0 ? "border-accent bg-brand text-white" : "border-current/15 opacity-60"
+            }`}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <span className="block text-xs opacity-80">Phase {i + 1}</span>
+            {name}
+          </li>
+        ))}
+      </ol>
+
+      <section className="mt-10" aria-labelledby="endpoints">
+        <h2 id="endpoints" className="text-2xl font-bold">NHL endpoint check</h2>
+
+        {!report ? (
+          <div className="mt-4 rounded-lg border border-current/15 p-5">
+            <p>No fixtures captured yet. In a terminal, from the project folder, run:</p>
+            <pre className="mt-3 overflow-x-auto rounded bg-black/80 p-3 text-sm text-white">
+              npm run fixtures:capture
+            </pre>
+            <p className="mt-3 text-sm opacity-80">Then refresh this page.</p>
+          </div>
+        ) : (
+          <>
+            <p className="mt-2 text-sm opacity-80">
+              {report.totals.ok} of {report.totals.requested} endpoints returned data · captured{" "}
+              {new Date(report.capturedAt).toLocaleString("en-CA", { timeZone: "America/Edmonton" })}
+            </p>
+            <div className="mt-4 overflow-x-auto rounded-lg border border-current/15">
+              <table className="w-full text-left text-sm [font-variant-numeric:tabular-nums]">
+                <thead className="bg-brand text-white">
+                  <tr>
+                    <th className="hidden px-3 py-2 sm:table-cell">Group</th>
+                    <th className="px-3 py-2">Endpoint</th>
+                    <th className="px-3 py-2 text-right">Size</th>
+                    <th className="px-3 py-2">Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {report.results.map((r) => (
+                    <tr key={r.path} className="border-t border-current/10">
+                      <td className="hidden px-3 py-2 opacity-70 sm:table-cell">{r.group}</td>
+                      <td className="break-all px-3 py-2 font-mono text-xs">{r.path}</td>
+                      <td className="whitespace-nowrap px-3 py-2 text-right">{(r.bytes / 1024).toFixed(1)} KB</td>
+                      <td className={`whitespace-nowrap px-3 py-2 font-semibold ${r.ok ? "" : "text-red-600"}`}>
+                        {r.ok ? "OK" : `Failed (${r.error})`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </section>
+
+      <footer className="mt-16 border-t border-current/15 pt-4 text-xs opacity-70">
+        Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainment Group or the NHL.
+      </footer>
+    </main>
   );
 }

@@ -6,21 +6,40 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "fixtures:capture": "tsx scripts/capture-fixtures.ts",
+    "worker": "tsx worker/index.ts"
   },
   "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.3",
     "next": "16.3.8",
+    "node-cron": "^4.6.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.3"
+  },
+  "engines": {
+    "node": ">=20.9"
   }
 }

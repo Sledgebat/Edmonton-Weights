@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Oil Country Hub
 
-## Getting Started
+A data-first Edmonton Oilers fan-site prototype built from the NHL's public web API.
+Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainment Group or the NHL.
 
-First, run the development server:
+## Status
+
+Phase 1 of 8 (setup) is done: Next.js 16 + TypeScript (strict) + Tailwind 4, with Drizzle,
+better-sqlite3, Zod, Recharts, node-cron, Vitest and Playwright installed.
+
+## First run
+
+Requires Node 20.9 or newer.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npx playwright install chromium   # once, for the smoke tests
+npm run fixtures:capture          # hits every NHL endpoint, saves fixtures/, writes fixtures/REPORT.md
+npm run dev                       # http://localhost:3000 shows the endpoint report
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server at http://localhost:3000 |
+| `npm run fixtures:capture` | Save one response per endpoint to `fixtures/v1/...` (add `-- --history` for every season since 1979-80) |
+| `npm run worker` | Scheduled jobs (a heartbeat for now) |
+| `npm test` | Vitest unit tests (offline) |
+| `npm run test:e2e` | Playwright smoke test at desktop and phone widths |
+| `npm run lint` / `npm run typecheck` | ESLint / TypeScript |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`NHL_API_BASE` can point the capture script at another host (used for a mock server in testing).
 
-## Learn More
+## Layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/            routes
+components/     ui/, game/, charts/, rink/, theme/
+lib/nhl/        endpoint list (typed client + Zod schemas in Phase 3)
+lib/sim/        playoff Monte Carlo (Phase 6)
+lib/history/    On This Day builder (Phase 7)
+lib/milestones/ milestone math (Phase 6)
+db/             Drizzle schema + sqlite file (Phase 3)
+worker/         cron jobs
+fixtures/       saved NHL responses, committed so tests run offline
+scripts/        one-off tools (fixture capture)
+tests/          unit/ (Vitest), e2e/ (Playwright)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm audit` reports 4 moderate advisories in an old esbuild pulled in by `drizzle-kit`. It is dev-only
+  (used for migrations) and doesn't ship with the site.

@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
+/* Phase 1 placeholder palette. Phase 2 replaces this with styles/themes.css
+   (Dynasty, Copper & Blue, Gear eras; light and dark). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --surface: #f6f7f9;
+  --text: #0b1d3a;
+  --brand-primary: #041e42;
+  --brand-accent: #ff4c00;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --surface: #041e42;
+    --text: #f1f3f6;
   }
 }
 
+@theme inline {
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-brand: var(--brand-primary);
+  --color-accent: var(--brand-accent);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
