@@ -1,0 +1,238 @@
+{
+  "capturedAt": "2026-09-30T17:43:32.695Z",
+  "base": "https://api-web.nhle.com/v1",
+  "fullHistory": false,
+  "picks": {
+    "currentSeason": 20262027,
+    "lastFinishedGameId": 2026020004,
+    "nextGameId": 2026020015,
+    "goalieId": 8475883
+  },
+  "totals": {
+    "requested": 22,
+    "ok": 22,
+    "failed": 0
+  },
+  "results": [
+    {
+      "group": "core",
+      "name": "Standings",
+      "path": "/standings/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 53507,
+      "ms": 269,
+      "file": "fixtures/v1/standings/now.json"
+    },
+    {
+      "group": "core",
+      "name": "Schedule (current season)",
+      "path": "/club-schedule-season/EDM/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 176227,
+      "ms": 185,
+      "file": "fixtures/v1/club-schedule-season/EDM/now.json"
+    },
+    {
+      "group": "core",
+      "name": "Scoreboard",
+      "path": "/score/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 12998,
+      "ms": 168,
+      "file": "fixtures/v1/score/now.json"
+    },
+    {
+      "group": "core",
+      "name": "Roster",
+      "path": "/roster/EDM/current",
+      "ok": true,
+      "status": 200,
+      "bytes": 11377,
+      "ms": 236,
+      "file": "fixtures/v1/roster/EDM/current.json"
+    },
+    {
+      "group": "core",
+      "name": "Club stats",
+      "path": "/club-stats/EDM/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 8507,
+      "ms": 351,
+      "file": "fixtures/v1/club-stats/EDM/now.json"
+    },
+    {
+      "group": "stretch",
+      "name": "Prospects",
+      "path": "/prospects/EDM",
+      "ok": true,
+      "status": 200,
+      "bytes": 4425,
+      "ms": 186,
+      "file": "fixtures/v1/prospects/EDM.json"
+    },
+    {
+      "group": "game",
+      "name": "Game landing (final)",
+      "path": "/gamecenter/2026020004/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 17233,
+      "ms": 121,
+      "file": "fixtures/v1/gamecenter/2026020004/landing.json"
+    },
+    {
+      "group": "game",
+      "name": "Play-by-play (final)",
+      "path": "/gamecenter/2026020004/play-by-play",
+      "ok": true,
+      "status": 200,
+      "bytes": 137198,
+      "ms": 44,
+      "file": "fixtures/v1/gamecenter/2026020004/play-by-play.json"
+    },
+    {
+      "group": "game",
+      "name": "Boxscore (final)",
+      "path": "/gamecenter/2026020004/boxscore",
+      "ok": true,
+      "status": 200,
+      "bytes": 13095,
+      "ms": 52,
+      "file": "fixtures/v1/gamecenter/2026020004/boxscore.json"
+    },
+    {
+      "group": "game",
+      "name": "Game landing (upcoming)",
+      "path": "/gamecenter/2026020015/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 18757,
+      "ms": 371,
+      "file": "fixtures/v1/gamecenter/2026020015/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "McDavid landing",
+      "path": "/player/8478402/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 23631,
+      "ms": 115,
+      "file": "fixtures/v1/player/8478402/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "McDavid game log 20262027",
+      "path": "/player/8478402/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 909,
+      "ms": 202,
+      "file": "fixtures/v1/player/8478402/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "McDavid game log 20252026",
+      "path": "/player/8478402/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32599,
+      "ms": 201,
+      "file": "fixtures/v1/player/8478402/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Draisaitl landing",
+      "path": "/player/8477934/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 23358,
+      "ms": 120,
+      "file": "fixtures/v1/player/8477934/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Draisaitl game log 20262027",
+      "path": "/player/8477934/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 946,
+      "ms": 122,
+      "file": "fixtures/v1/player/8477934/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Draisaitl game log 20252026",
+      "path": "/player/8477934/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 25981,
+      "ms": 120,
+      "file": "fixtures/v1/player/8477934/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Goalie landing",
+      "path": "/player/8475883/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 23157,
+      "ms": 224,
+      "file": "fixtures/v1/player/8475883/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Goalie game log 20262027",
+      "path": "/player/8475883/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 562,
+      "ms": 201,
+      "file": "fixtures/v1/player/8475883/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Goalie game log 20252026",
+      "path": "/player/8475883/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 12232,
+      "ms": 200,
+      "file": "fixtures/v1/player/8475883/game-log/20252026/2.json"
+    },
+    {
+      "group": "history",
+      "name": "Schedule 19791980",
+      "path": "/club-schedule-season/EDM/19791980",
+      "ok": true,
+      "status": 200,
+      "bytes": 112382,
+      "ms": 295,
+      "file": "fixtures/v1/club-schedule-season/EDM/19791980.json"
+    },
+    {
+      "group": "history",
+      "name": "Schedule 19831984",
+      "path": "/club-schedule-season/EDM/19831984",
+      "ok": true,
+      "status": 200,
+      "bytes": 137646,
+      "ms": 321,
+      "file": "fixtures/v1/club-schedule-season/EDM/19831984.json"
+    },
+    {
+      "group": "history",
+      "name": "Schedule 20052006",
+      "path": "/club-schedule-season/EDM/20052006",
+      "ok": true,
+      "status": 200,
+      "bytes": 157065,
+      "ms": 278,
+      "file": "fixtures/v1/club-schedule-season/EDM/20052006.json"
+    }
+  ]
+}

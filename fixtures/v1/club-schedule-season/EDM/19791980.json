@@ -1,0 +1,5965 @@
+{
+  "previousSeason": 19781979,
+  "currentSeason": 19791980,
+  "nextSeason": 19801981,
+  "clubTimezone": "America/Edmonton",
+  "clubUTCOffset": "-06:00",
+  "games": [
+    {
+      "id": 1979020006,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-10",
+      "venue": {
+        "default": "Chicago Stadium"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-11T00:30:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 16,
+        "commonName": {
+          "default": "Blackhawks"
+        },
+        "placeName": {
+          "default": "Chicago"
+        },
+        "placeNameWithPreposition": {
+          "default": "Chicago",
+          "fr": "de Chicago"
+        },
+        "abbrev": "CHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446720,
+        "firstInitial": {
+          "default": "T."
+        },
+        "lastName": {
+          "default": "Esposito"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-chi/1979/10/10/1979020006"
+    },
+    {
+      "id": 1979020019,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-13",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-14T01:15:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 17,
+        "commonName": {
+          "default": "Red Wings"
+        },
+        "placeName": {
+          "default": "Detroit"
+        },
+        "placeNameWithPreposition": {
+          "default": "Detroit",
+          "fr": "de Detroit"
+        },
+        "abbrev": "DET",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/DET_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/DET_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/det-vs-edm/1979/10/13/1979020019"
+    },
+    {
+      "id": 1979020027,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-14",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-15T01:30:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 23,
+        "commonName": {
+          "default": "Canucks"
+        },
+        "placeName": {
+          "default": "Vancouver"
+        },
+        "placeNameWithPreposition": {
+          "default": "Vancouver",
+          "fr": "de Vancouver"
+        },
+        "abbrev": "VAN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446488,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Dryden"
+        }
+      },
+      "gameCenterLink": "/gamecenter/van-vs-edm/1979/10/14/1979020027"
+    },
+    {
+      "id": 1979020045,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-19",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-20T01:30:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 32,
+        "commonName": {
+          "default": "Nordiques"
+        },
+        "placeName": {
+          "default": "Quebec",
+          "fr": "Québec"
+        },
+        "placeNameWithPreposition": {
+          "default": "Quebec",
+          "fr": "de Québec"
+        },
+        "abbrev": "QUE",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/que-vs-edm/1979/10/19/1979020045"
+    },
+    {
+      "id": 1979020059,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-21",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-22T01:30:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 31,
+        "commonName": {
+          "default": "North Stars"
+        },
+        "placeName": {
+          "default": "Minnesota"
+        },
+        "placeNameWithPreposition": {
+          "default": "Minnesota",
+          "fr": "du Minnesota"
+        },
+        "abbrev": "MNS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/mns-vs-edm/1979/10/21/1979020059"
+    },
+    {
+      "id": 1979020060,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-23",
+      "venue": {
+        "default": "Nassau Veterans Memorial Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-24T00:00:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-04:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 2,
+        "commonName": {
+          "default": "Islanders"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8451525,
+        "firstInitial": {
+          "default": "B."
+        },
+        "lastName": {
+          "default": "Smith"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-nyi/1979/10/23/1979020060"
+    },
+    {
+      "id": 1979020064,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-24",
+      "venue": {
+        "default": "Madison Square Garden"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-24T23:30:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-04:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 3,
+        "commonName": {
+          "default": "Rangers"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 10
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446323,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Davidson"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-nyr/1979/10/24/1979020064"
+    },
+    {
+      "id": 1979020075,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-26",
+      "venue": {
+        "default": "Omni Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-27T00:00:00Z",
+      "easternUTCOffset": "-04:00",
+      "venueUTCOffset": "-04:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 47,
+        "commonName": {
+          "default": "Flames"
+        },
+        "placeName": {
+          "default": "Atlanta"
+        },
+        "placeNameWithPreposition": {
+          "default": "Atlanta",
+          "fr": "d'Atlanta"
+        },
+        "abbrev": "AFM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_dark.svg",
+        "homeSplitSquad": false,
+        "score": 7
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8445609,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Bouchard"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-afm/1979/10/26/1979020075"
+    },
+    {
+      "id": 1979020088,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-28",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-29T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 15,
+        "commonName": {
+          "default": "Capitals"
+        },
+        "placeName": {
+          "default": "Washington"
+        },
+        "placeNameWithPreposition": {
+          "default": "Washington",
+          "fr": "de Washington"
+        },
+        "abbrev": "WSH",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8451695,
+        "firstInitial": {
+          "default": "W."
+        },
+        "lastName": {
+          "default": "Stephenson"
+        }
+      },
+      "gameCenterLink": "/gamecenter/wsh-vs-edm/1979/10/28/1979020088"
+    },
+    {
+      "id": 1979020096,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-10-30",
+      "venue": {
+        "default": "St. Louis Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-10-31T02:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 19,
+        "commonName": {
+          "default": "Blues"
+        },
+        "placeName": {
+          "default": "St. Louis"
+        },
+        "placeNameWithPreposition": {
+          "default": "St. Louis",
+          "fr": "de St. Louis"
+        },
+        "abbrev": "STL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448865,
+        "firstInitial": {
+          "default": "M."
+        },
+        "lastName": {
+          "default": "Liut"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-stl/1979/10/30/1979020096"
+    },
+    {
+      "id": 1979020106,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-02",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-03T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 2,
+        "commonName": {
+          "default": "Islanders"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 7
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/nyi-vs-edm/1979/11/02/1979020106"
+    },
+    {
+      "id": 1979020123,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-04",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-05T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 6,
+        "commonName": {
+          "default": "Bruins"
+        },
+        "placeName": {
+          "default": "Boston"
+        },
+        "placeNameWithPreposition": {
+          "default": "Boston",
+          "fr": "de Boston"
+        },
+        "abbrev": "BOS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_19491950-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BOS_19551956-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 1
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447170,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Gilbert"
+        }
+      },
+      "gameCenterLink": "/gamecenter/bos-vs-edm/1979/11/04/1979020123"
+    },
+    {
+      "id": 1979020133,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-07",
+      "venue": {
+        "default": "Detroit Olympia"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-08T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Detroit",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 17,
+        "commonName": {
+          "default": "Red Wings"
+        },
+        "placeName": {
+          "default": "Detroit"
+        },
+        "placeNameWithPreposition": {
+          "default": "Detroit",
+          "fr": "de Detroit"
+        },
+        "abbrev": "DET",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/DET_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/DET_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8452122,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Vachon"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-det/1979/11/07/1979020133"
+    },
+    {
+      "id": 1979020136,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-08",
+      "venue": {
+        "default": "Boston Garden"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-09T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 6,
+        "commonName": {
+          "default": "Bruins"
+        },
+        "placeName": {
+          "default": "Boston"
+        },
+        "placeNameWithPreposition": {
+          "default": "Boston",
+          "fr": "de Boston"
+        },
+        "abbrev": "BOS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_19491950-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BOS_19551956-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447170,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Gilbert"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-bos/1979/11/08/1979020136"
+    },
+    {
+      "id": 1979020154,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-11",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-11T20:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 10,
+        "commonName": {
+          "default": "Maple Leafs"
+        },
+        "placeName": {
+          "default": "Toronto"
+        },
+        "placeNameWithPreposition": {
+          "default": "Toronto",
+          "fr": "de Toronto"
+        },
+        "abbrev": "TOR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447663,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Harrison"
+        }
+      },
+      "gameCenterLink": "/gamecenter/tor-vs-edm/1979/11/11/1979020154"
+    },
+    {
+      "id": 1979020157,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-13",
+      "venue": {
+        "default": "Capital Centre"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-14T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 15,
+        "commonName": {
+          "default": "Capitals"
+        },
+        "placeName": {
+          "default": "Washington"
+        },
+        "placeNameWithPreposition": {
+          "default": "Washington",
+          "fr": "de Washington"
+        },
+        "abbrev": "WSH",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446488,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Dryden"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-wsh/1979/11/13/1979020157"
+    },
+    {
+      "id": 1979020165,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-15",
+      "venue": {
+        "default": "Spectrum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-16T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "US/Eastern",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449784,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Myre"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-phi/1979/11/15/1979020165"
+    },
+    {
+      "id": 1979020177,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-17",
+      "venue": {
+        "default": "Springfield Civic Center"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-18T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 0
+      },
+      "homeTeam": {
+        "id": 34,
+        "commonName": {
+          "default": "Whalers"
+        },
+        "placeName": {
+          "default": "Hartford"
+        },
+        "placeNameWithPreposition": {
+          "default": "Hartford",
+          "fr": "de Hartford"
+        },
+        "abbrev": "HFD",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8451474,
+        "firstInitial": {
+          "default": "A."
+        },
+        "lastName": {
+          "default": "Smith"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-hfd/1979/11/17/1979020177"
+    },
+    {
+      "id": 1979020187,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-18",
+      "venue": {
+        "default": "Buffalo Memorial Auditorium"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-19T00:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 7
+      },
+      "homeTeam": {
+        "id": 7,
+        "commonName": {
+          "default": "Sabres"
+        },
+        "placeName": {
+          "default": "Buffalo"
+        },
+        "placeNameWithPreposition": {
+          "default": "Buffalo",
+          "fr": "de Buffalo"
+        },
+        "abbrev": "BUF",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_dark.svg",
+        "homeSplitSquad": false,
+        "score": 9
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8451143,
+        "firstInitial": {
+          "default": "B."
+        },
+        "lastName": {
+          "default": "Sauve"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-buf/1979/11/18/1979020187"
+    },
+    {
+      "id": 1979020200,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-21",
+      "venue": {
+        "default": "Maple Leaf Gardens"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-22T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 10,
+        "commonName": {
+          "default": "Maple Leafs"
+        },
+        "placeName": {
+          "default": "Toronto"
+        },
+        "placeNameWithPreposition": {
+          "default": "Toronto",
+          "fr": "de Toronto"
+        },
+        "abbrev": "TOR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447663,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Harrison"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-tor/1979/11/21/1979020200"
+    },
+    {
+      "id": 1979020208,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-24",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-25T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446488,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Dryden"
+        }
+      },
+      "gameCenterLink": "/gamecenter/phi-vs-edm/1979/11/24/1979020208"
+    },
+    {
+      "id": 1979020233,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-28",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-11-29T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 16,
+        "commonName": {
+          "default": "Blackhawks"
+        },
+        "placeName": {
+          "default": "Chicago"
+        },
+        "placeNameWithPreposition": {
+          "default": "Chicago",
+          "fr": "de Chicago"
+        },
+        "abbrev": "CHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446488,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Dryden"
+        }
+      },
+      "gameCenterLink": "/gamecenter/chi-vs-edm/1979/11/28/1979020233"
+    },
+    {
+      "id": 1979020237,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-11-30",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-01T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 2,
+        "commonName": {
+          "default": "Islanders"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/nyi-vs-edm/1979/11/30/1979020237"
+    },
+    {
+      "id": 1979020266,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-05",
+      "venue": {
+        "default": "Metropolitan Sports Center"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-06T01:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 31,
+        "commonName": {
+          "default": "North Stars"
+        },
+        "placeName": {
+          "default": "Minnesota"
+        },
+        "placeNameWithPreposition": {
+          "default": "Minnesota",
+          "fr": "du Minnesota"
+        },
+        "abbrev": "MNS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449550,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Meloche"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-mns/1979/12/05/1979020266"
+    },
+    {
+      "id": 1979020273,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-07",
+      "venue": {
+        "default": "Winnipeg Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-08T02:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Winnipeg",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 33,
+        "commonName": {
+          "default": "Jets"
+        },
+        "placeName": {
+          "default": "Winnipeg"
+        },
+        "placeNameWithPreposition": {
+          "default": "Winnipeg",
+          "fr": "de Winnipeg (1979)"
+        },
+        "abbrev": "WIN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_dark.svg",
+        "homeSplitSquad": false,
+        "score": 8
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447483,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Hamel"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-win/1979/12/07/1979020273"
+    },
+    {
+      "id": 1979020284,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-09",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-10T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 34,
+        "commonName": {
+          "default": "Whalers"
+        },
+        "placeName": {
+          "default": "Hartford"
+        },
+        "placeNameWithPreposition": {
+          "default": "Hartford",
+          "fr": "de Hartford"
+        },
+        "abbrev": "HFD",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 0
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/hfd-vs-edm/1979/12/09/1979020284"
+    },
+    {
+      "id": 1979020294,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-12",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-13T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 47,
+        "commonName": {
+          "default": "Flames"
+        },
+        "placeName": {
+          "default": "Atlanta"
+        },
+        "placeNameWithPreposition": {
+          "default": "Atlanta",
+          "fr": "d'Atlanta"
+        },
+        "abbrev": "AFM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/afm-vs-edm/1979/12/12/1979020294"
+    },
+    {
+      "id": 1979020303,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-14",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-15T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 8,
+        "commonName": {
+          "default": "Canadiens"
+        },
+        "placeName": {
+          "default": "Montréal"
+        },
+        "placeNameWithPreposition": {
+          "default": "Montréal",
+          "fr": "de Montréal"
+        },
+        "abbrev": "MTL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/mtl-vs-edm/1979/12/14/1979020303"
+    },
+    {
+      "id": 1979020318,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-16",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-17T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 33,
+        "commonName": {
+          "default": "Jets"
+        },
+        "placeName": {
+          "default": "Winnipeg"
+        },
+        "placeNameWithPreposition": {
+          "default": "Winnipeg",
+          "fr": "de Winnipeg (1979)"
+        },
+        "abbrev": "WIN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449588,
+        "firstInitial": {
+          "default": "L."
+        },
+        "lastName": {
+          "default": "Middlebrook"
+        }
+      },
+      "gameCenterLink": "/gamecenter/win-vs-edm/1979/12/16/1979020318"
+    },
+    {
+      "id": 1979020327,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-19",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-20T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 17,
+        "commonName": {
+          "default": "Red Wings"
+        },
+        "placeName": {
+          "default": "Detroit"
+        },
+        "placeNameWithPreposition": {
+          "default": "Detroit",
+          "fr": "de Detroit"
+        },
+        "abbrev": "DET",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/DET_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/DET_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8452122,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Vachon"
+        }
+      },
+      "gameCenterLink": "/gamecenter/det-vs-edm/1979/12/19/1979020327"
+    },
+    {
+      "id": 1979020337,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-21",
+      "venue": {
+        "default": "McNichols Sports Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-22T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Denver",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 35,
+        "commonName": {
+          "default": "Rockies"
+        },
+        "placeName": {
+          "default": "Colorado"
+        },
+        "placeNameWithPreposition": {
+          "default": "Colorado",
+          "fr": "du Colorado"
+        },
+        "abbrev": "CLR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449491,
+        "firstInitial": {
+          "default": "B."
+        },
+        "lastName": {
+          "default": "McKenzie"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-clr/1979/12/21/1979020337"
+    },
+    {
+      "id": 1979020345,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-22",
+      "venue": {
+        "default": "The Forum",
+        "fr": "Forum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-23T04:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-08:00",
+      "venueTimezone": "America/Los_Angeles",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 26,
+        "commonName": {
+          "default": "Kings"
+        },
+        "placeName": {
+          "default": "Los Angeles"
+        },
+        "placeNameWithPreposition": {
+          "default": "Los Angeles",
+          "fr": "de Los Angeles"
+        },
+        "abbrev": "LAK",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_dark.svg",
+        "homeSplitSquad": false,
+        "score": 9
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448805,
+        "firstInitial": {
+          "default": "M."
+        },
+        "lastName": {
+          "default": "Lessard"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-lak/1979/12/22/1979020345"
+    },
+    {
+      "id": 1979020358,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-26",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-27T03:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 35,
+        "commonName": {
+          "default": "Rockies"
+        },
+        "placeName": {
+          "default": "Colorado"
+        },
+        "placeNameWithPreposition": {
+          "default": "Colorado",
+          "fr": "du Colorado"
+        },
+        "abbrev": "CLR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/clr-vs-edm/1979/12/26/1979020358"
+    },
+    {
+      "id": 1979020367,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-28",
+      "venue": {
+        "default": "Pacific Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-29T04:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-08:00",
+      "venueTimezone": "America/Vancouver",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 23,
+        "commonName": {
+          "default": "Canucks"
+        },
+        "placeName": {
+          "default": "Vancouver"
+        },
+        "placeNameWithPreposition": {
+          "default": "Vancouver",
+          "fr": "de Vancouver"
+        },
+        "abbrev": "VAN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-van/1979/12/28/1979020367"
+    },
+    {
+      "id": 1979020378,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1979-12-30",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1979-12-31T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 32,
+        "commonName": {
+          "default": "Nordiques"
+        },
+        "placeName": {
+          "default": "Quebec",
+          "fr": "Québec"
+        },
+        "placeNameWithPreposition": {
+          "default": "Quebec",
+          "fr": "de Québec"
+        },
+        "abbrev": "QUE",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 1
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/que-vs-edm/1979/12/30/1979020378"
+    },
+    {
+      "id": 1979020382,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-02",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-03T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 34,
+        "commonName": {
+          "default": "Whalers"
+        },
+        "placeName": {
+          "default": "Hartford"
+        },
+        "placeNameWithPreposition": {
+          "default": "Hartford",
+          "fr": "de Hartford"
+        },
+        "abbrev": "HFD",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/hfd-vs-edm/1980/01/02/1979020382"
+    },
+    {
+      "id": 1979020400,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-05",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-06T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 26,
+        "commonName": {
+          "default": "Kings"
+        },
+        "placeName": {
+          "default": "Los Angeles"
+        },
+        "placeNameWithPreposition": {
+          "default": "Los Angeles",
+          "fr": "de Los Angeles"
+        },
+        "abbrev": "LAK",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/lak-vs-edm/1980/01/05/1979020400"
+    },
+    {
+      "id": 1979020409,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-07",
+      "venue": {
+        "default": "Montreal Forum",
+        "fr": "Forum de Montréal"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-08T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 8,
+        "commonName": {
+          "default": "Canadiens"
+        },
+        "placeName": {
+          "default": "Montréal"
+        },
+        "placeNameWithPreposition": {
+          "default": "Montréal",
+          "fr": "de Montréal"
+        },
+        "abbrev": "MTL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447755,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Herron"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-mtl/1980/01/07/1979020409"
+    },
+    {
+      "id": 1979020421,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-09",
+      "venue": {
+        "default": "Le Colis√©e",
+        "cs": "Le Colisée",
+        "de": "Le Colisée",
+        "es": "Le ColisÃ©e",
+        "fi": "Le Colisée",
+        "fr": "Le Colisée",
+        "sk": "Le Colisée",
+        "sv": "Le Colisée"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-10T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 32,
+        "commonName": {
+          "default": "Nordiques"
+        },
+        "placeName": {
+          "default": "Quebec",
+          "fr": "Québec"
+        },
+        "placeNameWithPreposition": {
+          "default": "Quebec",
+          "fr": "de Québec"
+        },
+        "abbrev": "QUE",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-que/1980/01/09/1979020421"
+    },
+    {
+      "id": 1979020424,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-11",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-12T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 3,
+        "commonName": {
+          "default": "Rangers"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8445218,
+        "firstInitial": {
+          "default": "S."
+        },
+        "lastName": {
+          "default": "Baker"
+        }
+      },
+      "gameCenterLink": "/gamecenter/nyr-vs-edm/1980/01/11/1979020424"
+    },
+    {
+      "id": 1979020441,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-13",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-14T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 7,
+        "commonName": {
+          "default": "Sabres"
+        },
+        "placeName": {
+          "default": "Buffalo"
+        },
+        "placeNameWithPreposition": {
+          "default": "Buffalo",
+          "fr": "de Buffalo"
+        },
+        "abbrev": "BUF",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/buf-vs-edm/1980/01/13/1979020441"
+    },
+    {
+      "id": 1979020449,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-16",
+      "venue": {
+        "default": "Capital Centre"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-17T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 15,
+        "commonName": {
+          "default": "Capitals"
+        },
+        "placeName": {
+          "default": "Washington"
+        },
+        "placeNameWithPreposition": {
+          "default": "Washington",
+          "fr": "de Washington"
+        },
+        "abbrev": "WSH",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-wsh/1980/01/16/1979020449"
+    },
+    {
+      "id": 1979020460,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-17",
+      "venue": {
+        "default": "Boston Garden"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-18T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 6,
+        "commonName": {
+          "default": "Bruins"
+        },
+        "placeName": {
+          "default": "Boston"
+        },
+        "placeNameWithPreposition": {
+          "default": "Boston",
+          "fr": "de Boston"
+        },
+        "abbrev": "BOS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_19491950-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BOS_19551956-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 7
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449853,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Cheevers"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-bos/1980/01/17/1979020460"
+    },
+    {
+      "id": 1979020469,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-19",
+      "venue": {
+        "default": "Civic Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-20T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 5,
+        "commonName": {
+          "default": "Penguins"
+        },
+        "placeName": {
+          "default": "Pittsburgh"
+        },
+        "placeNameWithPreposition": {
+          "default": "Pittsburgh",
+          "fr": "de Pittsburgh"
+        },
+        "abbrev": "PIT",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-pit/1980/01/19/1979020469"
+    },
+    {
+      "id": 1979020474,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-20",
+      "venue": {
+        "default": "Buffalo Memorial Auditorium"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-21T00:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 7,
+        "commonName": {
+          "default": "Sabres"
+        },
+        "placeName": {
+          "default": "Buffalo"
+        },
+        "placeNameWithPreposition": {
+          "default": "Buffalo",
+          "fr": "de Buffalo"
+        },
+        "abbrev": "BUF",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446597,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Edwards"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-buf/1980/01/20/1979020474"
+    },
+    {
+      "id": 1979020486,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-23",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-24T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 5,
+        "commonName": {
+          "default": "Penguins"
+        },
+        "placeName": {
+          "default": "Pittsburgh"
+        },
+        "placeNameWithPreposition": {
+          "default": "Pittsburgh",
+          "fr": "de Pittsburgh"
+        },
+        "abbrev": "PIT",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/pit-vs-edm/1980/01/23/1979020486"
+    },
+    {
+      "id": 1979020501,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-26",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-27T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 10,
+        "commonName": {
+          "default": "Maple Leafs"
+        },
+        "placeName": {
+          "default": "Toronto"
+        },
+        "placeNameWithPreposition": {
+          "default": "Toronto",
+          "fr": "de Toronto"
+        },
+        "abbrev": "TOR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 8
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/tor-vs-edm/1980/01/26/1979020501"
+    },
+    {
+      "id": 1979020504,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-27",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-28T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8450343,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Peeters"
+        }
+      },
+      "gameCenterLink": "/gamecenter/phi-vs-edm/1980/01/27/1979020504"
+    },
+    {
+      "id": 1979020515,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-29",
+      "venue": {
+        "default": "St. Louis Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-30T02:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 19,
+        "commonName": {
+          "default": "Blues"
+        },
+        "placeName": {
+          "default": "St. Louis"
+        },
+        "placeNameWithPreposition": {
+          "default": "St. Louis",
+          "fr": "de St. Louis"
+        },
+        "abbrev": "STL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448865,
+        "firstInitial": {
+          "default": "M."
+        },
+        "lastName": {
+          "default": "Liut"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-stl/1980/01/29/1979020515"
+    },
+    {
+      "id": 1979020522,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-01-30",
+      "venue": {
+        "default": "The Forum",
+        "fr": "Forum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-01-31T04:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-08:00",
+      "venueTimezone": "America/Los_Angeles",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 8
+      },
+      "homeTeam": {
+        "id": 26,
+        "commonName": {
+          "default": "Kings"
+        },
+        "placeName": {
+          "default": "Los Angeles"
+        },
+        "placeNameWithPreposition": {
+          "default": "Los Angeles",
+          "fr": "de Los Angeles"
+        },
+        "abbrev": "LAK",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_dark.svg",
+        "homeSplitSquad": false,
+        "score": 1
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446280,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Cutts"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-lak/1980/01/30/1979020522"
+    },
+    {
+      "id": 1979020528,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-01",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-02T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 33,
+        "commonName": {
+          "default": "Jets"
+        },
+        "placeName": {
+          "default": "Winnipeg"
+        },
+        "placeNameWithPreposition": {
+          "default": "Winnipeg",
+          "fr": "de Winnipeg (1979)"
+        },
+        "abbrev": "WIN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 9
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/win-vs-edm/1980/02/01/1979020528"
+    },
+    {
+      "id": 1979020543,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-03",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-04T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 26,
+        "commonName": {
+          "default": "Kings"
+        },
+        "placeName": {
+          "default": "Los Angeles"
+        },
+        "placeNameWithPreposition": {
+          "default": "Los Angeles",
+          "fr": "de Los Angeles"
+        },
+        "abbrev": "LAK",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/LAK_19751976-19861987_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/lak-vs-edm/1980/02/03/1979020543"
+    },
+    {
+      "id": 1979020550,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-06",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-07T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 19,
+        "commonName": {
+          "default": "Blues"
+        },
+        "placeName": {
+          "default": "St. Louis"
+        },
+        "placeNameWithPreposition": {
+          "default": "St. Louis",
+          "fr": "de St. Louis"
+        },
+        "abbrev": "STL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448865,
+        "firstInitial": {
+          "default": "M."
+        },
+        "lastName": {
+          "default": "Liut"
+        }
+      },
+      "gameCenterLink": "/gamecenter/stl-vs-edm/1980/02/06/1979020550"
+    },
+    {
+      "id": 1979020556,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-08",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-09T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 47,
+        "commonName": {
+          "default": "Flames"
+        },
+        "placeName": {
+          "default": "Atlanta"
+        },
+        "placeNameWithPreposition": {
+          "default": "Atlanta",
+          "fr": "d'Atlanta"
+        },
+        "abbrev": "AFM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8445609,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Bouchard"
+        }
+      },
+      "gameCenterLink": "/gamecenter/afm-vs-edm/1980/02/08/1979020556"
+    },
+    {
+      "id": 1979020573,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-10",
+      "venue": {
+        "default": "Winnipeg Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-10T20:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Winnipeg",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 33,
+        "commonName": {
+          "default": "Jets"
+        },
+        "placeName": {
+          "default": "Winnipeg"
+        },
+        "placeNameWithPreposition": {
+          "default": "Winnipeg",
+          "fr": "de Winnipeg (1979)"
+        },
+        "abbrev": "WIN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WIN_19791980-19891990_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449291,
+        "firstInitial": {
+          "default": "M."
+        },
+        "lastName": {
+          "default": "Mattsson"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-win/1980/02/10/1979020573"
+    },
+    {
+      "id": 1979020581,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-13",
+      "venue": {
+        "default": "Metropolitan Sports Center"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-14T01:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 31,
+        "commonName": {
+          "default": "North Stars"
+        },
+        "placeName": {
+          "default": "Minnesota"
+        },
+        "placeNameWithPreposition": {
+          "default": "Minnesota",
+          "fr": "du Minnesota"
+        },
+        "abbrev": "MNS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-mns/1980/02/13/1979020581"
+    },
+    {
+      "id": 1979020587,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-15",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-16T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 15,
+        "commonName": {
+          "default": "Capitals"
+        },
+        "placeName": {
+          "default": "Washington"
+        },
+        "placeNameWithPreposition": {
+          "default": "Washington",
+          "fr": "de Washington"
+        },
+        "abbrev": "WSH",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/WSH_19741975-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 8
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/wsh-vs-edm/1980/02/15/1979020587"
+    },
+    {
+      "id": 1979020602,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-17",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-18T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 19,
+        "commonName": {
+          "default": "Blues"
+        },
+        "placeName": {
+          "default": "St. Louis"
+        },
+        "placeNameWithPreposition": {
+          "default": "St. Louis",
+          "fr": "de St. Louis"
+        },
+        "abbrev": "STL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/STL_19781979-19831984_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446166,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Corsi"
+        }
+      },
+      "gameCenterLink": "/gamecenter/stl-vs-edm/1980/02/17/1979020602"
+    },
+    {
+      "id": 1979020609,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-19",
+      "venue": {
+        "default": "Hartford Civic Center"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-20T00:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 34,
+        "commonName": {
+          "default": "Whalers"
+        },
+        "placeName": {
+          "default": "Hartford"
+        },
+        "placeNameWithPreposition": {
+          "default": "Hartford",
+          "fr": "de Hartford"
+        },
+        "abbrev": "HFD",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/HFD_19791980-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447066,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Garrett"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-hfd/1980/02/19/1979020609"
+    },
+    {
+      "id": 1979020612,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-20",
+      "venue": {
+        "default": "Madison Square Garden"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-21T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 3,
+        "commonName": {
+          "default": "Rangers"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8446323,
+        "firstInitial": {
+          "default": "J."
+        },
+        "lastName": {
+          "default": "Davidson"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-nyr/1980/02/20/1979020612"
+    },
+    {
+      "id": 1979020621,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-22",
+      "venue": {
+        "default": "McNichols Sports Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-23T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Denver",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 35,
+        "commonName": {
+          "default": "Rockies"
+        },
+        "placeName": {
+          "default": "Colorado"
+        },
+        "placeNameWithPreposition": {
+          "default": "Colorado",
+          "fr": "du Colorado"
+        },
+        "abbrev": "CLR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449491,
+        "firstInitial": {
+          "default": "B."
+        },
+        "lastName": {
+          "default": "McKenzie"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-clr/1980/02/22/1979020621"
+    },
+    {
+      "id": 1979020636,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-24",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-25T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 6,
+        "commonName": {
+          "default": "Bruins"
+        },
+        "placeName": {
+          "default": "Boston"
+        },
+        "placeNameWithPreposition": {
+          "default": "Boston",
+          "fr": "de Boston"
+        },
+        "abbrev": "BOS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_19491950-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BOS_19551956-19941995_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447170,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Gilbert"
+        }
+      },
+      "gameCenterLink": "/gamecenter/bos-vs-edm/1980/02/24/1979020636"
+    },
+    {
+      "id": 1979020647,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-27",
+      "venue": {
+        "default": "Chicago Stadium"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-02-28T01:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-06:00",
+      "venueTimezone": "America/Chicago",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 16,
+        "commonName": {
+          "default": "Blackhawks"
+        },
+        "placeName": {
+          "default": "Chicago"
+        },
+        "placeNameWithPreposition": {
+          "default": "Chicago",
+          "fr": "de Chicago"
+        },
+        "abbrev": "CHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449618,
+        "firstInitial": {
+          "default": "E."
+        },
+        "lastName": {
+          "default": "Mio"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-chi/1980/02/27/1979020647"
+    },
+    {
+      "id": 1979020654,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-02-29",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-01T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 7,
+        "commonName": {
+          "default": "Sabres"
+        },
+        "placeName": {
+          "default": "Buffalo"
+        },
+        "placeNameWithPreposition": {
+          "default": "Buffalo",
+          "fr": "de Buffalo"
+        },
+        "abbrev": "BUF",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/BUF_19701971-19951996_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8451143,
+        "firstInitial": {
+          "default": "B."
+        },
+        "lastName": {
+          "default": "Sauve"
+        }
+      },
+      "gameCenterLink": "/gamecenter/buf-vs-edm/1980/02/29/1979020654"
+    },
+    {
+      "id": 1979020661,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-01",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-02T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 23,
+        "commonName": {
+          "default": "Canucks"
+        },
+        "placeName": {
+          "default": "Vancouver"
+        },
+        "placeNameWithPreposition": {
+          "default": "Vancouver",
+          "fr": "de Vancouver"
+        },
+        "abbrev": "VAN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447505,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Hanlon"
+        }
+      },
+      "gameCenterLink": "/gamecenter/van-vs-edm/1980/03/01/1979020661"
+    },
+    {
+      "id": 1979020672,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-04",
+      "venue": {
+        "default": "Nassau Veterans Memorial Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-05T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 2,
+        "commonName": {
+          "default": "Islanders"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYI_19721973-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8450802,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Resch"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-nyi/1980/03/04/1979020672"
+    },
+    {
+      "id": 1979020683,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-06",
+      "venue": {
+        "default": "Montreal Forum",
+        "fr": "Forum de Montréal"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-07T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 8,
+        "commonName": {
+          "default": "Canadiens"
+        },
+        "placeName": {
+          "default": "Montréal"
+        },
+        "placeNameWithPreposition": {
+          "default": "Montréal",
+          "fr": "de Montréal"
+        },
+        "abbrev": "MTL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447755,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Herron"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-mtl/1980/03/06/1979020683"
+    },
+    {
+      "id": 1979020691,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-08",
+      "venue": {
+        "default": "Civic Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-09T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 5,
+        "commonName": {
+          "default": "Penguins"
+        },
+        "placeName": {
+          "default": "Pittsburgh"
+        },
+        "placeNameWithPreposition": {
+          "default": "Pittsburgh",
+          "fr": "de Pittsburgh"
+        },
+        "abbrev": "PIT",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449627,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Millen"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-pit/1980/03/08/1979020691"
+    },
+    {
+      "id": 1979020697,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-09",
+      "venue": {
+        "default": "Spectrum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-10T00:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "US/Eastern",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8449784,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Myre"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-phi/1980/03/09/1979020697"
+    },
+    {
+      "id": 1979020715,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-12",
+      "venue": {
+        "default": "Le Colis√©e",
+        "cs": "Le Colisée",
+        "de": "Le Colisée",
+        "es": "Le ColisÃ©e",
+        "fi": "Le Colisée",
+        "fr": "Le Colisée",
+        "sk": "Le Colisée",
+        "sv": "Le Colisée"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-13T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 6
+      },
+      "homeTeam": {
+        "id": 32,
+        "commonName": {
+          "default": "Nordiques"
+        },
+        "placeName": {
+          "default": "Quebec",
+          "fr": "Québec"
+        },
+        "placeNameWithPreposition": {
+          "default": "Quebec",
+          "fr": "de Québec"
+        },
+        "abbrev": "QUE",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/QUE_19791980-19941995_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-que/1980/03/12/1979020715"
+    },
+    {
+      "id": 1979020720,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-14",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-15T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 16,
+        "commonName": {
+          "default": "Blackhawks"
+        },
+        "placeName": {
+          "default": "Chicago"
+        },
+        "placeNameWithPreposition": {
+          "default": "Chicago",
+          "fr": "de Chicago"
+        },
+        "abbrev": "CHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CHI_19651966-19881989_dark.svg",
+        "awaySplitSquad": false,
+        "score": 4
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/chi-vs-edm/1980/03/14/1979020720"
+    },
+    {
+      "id": 1979020725,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-15",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-16T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 8,
+        "commonName": {
+          "default": "Canadiens"
+        },
+        "placeName": {
+          "default": "Montréal"
+        },
+        "placeNameWithPreposition": {
+          "default": "Montréal",
+          "fr": "de Montréal"
+        },
+        "abbrev": "MTL",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MTL_19561957-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 7
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 3
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8447755,
+        "firstInitial": {
+          "default": "D."
+        },
+        "lastName": {
+          "default": "Herron"
+        }
+      },
+      "gameCenterLink": "/gamecenter/mtl-vs-edm/1980/03/15/1979020725"
+    },
+    {
+      "id": 1979020742,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-19",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-20T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 3,
+        "commonName": {
+          "default": "Rangers"
+        },
+        "placeName": {
+          "default": "New York"
+        },
+        "placeNameWithPreposition": {
+          "default": "New York",
+          "fr": "de New York"
+        },
+        "abbrev": "NYR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/NYR_19781979-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/nyr-vs-edm/1980/03/19/1979020742"
+    },
+    {
+      "id": 1979020755,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-21",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-22T02:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 5,
+        "commonName": {
+          "default": "Penguins"
+        },
+        "placeName": {
+          "default": "Pittsburgh"
+        },
+        "placeNameWithPreposition": {
+          "default": "Pittsburgh",
+          "fr": "de Pittsburgh"
+        },
+        "abbrev": "PIT",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PIT_19721973-19911992_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 9
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/pit-vs-edm/1980/03/21/1979020755"
+    },
+    {
+      "id": 1979020775,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-25",
+      "venue": {
+        "default": "Omni Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-26T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/New_York",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 47,
+        "commonName": {
+          "default": "Flames"
+        },
+        "placeName": {
+          "default": "Atlanta"
+        },
+        "placeNameWithPreposition": {
+          "default": "Atlanta",
+          "fr": "d'Atlanta"
+        },
+        "abbrev": "AFM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/AFM_19721973-19791980_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-afm/1980/03/25/1979020775"
+    },
+    {
+      "id": 1979020782,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-26",
+      "venue": {
+        "default": "Joe Louis Arena"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-27T00:30:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Detroit",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 5
+      },
+      "homeTeam": {
+        "id": 17,
+        "commonName": {
+          "default": "Red Wings"
+        },
+        "placeName": {
+          "default": "Detroit"
+        },
+        "placeNameWithPreposition": {
+          "default": "Detroit",
+          "fr": "de Detroit"
+        },
+        "abbrev": "DET",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/DET_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/DET_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-det/1980/03/26/1979020782"
+    },
+    {
+      "id": 1979020797,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-03-29",
+      "venue": {
+        "default": "Maple Leaf Gardens"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-03-30T01:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "America/Toronto",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 8
+      },
+      "homeTeam": {
+        "id": 10,
+        "commonName": {
+          "default": "Maple Leafs"
+        },
+        "placeName": {
+          "default": "Toronto"
+        },
+        "placeNameWithPreposition": {
+          "default": "Toronto",
+          "fr": "de Toronto"
+        },
+        "abbrev": "TOR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/TOR_19701971-19811982_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-tor/1980/03/29/1979020797"
+    },
+    {
+      "id": 1979020812,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-04-01",
+      "venue": {
+        "default": "Pacific Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-02T04:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-08:00",
+      "venueTimezone": "America/Vancouver",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 0
+      },
+      "homeTeam": {
+        "id": 23,
+        "commonName": {
+          "default": "Canucks"
+        },
+        "placeName": {
+          "default": "Vancouver"
+        },
+        "placeNameWithPreposition": {
+          "default": "Vancouver",
+          "fr": "de Vancouver"
+        },
+        "abbrev": "VAN",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/VAN_19781979-19911992_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8445695,
+        "firstInitial": {
+          "default": "G."
+        },
+        "lastName": {
+          "default": "Bromley"
+        }
+      },
+      "gameCenterLink": "/gamecenter/edm-vs-van/1980/04/01/1979020812"
+    },
+    {
+      "id": 1979020818,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-04-02",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-03T02:45:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 31,
+        "commonName": {
+          "default": "North Stars"
+        },
+        "placeName": {
+          "default": "Minnesota"
+        },
+        "placeNameWithPreposition": {
+          "default": "Minnesota",
+          "fr": "du Minnesota"
+        },
+        "abbrev": "MNS",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/MNS_19671968-19841985_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 1
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/mns-vs-edm/1980/04/02/1979020818"
+    },
+    {
+      "id": 1979020825,
+      "season": 19791980,
+      "gameType": 2,
+      "gameDate": "1980-04-04",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-05T02:45:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 35,
+        "commonName": {
+          "default": "Rockies"
+        },
+        "placeName": {
+          "default": "Colorado"
+        },
+        "placeNameWithPreposition": {
+          "default": "Colorado",
+          "fr": "du Colorado"
+        },
+        "abbrev": "CLR",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/CLR_19761977-19811982_dark.svg",
+        "awaySplitSquad": false,
+        "score": 2
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 6
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8448891,
+        "firstInitial": {
+          "default": "R."
+        },
+        "lastName": {
+          "default": "Low"
+        }
+      },
+      "gameCenterLink": "/gamecenter/clr-vs-edm/1980/04/04/1979020825"
+    },
+    {
+      "id": 1979030111,
+      "season": 19791980,
+      "gameType": 3,
+      "gameDate": "1980-04-08",
+      "venue": {
+        "default": "Spectrum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-09T01:15:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "US/Eastern",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 4
+      },
+      "periodDescriptor": {
+        "number": 4,
+        "periodType": "OT",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "OT"
+      },
+      "winningGoalie": {
+        "playerId": 8450343,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Peeters"
+        }
+      },
+      "seriesStatus": {
+        "round": 1,
+        "seriesAbbrev": "PRLM",
+        "seriesTitle": "Preliminary Round",
+        "seriesLetter": "A",
+        "neededToWin": 3,
+        "topSeedWins": 1,
+        "bottomSeedWins": 0,
+        "gameNumberOfSeries": 1
+      },
+      "seriesUrl": "/schedule/playoff-series/1980/series-a/flyers-vs-oilers",
+      "gameCenterLink": "/gamecenter/edm-vs-phi/1980/04/08/1979030111"
+    },
+    {
+      "id": 1979030112,
+      "season": 19791980,
+      "gameType": 3,
+      "gameDate": "1980-04-09",
+      "venue": {
+        "default": "Spectrum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-10T02:00:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-05:00",
+      "venueTimezone": "US/Eastern",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "awaySplitSquad": false,
+        "score": 1
+      },
+      "homeTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "homeSplitSquad": false,
+        "score": 5
+      },
+      "periodDescriptor": {
+        "number": 3,
+        "periodType": "REG",
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "REG"
+      },
+      "winningGoalie": {
+        "playerId": 8450343,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Peeters"
+        }
+      },
+      "seriesStatus": {
+        "round": 1,
+        "seriesAbbrev": "PRLM",
+        "seriesTitle": "Preliminary Round",
+        "seriesLetter": "A",
+        "neededToWin": 3,
+        "topSeedWins": 2,
+        "bottomSeedWins": 0,
+        "gameNumberOfSeries": 2
+      },
+      "seriesUrl": "/schedule/playoff-series/1980/series-a/flyers-vs-oilers",
+      "gameCenterLink": "/gamecenter/edm-vs-phi/1980/04/09/1979030112"
+    },
+    {
+      "id": 1979030113,
+      "season": 19791980,
+      "gameType": 3,
+      "gameDate": "1980-04-11",
+      "venue": {
+        "default": "Northlands Coliseum"
+      },
+      "neutralSite": false,
+      "startTimeUTC": "1980-04-12T02:15:00Z",
+      "easternUTCOffset": "-05:00",
+      "venueUTCOffset": "-07:00",
+      "venueTimezone": "America/Edmonton",
+      "gameState": "OFF",
+      "gameScheduleState": "OK",
+      "tvBroadcasts": [],
+      "awayTeam": {
+        "id": 4,
+        "commonName": {
+          "default": "Flyers"
+        },
+        "placeName": {
+          "default": "Philadelphia",
+          "fr": "Philadelphie"
+        },
+        "placeNameWithPreposition": {
+          "default": "Philadelphia",
+          "fr": "de Philadelphie"
+        },
+        "abbrev": "PHI",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/PHI_19671968-19981999_dark.svg",
+        "awaySplitSquad": false,
+        "score": 3
+      },
+      "homeTeam": {
+        "id": 22,
+        "commonName": {
+          "default": "Oilers"
+        },
+        "placeName": {
+          "default": "Edmonton"
+        },
+        "placeNameWithPreposition": {
+          "default": "Edmonton",
+          "fr": "d'Edmonton"
+        },
+        "abbrev": "EDM",
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_light.svg",
+        "darkLogo": "https://assets.nhle.com/logos/nhl/svg/EDM_19791980-19851986_dark.svg",
+        "homeSplitSquad": false,
+        "score": 2
+      },
+      "periodDescriptor": {
+        "number": 5,
+        "periodType": "OT",
+        "otPeriods": 2,
+        "maxRegulationPeriods": 3
+      },
+      "gameOutcome": {
+        "lastPeriodType": "OT"
+      },
+      "winningGoalie": {
+        "playerId": 8449784,
+        "firstInitial": {
+          "default": "P."
+        },
+        "lastName": {
+          "default": "Myre"
+        }
+      },
+      "seriesStatus": {
+        "round": 1,
+        "seriesAbbrev": "PRLM",
+        "seriesTitle": "Preliminary Round",
+        "seriesLetter": "A",
+        "neededToWin": 3,
+        "topSeedWins": 3,
+        "bottomSeedWins": 0,
+        "gameNumberOfSeries": 3
+      },
+      "seriesUrl": "/schedule/playoff-series/1980/series-a/oilers-vs-flyers",
+      "gameCenterLink": "/gamecenter/phi-vs-edm/1980/04/11/1979030113"
+    }
+  ]
+}
