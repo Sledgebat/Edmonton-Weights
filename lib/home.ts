@@ -5,6 +5,7 @@
 import { getDb } from "@/db";
 import { burstTable, rosterEdge, type BurstTable, type SkaterEdgeRow } from "@/lib/edge";
 import { rankOf } from "@/lib/rank";
+import { builtPlayerIds, playerHref } from "@/lib/site";
 import { load, type Loaded } from "@/lib/load";
 import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
 import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type StandingsRow, type TeamSummaryRow } from "@/lib/nhl";
@@ -113,7 +114,7 @@ export type TapeRow = {
 };
 
 /** A goalie on the team's roster with this season's numbers (null stats = no games yet). */
-export type GoalieCard = { id: number; name: string; number?: number; gp: number; svPct: number | null; gsax: number | null; xSvPct: number | null };
+export type GoalieCard = { id: number; name: string; href: string; number?: number; gp: number; svPct: number | null; gsax: number | null; xSvPct: number | null };
 
 export type HeatBin = { x: number; y: number; xg: number };
 /** `bins` hold expected goals per game above the league average; `vsLeague` is the overall difference (0.08 = 8% more). */
@@ -247,10 +248,11 @@ async function teamGoalies(abbrev: string, teamId: number, season: number): Prom
   const people: { id: number; name: string; number?: number }[] = roster.ok
     ? roster.data.goalies.map((g) => ({ id: g.id, name: `${txt(g.firstName)} ${txt(g.lastName)}`, number: g.sweaterNumber }))
     : await Promise.all([...stats.keys()].map(async (id) => ({ id, name: await playerName(id) })));
+  const built = await builtPlayerIds();
   return people
     .map((p) => {
       const g = stats.get(p.id);
-      return { ...p, gp: gpOf(p.id), svPct: g ? g.svPct : null, gsax: g ? g.gsax : null, xSvPct: g ? g.xSvPct : null };
+      return { ...p, href: playerHref(p.id, built), gp: gpOf(p.id), svPct: g ? g.svPct : null, gsax: g ? g.gsax : null, xSvPct: g ? g.xSvPct : null };
     })
     .sort((a, b) => b.gp - a.gp || a.name.localeCompare(b.name));
 }

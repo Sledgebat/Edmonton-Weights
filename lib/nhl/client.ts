@@ -1,5 +1,5 @@
 /**
- * The typed NHL client. Server-side only: browsers call the site's own /api/* routes.
+ * The typed NHL client. Runs at build time (and in local development); browsers never call the NHL.
  *
  * Modes (env NHL_MODE):
  *   live      (default) fetch from api-web.nhle.com through the SQLite cache
@@ -57,11 +57,19 @@ export const backoffMs = (failCount: number) =>
 // --------------------------------------------------------------------------- test seams
 
 type Fetcher = (url: string, init: RequestInit) => Promise<Response>;
-let fetcher: Fetcher = (url, init) => fetch(url, init);
+/**
+ * Next.js wraps `fetch` to track caching, and refuses uncached requests while pre-building
+ * pages. This client keeps its own cache (SQLite), so it calls the unwrapped fetch.
+ */
+const plainFetch: Fetcher = (url, init) => {
+  const f = (globalThis.fetch as typeof fetch & { _nextOriginalFetch?: typeof fetch })._nextOriginalFetch ?? globalThis.fetch;
+  return f(url, init);
+};
+let fetcher: Fetcher = plainFetch;
 let clock = () => Date.now();
 
 export function setFetcherForTests(f: Fetcher | undefined) {
-  fetcher = f ?? ((url, init) => fetch(url, init));
+  fetcher = f ?? plainFetch;
 }
 export function setClockForTests(c: (() => number) | undefined) {
   clock = c ?? (() => Date.now());
@@ -128,6 +136,27 @@ async function fromFixture<T>(apiPath: string, schema: z.ZodType<T>, mode: NhlMo
 // --------------------------------------------------------------------------- live (cached)
 
 const inFlight = new Map<string, Promise<Result<unknown>>>();
+
+// Be polite to the NHL: a site build can ask for a few hundred resources at once, so at most a
+// few requests are in flight per process, a little apart.
+const MAX_PARALLEL = Number(process.env.NHL_MAX_PARALLEL ?? 4);
+const GAP_MS = 100;
+let active = 0;
+let lastStart = 0;
+const waiting: (() => void)[] = [];
+async function politely<T>(fn: () => Promise<T>): Promise<T> {
+  if (active >= MAX_PARALLEL) await new Promise<void>((r) => waiting.push(r));
+  active++;
+  const wait = lastStart + GAP_MS - Date.now();
+  lastStart = Math.max(Date.now(), lastStart + GAP_MS);
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+  try {
+    return await fn();
+  } finally {
+    active--;
+    waiting.shift()?.();
+  }
+}
 /** Paths that failed with no cached copy, and when they may be retried. */
 const coldFailures = new Map<string, { until: number; count: number; error: string }>();
 
@@ -176,11 +205,13 @@ async function refresh<T>(apiPath: string, zschema: z.ZodType<T>, row: CacheRow 
   const resource = resourceForPath(apiPath);
 
   try {
-    const res = await fetcher(baseFor(apiPath) + apiPath, {
-      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      cache: "no-store",
-    });
+    const res = await politely(() =>
+      fetcher(baseFor(apiPath) + apiPath, {
+        headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        cache: "no-store",
+      }),
+    );
     if (res.status === 404) throw new NhlError(`Not found: ${apiPath}`, apiPath, 404);
     if (!res.ok) throw new NhlError(`HTTP ${res.status} from NHL`, apiPath, res.status);
 

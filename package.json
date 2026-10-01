@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/serve-static.mjs out 3000",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
@@ -19,7 +19,10 @@
     "stats:backfill": "tsx scripts/stats-backfill.ts",
     "xg:train": "tsx scripts/xg-train.ts",
     "stats:fixtures": "tsx scripts/stats-fixtures.ts",
-    "stats:rescore": "tsx scripts/stats-rescore.ts"
+    "stats:rescore": "tsx scripts/stats-rescore.ts",
+    "update": "tsx scripts/update.ts",
+    "db:pack": "tsx scripts/db-pack.ts",
+    "preview": "node scripts/serve-static.mjs out 3000"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.3.0",

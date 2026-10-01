@@ -192,9 +192,9 @@ export default function StatsGuidePage() {
             Everything comes from the NHL&apos;s public data: the schedule, standings, rosters, box scores and play-by-play (with shot locations), the NHL stats site (power play, penalty kill, faceoffs) and NHL EDGE tracking. Our server stores every finished game&apos;s shots and calculates the advanced stats itself.
           </p>
           <ul className="list-disc space-y-1 pl-5">
-            <li>Live game reports refresh every 30 seconds.</li>
-            <li>Finished games across the league are added to the database within 15 minutes, and a full check runs every night.</li>
-            <li>Standings, schedules and stats are cached for a few minutes to a few hours depending on how often they change; every module shows when it was last updated.</li>
+            <li>The whole site is rebuilt three times a day: late evening after most games, overnight after West Coast games, and in the morning. During a game, the game page is a snapshot from the last update.</li>
+            <li>Each update adds every finished game across the league and recalculates every stat and rank.</li>
+            <li>Every section shows when its data was last updated.</li>
           </ul>
           <p>
             <Link href="/data" className="underline">

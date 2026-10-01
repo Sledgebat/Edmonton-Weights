@@ -1,21 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { connection } from "next/server";
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart";
-import { Headshot } from "@/components/ui/Headshot";
 import { DataError, Module } from "@/components/data/Module";
 import { GoalieEdge, GoalieModel, SkaterEdge, SkaterModel } from "@/components/player/PlayerAdvanced";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
 import { load } from "@/lib/load";
 import { nhl, txt, type GameLogEntry, type PlayerLanding, type SeasonTotal, type StatLine } from "@/lib/nhl";
+import { builtPlayerIds } from "@/lib/site";
 import { goalieSeasons, playerShooting } from "@/lib/stats/team";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
 
 const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Right wing", D: "Defence", G: "Goalie" };
 /** NHL goalie decisions: W, L, and O for an overtime/shootout loss. */
 const DECISION: Record<string, string> = { W: "W", L: "L", O: "OTL" };
+
+export const dynamicParams = false;
+
+/** A page for every current and recent Oilers player. */
+export async function generateStaticParams() {
+  const ids = [...(await builtPlayerIds())];
+  return (ids.length ? ids : [8478402]).map((id) => ({ id: String(id) }));
+}
 
 export async function generateMetadata({ params }: PageProps<"/player/[id]">): Promise<Metadata> {
   const { id } = await params;
@@ -130,7 +137,6 @@ function nhlSeasons(p: PlayerLanding, gameType: 2 | 3): SeasonTotal[] {
 }
 
 export default async function PlayerPage({ params }: PageProps<"/player/[id]">) {
-  await connection();
   const { id } = await params;
   if (!/^\d{7}$/.test(id)) notFound();
   const playerId = Number(id);
@@ -225,7 +231,6 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
           {p.sweaterNumber}
         </span>
         <div className="mx-auto flex max-w-6xl flex-wrap items-end gap-6 px-4 pb-8 pt-10 sm:px-6">
-          {p.headshot && <Headshot src={p.headshot} />}
           <div>
             <p className="numeral text-lg tracking-widest text-header-accent">
               #{p.sweaterNumber ?? "—"} · {POSITION[p.position] ?? p.position}

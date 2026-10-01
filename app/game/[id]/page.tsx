@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { connection } from "next/server";
 import { DataError, Module } from "@/components/data/Module";
-import { LiveRefresh } from "@/components/game/LiveRefresh";
 import { XgTimeline, type XgGoal, type XgRow } from "@/components/game/XgTimeline";
 import { FullRink, type RinkShot } from "@/components/rink/FullRink";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -12,7 +10,16 @@ import { nhl, txt } from "@/lib/nhl";
 import { TEAM } from "@/lib/nhl/endpoints";
 import type { GameLanding } from "@/lib/nhl/schemas";
 import { formatGameDate, formatGameTime, savePct } from "@/lib/oilers";
+import { builtGameIds, builtPlayerIds, playerHref } from "@/lib/site";
 import { analyzeGame, type GameReport, type Side, type TeamTotals } from "@/lib/stats/game";
+
+export const dynamicParams = false;
+
+/** One report page per Oilers game this season. */
+export async function generateStaticParams() {
+  const ids = await builtGameIds();
+  return (ids.length ? ids : [2026020001]).map((id) => ({ id: String(id) }));
+}
 
 export async function generateMetadata({ params }: PageProps<"/game/[id]">): Promise<Metadata> {
   const { id } = await params;
@@ -36,12 +43,17 @@ function TeamKey({ name, side }: { name: string; side: "us" | "them" }) {
 
 /** Game report: how the game went, in expected goals, chances and shot locations. */
 export default async function GamePage({ params }: PageProps<"/game/[id]">) {
-  await connection();
   const { id } = await params;
   if (!/^\d{10}$/.test(id)) notFound();
   const gameId = Number(id);
-  const [landing, pbp] = await Promise.all([load(() => nhl.gameLanding(gameId)), load(() => nhl.playByPlay(gameId))]);
-  if (!landing.ok && landing.notFound) notFound();
+  // Games that haven't started come straight from the schedule: nothing to analyse yet.
+  const schedule = await load(nhl.schedule);
+  const fromSchedule = schedule.ok ? schedule.data.games.find((x) => x.id === gameId) : undefined;
+  const upcoming = fromSchedule && ["FUT", "PRE"].includes(fromSchedule.gameState);
+  const landing = upcoming
+    ? ({ ok: true, data: fromSchedule as unknown as GameLanding, meta: schedule.ok ? schedule.meta : undefined } as const)
+    : await load(() => nhl.gameLanding(gameId));
+  const built = await builtPlayerIds();
 
   if (!landing.ok) {
     return (
@@ -57,20 +69,29 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
   const g = landing.data;
   const started = !["FUT", "PRE"].includes(g.gameState);
   const live = g.gameState === "LIVE" || g.gameState === "CRIT";
-  const report = started && pbp.ok ? analyzeGame(pbp.data, g) : null;
+  const pbp = started ? await load(() => nhl.playByPlay(gameId)) : null;
+  const report = pbp?.ok ? analyzeGame(pbp.data, g) : null;
+  const href = (pid: number) => playerHref(pid, built);
   // "Us" is the Oilers when they play; otherwise the home team.
   const usSide: Side = g.awayTeam.abbrev === TEAM ? "away" : "home";
   const themSide: Side = usSide === "home" ? "away" : "home";
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6 sm:py-10">
-      {live && <LiveRefresh seconds={30} />}
+      {live && (
+        <p className="card p-4 text-sm">
+          This game was in progress at the last site update, so the numbers below are a snapshot. The site updates a few times a day.{" "}
+          <a href={`https://www.nhl.com/gamecenter/${gameId}`} className="font-semibold text-accent-ink underline">
+            Follow it live on NHL.com
+          </a>
+        </p>
+      )}
       <Header g={g} report={report} live={live} />
 
       {!started && (
         <Module title="Report coming at puck drop">
           <p className="text-fg-muted">
-            Expected goals, the shot map and high-danger chances fill in as soon as the game starts, and update every 30 seconds while it&apos;s live.
+            Expected goals, the shot map and high-danger chances fill in as soon as the game starts, and show up in the first site update after puck drop. The site updates a few times a day.
           </p>
           {(g.homeTeam.abbrev === TEAM || g.awayTeam.abbrev === TEAM) && (
             <Link href="/#next" className="btn btn-secondary mt-4">
@@ -80,13 +101,13 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
         </Module>
       )}
 
-      {started && !report && <DataError what="the play-by-play for this game" error={pbp.ok ? undefined : pbp.error} />}
+      {started && !report && <DataError what="the play-by-play for this game" error={pbp && !pbp.ok ? pbp.error : undefined} />}
 
       {report && (
         <>
           <div className="grid gap-6 lg:grid-cols-[2fr_3fr]">
             <Comparison us={report[usSide]} them={report[themSide]} />
-            <Module title="Expected goals through the game" meta={pbp.ok ? pbp.meta : undefined}>
+            <Module title="Expected goals through the game" meta={pbp?.ok ? pbp.meta : undefined}>
               <div className="mb-2 flex flex-wrap gap-x-5 gap-y-1">
                 <TeamKey name={report[usSide].name} side="us" />
                 <TeamKey name={report[themSide].name} side="them" />
@@ -107,13 +128,13 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
 
           <div className="grid gap-6 lg:grid-cols-2">
             <ByStrength report={report} usSide={usSide} themSide={themSide} />
-            <Goalies report={report} />
+            <Goalies report={report} href={href} />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <TopShooters report={report} />
+            <TopShooters report={report} href={href} />
             <div className="space-y-6">
-              <ThreeStars g={g} />
+              <ThreeStars g={g} href={href} />
               <Scoring g={g} />
             </div>
           </div>
@@ -313,7 +334,7 @@ function ByStrength({ report, usSide, themSide }: { report: GameReport; usSide: 
   );
 }
 
-function Goalies({ report }: { report: GameReport }) {
+function Goalies({ report, href }: { report: GameReport; href: (id: number) => string }) {
   return (
     <Module title="Goaltending">
       {report.goalies.length === 0 ? (
@@ -335,7 +356,7 @@ function Goalies({ report }: { report: GameReport }) {
               {report.goalies.map((gl) => (
                 <tr key={gl.id} className="border-t border-line">
                   <th scope="row" className="px-1 py-1.5 text-left font-semibold">
-                    <Link href={`/player/${gl.id}`} className="hover:underline">
+                    <Link href={href(gl.id)} className="hover:underline">
                       {gl.name}
                     </Link>{" "}
                     <span className="text-xs font-normal text-fg-muted">{report[gl.side].abbrev}</span>
@@ -360,7 +381,7 @@ function Goalies({ report }: { report: GameReport }) {
   );
 }
 
-function TopShooters({ report }: { report: GameReport }) {
+function TopShooters({ report, href }: { report: GameReport; href: (id: number) => string }) {
   const top = report.players.slice(0, 10);
   return (
     <Module title="Most dangerous shooters">
@@ -381,7 +402,7 @@ function TopShooters({ report }: { report: GameReport }) {
             {top.map((p) => (
               <tr key={p.id} className="border-t border-line">
                 <th scope="row" className="px-1 py-1.5 text-left font-semibold">
-                  <Link href={`/player/${p.id}`} className="hover:underline">
+                  <Link href={href(p.id)} className="hover:underline">
                     {p.name}
                   </Link>{" "}
                   <span className="text-xs font-normal text-fg-muted">{report[p.side].abbrev}</span>
@@ -400,7 +421,7 @@ function TopShooters({ report }: { report: GameReport }) {
   );
 }
 
-function ThreeStars({ g }: { g: GameLanding }) {
+function ThreeStars({ g, href }: { g: GameLanding; href: (id: number) => string }) {
   const stars = g.summary?.threeStars ?? [];
   if (!stars.length) return null;
   return (
@@ -409,7 +430,7 @@ function ThreeStars({ g }: { g: GameLanding }) {
         {stars.map((s) => (
           <li key={s.star} className="flex items-baseline gap-3">
             <span className="w-12 shrink-0 text-accent-ink">{"★".repeat(s.star)}</span>
-            <Link href={`/player/${s.playerId}`} className="font-semibold hover:underline">
+            <Link href={href(s.playerId)} className="font-semibold hover:underline">
               {txt(s.name)}
             </Link>
             <span className="text-xs text-fg-muted">

@@ -16,7 +16,8 @@ export default defineConfig({
     { name: "phone", use: { ...devices["Pixel 7"] } },
   ],
   webServer: {
-    command: `npm run build && npm run stats:fixtures && npx next start -p ${PORT}`,
+    // The database is filled first because pages are built from it.
+    command: `npm run stats:fixtures && npm run build && node scripts/serve-static.mjs out ${PORT}`,
     url: `http://localhost:${PORT}`,
     // Offline and deterministic: saved fixtures, throwaway database.
     env: { NHL_MODE: "fixtures", DATABASE_URL: "db/e2e.sqlite" },

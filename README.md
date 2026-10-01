@@ -4,23 +4,31 @@ Edmonton Oilers stats, basic and advanced, in one place. Runs itself from the NH
 calculates its own advanced stats.
 Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainment Group or the NHL.
 
-## Status
+## How it runs
 
-Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), steps 1–3 of 5 done.
+The site is a set of pre-built pages, rebuilt from the NHL's public data three times a day and hosted
+free on GitHub Pages. There is no server to run or pay for.
 
-1. **Trim (done):** the earlier fan-site prototype reduced to its foundation: the NHL data layer (validation,
-   SQLite cache, fixtures and replay modes), schedule, standings, roster and player pages, and one theme
-   (Oilers blue and orange, light and dark). Blog, On This Day, milestones, playoff odds, fan ratings,
-   spoiler-free mode and the extra jersey themes were removed.
-2. **Stats engine (done):** shot extraction from NHL play-by-play, our own expected-goals model (trained on
-   2024-25 and 2025-26; held-out AUC 0.754, see `lib/stats/xg-report.md`), team and goalie advanced stats with
-   league ranks, league-wide ingest by the worker, NHL EDGE and team-summary clients.
-3. **Home page (done):** snapshot with points pace and playoff magic number, next game (tale of the tape, keys to
-   the game, both teams' recent form, rink heat maps, goalie matchup), team stats with league ranks and last-10
-   trends, recent games and season trend, leaders and last game, NHL EDGE tracking. Early in a season (under 5
-   Oilers games) team stats use last season, and the page says so.
-4. Game reports, players table, stats guide.
-5. Polish.
+- **`.github/workflows/update-site.yml`** runs at about 11:20 p.m., 3:15 a.m. and 9 a.m. Edmonton time (and
+  whenever code is pushed, or from the Actions tab with "Run workflow"). It downloads the saved stats
+  database, adds new games (`npm run update`), rebuilds every page (`npm run build`), saves the database
+  back and publishes the site.
+- **The stats database** is kept between runs as a file on the repository's `data` release
+  (`edmontonweights.sqlite.gz`). Don't delete it; if it's lost, the next run rebuilds it from scratch
+  (this season and last), which takes a few extra minutes.
+- **If the NHL's data can't be reached or has changed shape**, that run fails, GitHub emails you, and the
+  site keeps showing the last good version.
+- **Live games** aren't followed: a game page shows a snapshot from the last update and links to NHL.com.
+
+### Putting it online (once)
+
+1. Publish this folder as a **public** GitHub repository (GitHub Desktop: File → Add local repository, then
+   Publish repository and untick "Keep this code private"). Free GitHub Pages needs a public repository.
+2. On GitHub, open the repository's **Settings → Pages** and set **Source** to **GitHub Actions**.
+3. Open the **Actions** tab, choose **Update site**, and click **Run workflow**. The first run takes about
+   15–20 minutes (it loads two seasons of games); later runs take a few minutes.
+4. The site appears at `https://<your-username>.github.io/<repository-name>/`. A custom domain can be added
+   later under Settings → Pages.
 
 ## First run
 
@@ -30,8 +38,9 @@ Requires Node 20.9 or newer.
 npm install
 npx playwright install chromium   # once, for the smoke tests
 npm run fixtures:capture          # hits every NHL endpoint, saves fixtures/, writes fixtures/REPORT.md
-npm run dev                       # http://localhost:3000
-npm run worker                    # optional, second terminal: keeps the cache warm
+npm run dev                       # http://localhost:3000, live data
+npm run update                    # add new games to the local stats database
+npm run build && npm run preview  # build the site exactly as it's published, at http://localhost:3000
 ```
 
 ## Advanced stats

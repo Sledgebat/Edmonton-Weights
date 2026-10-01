@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { connection } from "next/server";
 import { DataError, Module } from "@/components/data/Module";
 import { SortableTable, type Column, type TableRow } from "@/components/players/SortableTable";
 import { seasonLabel } from "@/lib/nhl/endpoints";
-import { playersData } from "@/lib/players";
+import { playersData, type PlayersData } from "@/lib/players";
+import { ViewTabs } from "@/components/ui/ViewTabs";
 
 export const metadata: Metadata = { title: "Players" };
 
@@ -34,42 +34,10 @@ const GOALIE_COLUMNS: Column[] = [
   { key: "gsax", label: "GSAx", title: "Goals saved above expected", format: "signed2", tone: true },
 ];
 
-export default async function PlayersPage({ searchParams }: PageProps<"/players">) {
-  await connection();
-  const { season: requested } = await searchParams;
-  const d = await playersData(typeof requested === "string" ? requested : undefined);
-  const options = [
-    { key: "this", label: seasonLabel(d.currentSeason) },
-    { key: "last", label: seasonLabel(d.currentSeason - 10001) },
-  ] as const;
-
+function SeasonTables({ d }: { d: PlayersData }) {
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6 sm:py-10">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="display-hero text-5xl sm:text-6xl">Players</h1>
-          <p className="mt-1 text-fg-muted">
-            Oilers season stats, regular season. Select a column to sort.{" "}
-            <Link href="/roster" className="underline">
-              Roster cards
-            </Link>
-          </p>
-        </div>
-        <nav aria-label="Season" className="flex gap-1 rounded-lg bg-sunken p-1">
-          {options.map((o) => (
-            <Link
-              key={o.key}
-              href={`/players?season=${o.key}`}
-              aria-current={d.choice === o.key ? "page" : undefined}
-              className={`rounded-md px-3 py-1.5 text-sm font-semibold ${d.choice === o.key ? "bg-raised text-fg shadow-sm" : "text-fg-muted hover:text-fg"}`}
-            >
-              {o.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
+    <div className="mt-4 space-y-6">
       {d.note && <p className="text-sm text-fg-muted">{d.note}</p>}
-
       {!d.stats.ok ? (
         <DataError what="player stats" error={d.stats.error} />
       ) : (
@@ -90,6 +58,33 @@ export default async function PlayersPage({ searchParams }: PageProps<"/players"
           </Module>
         </>
       )}
+    </div>
+  );
+}
+
+export default async function PlayersPage() {
+  const [now, last] = await Promise.all([playersData("this"), playersData("last")]);
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+      <h1 className="display-hero text-5xl sm:text-6xl">Players</h1>
+      <p className="mb-4 mt-1 text-fg-muted">
+        Oilers season stats, regular season. Select a column to sort.{" "}
+        <Link href="/roster" className="underline">
+          Roster cards
+        </Link>
+      </p>
+      <ViewTabs
+        param="season"
+        label="Season"
+        variant="segmented"
+        defaultKey="this"
+        options={[
+          { key: "this", label: seasonLabel(now.season) },
+          { key: "last", label: seasonLabel(last.season) },
+        ]}
+        panels={{ this: <SeasonTables d={now} />, last: <SeasonTables d={last} /> }}
+      />
     </div>
   );
 }

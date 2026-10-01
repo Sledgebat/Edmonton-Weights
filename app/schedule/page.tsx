@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { connection } from "next/server";
 import { Tv } from "lucide-react";
 import { DataError } from "@/components/data/Module";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { LastUpdated } from "@/components/ui/LastUpdated";
+import { ViewTabs } from "@/components/ui/ViewTabs";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type ScheduleGame } from "@/lib/nhl";
@@ -85,10 +85,40 @@ function GameRow({ game, isNext }: { game: ScheduleGame; isNext: boolean }) {
   );
 }
 
-export default async function SchedulePage({ searchParams }: PageProps<"/schedule">) {
-  await connection();
-  const sp = await searchParams;
-  const filter: Filter = sp.show === "regular" || sp.show === "preseason" ? sp.show : "all";
+function GamesList({ games, next, prefix }: { games: ScheduleGame[]; next?: ScheduleGame; prefix: string }) {
+  const months = byMonth(games);
+  return (
+    <>
+      <nav aria-label="Jump to month" className="mt-3 flex gap-2 overflow-x-auto pb-1 text-sm">
+        {months.map((m) => (
+          <a key={m.key} href={`#${prefix}-${m.key}`} className="whitespace-nowrap rounded-md bg-sunken px-2.5 py-1 font-semibold hover:underline">
+            {m.label.split(" ")[0].slice(0, 3)}
+          </a>
+        ))}
+      </nav>
+      <p className="mt-4 flex items-center gap-2 text-xs text-fg-muted">
+        <span className="inline-block h-4 w-1 bg-accent" aria-hidden /> Home games · times are Mountain Time
+      </p>
+      <div className="mt-4 space-y-8">
+        {months.length === 0 && <p className="text-fg-muted">No games in this view.</p>}
+        {months.map((m) => (
+          <section key={m.key} id={`${prefix}-${m.key}`} aria-labelledby={`${prefix}-h-${m.key}`} className="scroll-mt-24">
+            <h2 id={`${prefix}-h-${m.key}`} className="display text-3xl">
+              {m.label}
+            </h2>
+            <ol className="card mt-2 overflow-hidden">
+              {m.games.map((g) => (
+                <GameRow key={g.id} game={g} isNext={g.id === next?.id} />
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    </>
+  );
+}
+
+export default async function SchedulePage() {
   const schedule = await load(nhl.schedule);
 
   if (!schedule.ok) {
@@ -103,11 +133,10 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
   }
 
   const all = schedule.data.games;
-  const games = all.filter((g) => (filter === "regular" ? g.gameType !== 1 : filter === "preseason" ? g.gameType === 1 : true));
-  const months = byMonth(games);
   const next = nextGame(all);
   const reg = record(all, 2);
   const pre = record(all, 1);
+  const pick = (f: Filter) => all.filter((g) => (f === "regular" ? g.gameType !== 1 : f === "preseason" ? g.gameType === 1 : true));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
@@ -115,63 +144,23 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
       <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Games</h1>
       <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-1">
         <p>
-          <span className="text-fg-muted">Regular season:</span>{" "}
-          <span className="numeral text-lg">
-            {formatRecord(reg)}
-          </span>
+          <span className="text-fg-muted">Regular season:</span> <span className="numeral text-lg">{formatRecord(reg)}</span>
         </p>
         {pre.w + pre.l + pre.otl > 0 && (
           <p>
-            <span className="text-fg-muted">Preseason:</span>{" "}
-            <span className="numeral text-lg">
-              {formatRecord(pre)}
-            </span>
+            <span className="text-fg-muted">Preseason:</span> <span className="numeral text-lg">{formatRecord(pre)}</span>
           </p>
         )}
         <LastUpdated at={schedule.meta.fetchedAt} stale={schedule.meta.stale} />
       </div>
-
-      <nav aria-label="Filter games" className="mt-6 flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
-          <Link
-            key={f.key}
-            href={f.key === "all" ? "/schedule" : `/schedule?show=${f.key}`}
-            aria-current={filter === f.key ? "page" : undefined}
-            className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
-              filter === f.key ? "border-button bg-button text-button-fg" : "border-line-strong hover:bg-sunken"
-            }`}
-          >
-            {f.label}
-          </Link>
-        ))}
-      </nav>
-
-      <nav aria-label="Jump to month" className="mt-3 flex gap-2 overflow-x-auto pb-1 text-sm">
-        {months.map((m) => (
-          <a key={m.key} href={`#m-${m.key}`} className="whitespace-nowrap rounded-md bg-sunken px-2.5 py-1 font-semibold hover:underline">
-            {m.label.split(" ")[0].slice(0, 3)}
-          </a>
-        ))}
-      </nav>
-
-      <p className="mt-4 flex items-center gap-2 text-xs text-fg-muted">
-        <span className="inline-block h-4 w-1 bg-accent" aria-hidden /> Home games · times are Mountain Time
-      </p>
-
-      <div className="mt-4 space-y-8">
-        {months.length === 0 && <p className="text-fg-muted">No games in this view.</p>}
-        {months.map((m) => (
-          <section key={m.key} id={`m-${m.key}`} aria-labelledby={`h-${m.key}`} className="scroll-mt-24">
-            <h2 id={`h-${m.key}`} className="display text-3xl">
-              {m.label}
-            </h2>
-            <ol className="card mt-2 overflow-hidden">
-              {m.games.map((g) => (
-                <GameRow key={g.id} game={g} isNext={g.id === next?.id} />
-              ))}
-            </ol>
-          </section>
-        ))}
+      <div className="mt-6">
+        <ViewTabs
+          param="show"
+          label="Filter games"
+          defaultKey="all"
+          options={FILTERS}
+          panels={Object.fromEntries(FILTERS.map((f) => [f.key, <GamesList key={f.key} games={pick(f.key)} next={next} prefix={f.key} />]))}
+        />
       </div>
     </div>
   );

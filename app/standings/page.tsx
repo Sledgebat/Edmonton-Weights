@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { connection } from "next/server";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
+import { ViewTabs } from "@/components/ui/ViewTabs";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
@@ -129,91 +128,79 @@ function StandingsTable({
   );
 }
 
-export default async function StandingsPage({ searchParams }: PageProps<"/standings">) {
-  await connection();
-  const sp = await searchParams;
-  const view: View = sp.view === "wildcard" || sp.view === "conference" ? sp.view : "division";
+function StandingsView({ view, rows }: { view: View; rows: StandingsRow[] }) {
+  return (
+    <div className="mt-6 space-y-10">
+      {CONFERENCES.map((conf) => {
+        if (view === "conference") {
+          return <StandingsTable key={conf.abbrev} title={conf.name} rows={conferenceTable(rows, conf.abbrev)} rank={(r) => r.conferenceSequence} />;
+        }
+        if (view === "division") {
+          const divisions = [...new Set(rows.filter((r) => r.conferenceAbbrev === conf.abbrev).map((r) => r.divisionAbbrev))];
+          // Pacific first for the Western Conference.
+          divisions.sort((a, b) => (a === "P" ? -1 : b === "P" ? 1 : a.localeCompare(b)));
+          return (
+            <section key={conf.abbrev} aria-label={conf.name} className="space-y-4">
+              <h2 className="display text-3xl">{conf.name}</h2>
+              {divisions.map((d) => {
+                const table = divisionTable(rows, d);
+                return (
+                  <StandingsTable
+                    key={d}
+                    title={`${table[0]?.divisionName ?? d} Division`}
+                    rows={table}
+                    rank={(r) => r.divisionSequence}
+                    cutAfter={3}
+                    cutLabel="Top three in each division make the playoffs"
+                  />
+                );
+              })}
+            </section>
+          );
+        }
+        const wc = wildCardTable(rows, conf.abbrev);
+        return (
+          <section key={conf.abbrev} aria-label={conf.name} className="space-y-4">
+            <h2 className="display text-3xl">{conf.name}</h2>
+            {wc.leaders.map((l) => (
+              <StandingsTable key={l.division} title={`${l.name} Division`} rows={l.rows} rank={(r) => r.divisionSequence} />
+            ))}
+            <StandingsTable
+              title="Wild card"
+              rows={wc.wildCard}
+              rank={(_, i) => (i < wc.cutAfter ? `WC${i + 1}` : i + 1)}
+              cutAfter={wc.cutAfter}
+              cutLabel="Playoff line: two wild cards per conference"
+            />
+          </section>
+        );
+      })}
+      <p className="text-xs text-fg-muted">Ties are broken by the NHL&apos;s own ordering.</p>
+    </div>
+  );
+}
+
+export default async function StandingsPage() {
   const standings = await load(nhl.standings);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">League table</p>
       <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Standings</h1>
-
-      <nav aria-label="Standings view" className="mt-6 flex flex-wrap items-center gap-2">
-        {VIEWS.map((v) => (
-          <Link
-            key={v.key}
-            href={v.key === "division" ? "/standings" : `/standings?view=${v.key}`}
-            aria-current={view === v.key ? "page" : undefined}
-            className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
-              view === v.key ? "border-button bg-button text-button-fg" : "border-line-strong hover:bg-sunken"
-            }`}
-          >
-            {v.label}
-          </Link>
-        ))}
-        {standings.ok && <LastUpdated at={standings.meta.fetchedAt} stale={standings.meta.stale} className="ml-auto" />}
-      </nav>
-
-      {!standings.ok ? (
-        <div className="mt-6">
+      <div className="mt-6">
+        {!standings.ok ? (
           <DataError what="standings" error={standings.error} />
-        </div>
-      ) : (
-        <div className="mt-6 space-y-10">
-          {CONFERENCES.map((conf) => {
-            const rows = standings.data.standings;
-            if (view === "conference") {
-              return (
-                <StandingsTable key={conf.abbrev} title={conf.name} rows={conferenceTable(rows, conf.abbrev)} rank={(r) => r.conferenceSequence} />
-              );
-            }
-            if (view === "division") {
-              const divisions = [...new Set(rows.filter((r) => r.conferenceAbbrev === conf.abbrev).map((r) => r.divisionAbbrev))];
-              // Pacific first for the Western Conference.
-              divisions.sort((a, b) => (a === "P" ? -1 : b === "P" ? 1 : a.localeCompare(b)));
-              return (
-                <section key={conf.abbrev} aria-label={conf.name} className="space-y-4">
-                  <h2 className="display text-3xl">{conf.name}</h2>
-                  {divisions.map((d) => {
-                    const table = divisionTable(rows, d);
-                    return (
-                      <StandingsTable
-                        key={d}
-                        title={`${table[0]?.divisionName ?? d} Division`}
-                        rows={table}
-                        rank={(r) => r.divisionSequence}
-                        cutAfter={3}
-                        cutLabel="Top three in each division make the playoffs"
-                      />
-                    );
-                  })}
-                </section>
-              );
-            }
-            const wc = wildCardTable(rows, conf.abbrev);
-            return (
-              <section key={conf.abbrev} aria-label={conf.name} className="space-y-4">
-                <h2 className="display text-3xl">{conf.name}</h2>
-                {wc.leaders.map((l) => (
-                  <StandingsTable key={l.division} title={`${l.name} Division`} rows={l.rows} rank={(r) => r.divisionSequence} />
-                ))}
-                <StandingsTable
-                  title="Wild card"
-                  rows={wc.wildCard}
-                  rank={(_, i) => (i < wc.cutAfter ? `WC${i + 1}` : i + 1)}
-                  cutAfter={wc.cutAfter}
-                  cutLabel="Playoff line: two wild cards per conference"
-                />
-              </section>
-            );
-          })}
-          <p className="text-xs text-fg-muted">
-            Ties are broken by the NHL&apos;s own ordering.
-          </p>
-        </div>
-      )}
+        ) : (
+          <ViewTabs
+            param="view"
+            label="Standings view"
+            defaultKey="division"
+            options={VIEWS.map((v) => ({ key: v.key, label: v.label }))}
+            extra={<LastUpdated at={standings.meta.fetchedAt} stale={standings.meta.stale} className="ml-auto" />}
+            panels={Object.fromEntries(VIEWS.map((v) => [v.key, <StandingsView key={v.key} view={v.key} rows={standings.data.standings} />]))}
+          />
+        )}
+      </div>
     </div>
   );
 }

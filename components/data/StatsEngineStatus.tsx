@@ -31,8 +31,7 @@ export function StatsEngineStatus({ season }: { season: number }) {
           <h3 className="display text-2xl">Games stored</h3>
           {counts.games.length === 0 ? (
             <p className="mt-2 text-fg-muted">
-              None yet. Run <code>npm run stats:backfill</code> once (about 15–30 minutes). After that the worker adds new
-              games automatically.
+              None yet. Run <code>npm run update</code>; after that the scheduled updates add new games automatically.
             </p>
           ) : (
             <ul className="mt-2 space-y-1">

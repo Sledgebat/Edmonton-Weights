@@ -1,0 +1,98 @@
+# Rebuilds and republishes the site with the latest NHL data, three times a day.
+# Times are UTC; in Edmonton (Mountain Daylight Time) that's about 11:20 p.m., 3:15 a.m. and 9 a.m.
+name: Update site
+
+on:
+  schedule:
+    - cron: "20 5 * * *"
+    - cron: "15 9 * * *"
+    - cron: "0 15 * * *"
+  workflow_dispatch: # the "Run workflow" button
+  push:
+    branches: [main]
+
+permissions:
+  contents: write # save the stats database between runs
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NHL_MODE: live
+      DATABASE_URL: db/edmontonweights.sqlite
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Download the saved stats database
+        run: |
+          mkdir -p db
+          if gh release download data --pattern edmontonweights.sqlite.gz --dir db --clobber; then
+            gunzip -f db/edmontonweights.sqlite.gz
+            echo "Using the saved database."
+          else
+            echo "No saved database yet: starting fresh (the first run takes longer)."
+          fi
+
+      - name: Add new games
+        id: update
+        run: npm run update
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build the site
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      # Saved even if the build fails, so new games are never downloaded twice.
+      - name: Save the stats database
+        if: always() && steps.update.outcome == 'success'
+        run: |
+          npm run db:pack -- db/packed.sqlite
+          gzip -c db/packed.sqlite > edmontonweights.sqlite.gz
+          gh release view data > /dev/null 2>&1 || gh release create data --title "Stats database" --notes "Saved automatically by the Update site workflow. Don't delete: it holds every stored game."
+          gh release upload data edmontonweights.sqlite.gz --clobber
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+      # GitHub pauses scheduled runs in repositories with no commits for 60 days. An empty
+      # commit every 45 days or so keeps the updates running through quiet stretches.
+      - name: Keep scheduled updates switched on
+        run: |
+          last=$(git log -1 --format=%ct)
+          if [ $(( $(date +%s) - last )) -gt $(( 45 * 86400 )) ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --allow-empty -m "Keep scheduled site updates running"
+            git push
+          fi
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

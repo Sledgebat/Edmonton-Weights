@@ -1,4 +1,3 @@
-import { connection } from "next/server";
 import { EdgeSection, LastGame, Leaders, NextGame, RecentPerformance, SectionHeading, Snapshot, StatTiles } from "@/components/home/Sections";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { homeData } from "@/lib/home";
@@ -9,7 +8,6 @@ import { seasonLabel } from "@/lib/nhl/endpoints";
  *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 team stats · 4 recent performance · 5 leaders · 6 NHL EDGE
  */
 export default async function Home() {
-  await connection();
   const d = await homeData();
   const sched = d.schedule.ok ? d.schedule.meta : null;
 

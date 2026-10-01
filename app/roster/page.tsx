@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { PlayerCard } from "@/components/ui/PlayerCard";
@@ -14,7 +13,6 @@ const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Righ
 const byNumber = (a: RosterPlayer, b: RosterPlayer) => (a.sweaterNumber ?? 999) - (b.sweaterNumber ?? 999);
 
 export default async function RosterPage() {
-  await connection();
   const [roster, stats] = await Promise.all([load(nhl.roster), load(nhl.clubStats)]);
 
   const skaterStats = new Map<number, ClubSkaterStats>(stats.ok ? stats.data.skaters.map((s) => [s.playerId, s]) : []);

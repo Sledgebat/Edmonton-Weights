@@ -202,7 +202,7 @@ function GoalieList({ goalies, team }: { goalies: GoalieCard[]; team: string }) 
             {goalies.map((g) => (
               <tr key={g.id} className="border-t border-line">
                 <th scope="row" className="py-1.5 text-left font-semibold">
-                  <Link href={`/player/${g.id}`} className="hover:underline">
+                  <Link href={g.href} className="hover:underline">
                     {g.name}
                   </Link>
                 </th>

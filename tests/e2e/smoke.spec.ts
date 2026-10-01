@@ -61,17 +61,13 @@ test("light/dark choice persists across reloads", async ({ page }) => {
   await expect(html).toHaveAttribute("data-mode", after);
 });
 
-test("API routes return validated data with a last-updated stamp", async ({ request }) => {
-  for (const route of ["/api/standings", "/api/schedule", "/api/score", "/api/roster", "/api/club-stats", "/api/player/8478402"]) {
-    const res = await request.get(route);
-    expect(res.status(), route).toBe(200);
-    const body = await res.json();
-    expect(body.data, route).toBeTruthy();
-    expect(body.meta.source, route).toBe("fixture");
-    expect(body.meta.fetchedAt, route).toBeGreaterThan(0);
-  }
-  const bad = await request.get("/api/game/123");
-  expect(bad.status()).toBe(400);
+test("site is fully static: views switch in the browser and the address remembers them", async ({ page }) => {
+  await page.goto("/standings/");
+  await page.getByRole("button", { name: "Wild card" }).click();
+  await expect(page).toHaveURL(/\?view=wildcard/);
+  await expect(page.getByText("Playoff line: two wild cards per conference").first()).toBeVisible();
+  await page.goto("/schedule/?show=preseason");
+  await expect(page.getByRole("button", { name: "Preseason" })).toHaveAttribute("aria-pressed", "true");
 });
 
 test.describe("pages", () => {
@@ -88,7 +84,7 @@ test.describe("pages", () => {
     const links = page.locator('main a[href^="/player/"]');
     expect(await links.count()).toBeGreaterThanOrEqual(20);
     for (const href of await links.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) {
-      expect(href).toMatch(/^\/player\/\d{7}$/);
+      expect(href).toMatch(/^\/player\/\d{7}\/?$/);
     }
   });
 
@@ -108,17 +104,10 @@ test.describe("pages", () => {
   });
 });
 
-test("advanced stats engine: league table API and data page", async ({ page, request }) => {
-  const res = await request.get("/api/stats/teams");
-  expect(res.status()).toBe(200);
-  const body = await res.json();
-  const edm = body.teams.find((t: { abbrev: string }) => t.abbrev === "EDM");
-  expect(edm.gp).toBeGreaterThanOrEqual(1);
-  expect(edm.metrics.cfPct).toBeGreaterThan(0);
-  expect(edm.ranks.xgfPct).toBeGreaterThanOrEqual(1);
-
+test("data page shows the stats engine and the last update", async ({ page }) => {
   await page.goto("/data");
   await expect(page.getByRole("heading", { name: "Advanced stats engine" })).toBeVisible();
+  await expect(page.getByText("Last update")).toBeVisible();
   await expect(page.locator("table").filter({ hasText: "xGF%" }).getByText("EDM")).toBeVisible();
 });
 
@@ -138,7 +127,7 @@ test("home page shows every section, with the pre-game breakdown folded away", a
   await expect(page.getByText("Pace of play")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Goalie matchup" })).toBeVisible();
   // Last game links to its report.
-  await expect(page.getByRole("link", { name: /Full game report/ })).toHaveAttribute("href", "/game/2026020004");
+  await expect(page.getByRole("link", { name: /Full game report/ })).toHaveAttribute("href", /\/game\/2026020004\/?$/);
 });
 
 test("game report shows the analysis for a finished game", async ({ page }) => {
