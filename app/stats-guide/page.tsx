@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { currentModel } from "@/lib/stats/xg";
-import { MIN_GAMES_FOR_SEASON } from "@/lib/home";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
@@ -212,13 +211,13 @@ export default function StatsGuidePage() {
         </h2>
         <ul className="card list-disc space-y-2 p-4 pl-9 text-sm sm:p-5 sm:pl-10">
           <li>
-            <strong>Early season:</strong> until the Oilers have played {MIN_GAMES_FOR_SEASON} games, team stats, ranks and the player tables use last season, because a handful of games says very little.
+            <strong>Early season:</strong> every number on the site is this season only. In the first few weeks that means small samples, so ranks and trends swing a lot from game to game.
           </li>
           <li>
             <strong>Magic number:</strong> it appears from the midpoint of the season and is an estimate. It counts points against the first team outside the playoffs and doesn&apos;t model the NHL&apos;s full tiebreakers.
           </li>
           <li>
-            <strong>Likely starters:</strong> the next-game goalie matchup shows whoever played most of each team&apos;s last game. Teams don&apos;t confirm starters until game day.
+            <strong>Starting goalies</strong> aren&apos;t announced until game day, so the goalie matchup shows every goalie on both rosters.
           </li>
           <li>
             <strong>Shot locations</strong> are recorded by off-ice scorers and vary a little from rink to rink. Our model doesn&apos;t know about screens, passes before the shot or shooter skill.

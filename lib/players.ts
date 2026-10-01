@@ -2,7 +2,7 @@
  * The /players tables: NHL season stats joined with our own shot-based numbers (individual
  * expected goals, high-danger chances, goals saved above expected).
  */
-import { gamesCount, MIN_GAMES_FOR_SEASON } from "@/lib/home";
+import { gamesCount, sampleNote } from "@/lib/home";
 import { load, type Loaded } from "@/lib/load";
 import { nhl, txt, type ClubStats } from "@/lib/nhl";
 import { previousSeason, TEAM_ID } from "@/lib/nhl/endpoints";
@@ -55,27 +55,11 @@ export type PlayersData = {
 export async function playersData(requested?: string): Promise<PlayersData> {
   const schedule = await load(nhl.schedule);
   const currentSeason = schedule.ok ? schedule.data.currentSeason : 20262027;
-  const enough = gamesCount(TEAM_ID, currentSeason) >= MIN_GAMES_FOR_SEASON;
-  const defaultChoice = enough ? "this" : "last";
-  let choice: "this" | "last" =
-    requested === "this" || requested === "last" ? requested : defaultChoice;
-  let stats = await load(() =>
-    choice === "this"
-      ? nhl.clubStats()
-      : nhl.clubStatsSeason(previousSeason(currentSeason)),
-  );
-  let fellBack = false;
-  // If last season's stats can't be loaded by default, show this season rather than nothing.
-  if (!stats.ok && choice === "last" && !requested) {
-    const now = await load(() => nhl.clubStats());
-    if (now.ok) {
-      stats = now;
-      choice = "this";
-      fellBack = true;
-    }
-  }
-  const season =
-    choice === "this" ? currentSeason : previousSeason(currentSeason);
+  // This season by default; last season stays one click away for comparison.
+  const defaultChoice = "this" as const;
+  const choice: "this" | "last" = requested === "last" ? "last" : "this";
+  const season = choice === "this" ? currentSeason : previousSeason(currentSeason);
+  const stats = await load(() => (choice === "this" ? nhl.clubStats() : nhl.clubStatsSeason(season)));
 
   const shooters = new Map(
     shooterTable(TEAM_ID, season).map((s) => [s.playerId, s]),
@@ -130,13 +114,7 @@ export async function playersData(requested?: string): Promise<PlayersData> {
       })
     : [];
 
-  const note = fellBack
-    ? "Last season's stats aren't available right now, so this shows this season so far."
-    : choice === "last" && defaultChoice === "last"
-      ? `Early in the season: showing 2025-26 until the Oilers have played ${MIN_GAMES_FOR_SEASON} games.`
-      : choice === "this" && !enough
-        ? "Only a few games in: small samples swing a lot."
-        : null;
+  const note = choice === "this" ? sampleNote(gamesCount(TEAM_ID, season)) : null;
 
   return {
     season,

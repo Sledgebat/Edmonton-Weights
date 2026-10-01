@@ -1,12 +1,12 @@
 import { connection } from "next/server";
-import { EdgeSection, Leaders, NextGame, RecentPerformance, SectionHeading, Snapshot, StatTiles } from "@/components/home/Sections";
+import { EdgeSection, LastGame, Leaders, NextGame, RecentPerformance, SectionHeading, Snapshot, StatTiles } from "@/components/home/Sections";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { homeData } from "@/lib/home";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 
 /**
  * Home: how the Oilers are doing, and why, on one page.
- *   1 snapshot · 2 next game · 3 team stats · 4 recent performance · 5 leaders · 6 NHL EDGE
+ *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 team stats · 4 recent performance · 5 leaders · 6 NHL EDGE
  */
 export default async function Home() {
   await connection();
@@ -29,8 +29,13 @@ export default async function Home() {
         {sched && <LastUpdated at={sched.fetchedAt} stale={sched.stale} className="mt-2 block text-right" />}
       </section>
 
+      <section aria-labelledby="last">
+        <SectionHeading id="last" title="Last game" />
+        <LastGame d={d} />
+      </section>
+
       <section aria-labelledby="tiles">
-        <SectionHeading id="tiles" title="Team stats at a glance" note={`${seasonLabel(d.season)} · rank among 32 teams · arrows compare the last 10 games with the season`} />
+        <SectionHeading id="tiles" title="Team stats at a glance" note={`${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`} />
         {d.seasonNote && <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.seasonNote}</p>}
         <StatTiles d={d} />
         {d.updated.stats && <LastUpdated at={d.updated.stats} className="mt-2 block text-right" />}

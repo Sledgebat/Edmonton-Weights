@@ -4,6 +4,7 @@ import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
+import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import type { GoalieCard, HeatMap, HomeData, TapeRow, Tile } from "@/lib/home";
@@ -48,15 +49,16 @@ function TrendTag({ trend, recent }: { trend: Tile["trend"]; recent: string | nu
   const Icon = trend === "better" ? ArrowUpRight : trend === "worse" ? ArrowDownRight : Minus;
   const word = trend === "better" ? "Better" : trend === "worse" ? "Worse" : "Steady";
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold ${trend === "better" ? "text-win" : trend === "worse" ? "text-loss" : "text-fg-muted"}`}>
+    <span
+      className={`inline-flex items-center gap-1 text-xs font-semibold ${trend === "better" ? "text-win" : trend === "worse" ? "text-loss" : "text-fg-muted"}`}
+    >
       <Icon size={14} aria-hidden />
       {word} lately · last 10: {recent}
     </span>
   );
 }
 
-const outcomeOf = (g: TeamGame): Outcome =>
-  g.gf > g.ga ? "W" : g.lastPeriodType === "SO" ? "SOL" : g.lastPeriodType === "OT" ? "OTL" : "L";
+const outcomeOf = (g: TeamGame): Outcome => (g.gf > g.ga ? "W" : g.lastPeriodType === "SO" ? "SOL" : g.lastPeriodType === "OT" ? "OTL" : "L");
 const shortDate = (d: string) => formatGameDate(d + "T18:00:00Z", { month: "short", day: "numeric" });
 
 // ------------------------------------------------------------------ 1. snapshot
@@ -114,7 +116,9 @@ export function Snapshot({ d }: { d: HomeData }) {
             </div>
             <p className="text-sm">
               {p.inPlayoffSpot ? `Holding a playoff spot (${p.spot}), ` : "Outside the playoff spots, "}
-              {p.rival ? `${Math.abs(p.cushion)} ${Math.abs(p.cushion) === 1 ? "point" : "points"} ${p.cushion >= 0 ? "ahead of" : "behind"} ${p.rival.team}.` : ""}{" "}
+              {p.rival
+                ? `${Math.abs(p.cushion)} ${Math.abs(p.cushion) === 1 ? "point" : "points"} ${p.cushion >= 0 ? "ahead of" : "behind"} ${p.rival.team}.`
+                : ""}{" "}
               <span className="text-fg-muted">The magic number appears at the season&apos;s midpoint.</span>
             </p>
           </>
@@ -188,24 +192,45 @@ function Heat({ title, map, max, side }: { title: string; map: HeatMap; max: num
   );
 }
 
-function Goalie({ g, team }: { g: GoalieCard; team: string }) {
-  if (!g) return <p className="text-sm text-fg-muted">{team}: no recent starts stored.</p>;
+function GoalieList({ goalies, team }: { goalies: GoalieCard[]; team: string }) {
   return (
     <div className="rounded-lg border border-line p-3">
-      <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{team} · likely starter</p>
-      <p className="display mt-1 text-2xl leading-none">{g.name}</p>
-      <dl className="mt-2 grid grid-cols-3 gap-2 text-center">
-        {[
-          ["GP", String(g.gp)],
-          ["SV%", g.svPct.toFixed(3).replace(/^0/, "")],
-          ["GSAx", `${g.gsax >= 0 ? "+" : ""}${g.gsax.toFixed(1)}`],
-        ].map(([k, v]) => (
-          <div key={k} className="rounded bg-sunken py-1.5">
-            <dt className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
-            <dd className="numeral text-lg">{v}</dd>
-          </div>
-        ))}
-      </dl>
+      <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{team}</p>
+      {goalies.length === 0 ? (
+        <p className="mt-2 text-sm text-fg-muted">Roster not available right now.</p>
+      ) : (
+        <table className="mt-1 w-full text-sm">
+          <caption className="sr-only">{team} goalies this season</caption>
+          <thead>
+            <tr className="text-[10px] uppercase tracking-wider text-fg-muted">
+              <th className="py-1 text-left font-semibold">Goalie</th>
+              <th className="py-1 text-right font-semibold">GP</th>
+              <th className="py-1 text-right font-semibold" title="Save percentage">
+                SV%
+              </th>
+              <th className="py-1 text-right font-semibold" title="Goals saved above expected">
+                GSAx
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {goalies.map((g) => (
+              <tr key={g.id} className="border-t border-line">
+                <th scope="row" className="py-1.5 text-left font-semibold">
+                  <Link href={`/player/${g.id}`} className="hover:underline">
+                    {g.name}
+                  </Link>
+                </th>
+                <td className="numeral text-right">{g.gp}</td>
+                <td className="numeral text-right">{g.svPct === null ? "—" : g.svPct.toFixed(3).replace(/^0/, "")}</td>
+                <td className={`numeral text-right ${g.gsax === null ? "" : g.gsax >= 0 ? "text-win" : "text-loss"}`}>
+                  {g.gsax === null ? "—" : `${g.gsax >= 0 ? "+" : ""}${g.gsax.toFixed(1)}`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
@@ -222,15 +247,13 @@ export function NextGame({ d }: { d: HomeData }) {
 
   return (
     <div className="space-y-4">
-      {/* Matchup bar */}
-      <div className="overflow-hidden rounded-xl bg-header text-header-fg">
-        <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
+      <PregameToggle
+        footer={<div className="sleeve-stripes-thin" aria-hidden />}
+        bar={
           <div className="flex items-center gap-4">
             <TeamLogo abbrev={v.opp.abbrev} logo={v.opp.logo} darkLogo={v.opp.darkLogo} size={52} />
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-header-accent">
-                {v.live ? "Live now" : today ? "Tonight" : "Next game"}
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-header-accent">{v.live ? "Live now" : today ? "Tonight" : "Next game"}</p>
               <p className="display text-3xl leading-none sm:text-4xl">
                 {v.isHome ? "vs" : "@"} {d.opponent.name}
               </p>
@@ -244,103 +267,183 @@ export function NextGame({ d }: { d: HomeData }) {
               </p>
             </div>
           </div>
-          {v.live || today ? (
+        }
+        actions={
+          <>
+            {!(v.live || today) && (
+              <span className="text-xl">
+                <Countdown to={g.startTimeUTC} />
+              </span>
+            )}
             <Link href={`/game/${g.id}`} className="btn btn-primary">
               <Radio size={16} aria-hidden /> Game page
             </Link>
-          ) : (
-            <p className="text-2xl">
-              <Countdown to={g.startTimeUTC} />
+          </>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+          <TeamKey name="Oilers" side="us" />
+          <TeamKey name={oppShort} side="them" />
+          {d.seasonNote && <span className="text-xs text-fg-muted">{d.seasonNote}</span>}
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <section className="card p-4 sm:p-5" aria-labelledby="tape">
+            <h3 id="tape" className="display text-2xl">
+              Tale of the tape
+            </h3>
+            <p className="mb-3 text-xs text-fg-muted">
+              {seasonLabel(d.season)} · shares are 5-on-5 · pace = 5-on-5 shot attempts per 60 by both teams, 1st = fastest · speed bursts = times any player
+              tops 20 mph, per game (NHL EDGE; rank on season totals)
             </p>
-          )}
-        </div>
-        <div className="sleeve-stripes-thin" aria-hidden />
-      </div>
-
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
-        <TeamKey name="Oilers" side="us" />
-        <TeamKey name={oppShort} side="them" />
-        {d.seasonNote && <span className="text-xs text-fg-muted">{d.seasonNote}</span>}
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <section className="card p-4 sm:p-5" aria-labelledby="tape">
-          <h3 id="tape" className="display text-2xl">
-            Tale of the tape
-          </h3>
-          <p className="mb-3 text-xs text-fg-muted">{seasonLabel(d.season)} · 5-on-5 shares unless noted · NHL EDGE rows are this season</p>
-          {d.tape && <TaleOfTheTape rows={d.tape} oppAbbrev={v.opp.abbrev} />}
-        </section>
-
-        <div className="space-y-4">
-          <section className="card p-4 sm:p-5" aria-labelledby="keys">
-            <h3 id="keys" className="display text-2xl">
-              Keys to the game
-            </h3>
-            {d.keys.length ? (
-              <ul className="mt-2 space-y-2 text-sm">
-                {d.keys.map((k) => (
-                  <li key={k} className="flex gap-2">
-                    <ArrowRight size={16} className="mt-0.5 shrink-0 text-accent-ink" aria-hidden />
-                    {k}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-sm text-fg-muted">These two teams are close on every measure.</p>
-            )}
+            {d.tape && <TaleOfTheTape rows={d.tape} oppAbbrev={v.opp.abbrev} />}
           </section>
 
-          <section className="card p-4 sm:p-5" aria-labelledby="form">
-            <h3 id="form" className="display text-2xl">
-              Recent form
-            </h3>
-            <p className="text-xs text-fg-muted">5-on-5 expected-goals share in each of the last 10 games · above 50% = outplayed the opponent</p>
-            <ShareChart
-              ariaLabel={`5-on-5 expected-goals share, last 10 games: Oilers and ${oppShort}`}
-              series={[
-                { key: "us", name: "Oilers", points: d.form.us.map((x) => ({ label: shortDate(x.date), detail: `${x.isHome ? "vs" : "@"} ${x.opponent}`, value: share(x.xgf5, x.xga5) })) },
-                { key: "them", name: oppShort, points: d.form.them.map((x) => ({ label: shortDate(x.date), detail: `${x.isHome ? "vs" : "@"} ${x.opponent}`, value: share(x.xgf5, x.xga5) })) },
-              ]}
-            />
-          </section>
-        </div>
-      </div>
+          <div className="space-y-4">
+            <section className="card p-4 sm:p-5" aria-labelledby="keys">
+              <h3 id="keys" className="display text-2xl">
+                Keys to the game
+              </h3>
+              {d.keys.length ? (
+                <ul className="mt-2 space-y-2 text-sm">
+                  {d.keys.map((k) => (
+                    <li key={k} className="flex gap-2">
+                      <ArrowRight size={16} className="mt-0.5 shrink-0 text-accent-ink" aria-hidden />
+                      {k}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-sm text-fg-muted">These two teams are close on every measure.</p>
+              )}
+            </section>
 
-      {d.heat && (
-        <section className="card p-4 sm:p-5" aria-labelledby="heat">
-          <h3 id="heat" className="display text-2xl">
-            Where the chances come from
+            <section className="card p-4 sm:p-5" aria-labelledby="form">
+              <h3 id="form" className="display text-2xl">
+                Recent form
+              </h3>
+              <p className="text-xs text-fg-muted">5-on-5 expected-goals share in each of the last 10 games · above 50% = outplayed the opponent</p>
+              <ShareChart
+                ariaLabel={`5-on-5 expected-goals share, last 10 games: Oilers and ${oppShort}`}
+                series={[
+                  {
+                    key: "us",
+                    name: "Oilers",
+                    points: d.form.us.map((x) => ({
+                      label: shortDate(x.date),
+                      detail: `${x.isHome ? "vs" : "@"} ${x.opponent}`,
+                      value: share(x.xgf5, x.xga5),
+                    })),
+                  },
+                  {
+                    key: "them",
+                    name: oppShort,
+                    points: d.form.them.map((x) => ({
+                      label: shortDate(x.date),
+                      detail: `${x.isHome ? "vs" : "@"} ${x.opponent}`,
+                      value: share(x.xgf5, x.xga5),
+                    })),
+                  },
+                ]}
+              />
+            </section>
+          </div>
+        </div>
+
+        {d.heat && (
+          <section className="card p-4 sm:p-5" aria-labelledby="heat">
+            <h3 id="heat" className="display text-2xl">
+              Where the chances come from
+            </h3>
+            <p className="text-xs text-fg-muted">
+              Shaded areas are where each team creates or allows more dangerous chances than an average NHL team, {seasonLabel(d.season)}. Darker = further
+              above average; blank = average or below. Net at the top.
+            </p>
+            <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <Heat title="Oilers create" map={d.heat.usFor} max={heatMax} side="us" />
+              <Heat title={`${oppShort} create`} map={d.heat.themFor} max={heatMax} side="them" />
+              <Heat title="Oilers allow" map={d.heat.usAgainst} max={heatMax} side="us" />
+              <Heat title={`${oppShort} allow`} map={d.heat.themAgainst} max={heatMax} side="them" />
+            </div>
+          </section>
+        )}
+
+        <section className="card p-4 sm:p-5" aria-labelledby="goalies">
+          <h3 id="goalies" className="display text-2xl">
+            Goalie matchup
           </h3>
-          <p className="text-xs text-fg-muted">
-            Shaded areas are where each team creates or allows more dangerous chances than an average NHL team, {seasonLabel(d.season)}. Darker = further above average; blank = average or below. Net at the top.
+          <p className="mb-3 text-xs text-fg-muted">
+            {seasonLabel(d.season)} numbers for every goalie on both rosters. Starters aren&apos;t announced until game day.
           </p>
-          <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <Heat title="Oilers create" map={d.heat.usFor} max={heatMax} side="us" />
-            <Heat title={`${oppShort} create`} map={d.heat.themFor} max={heatMax} side="them" />
-            <Heat title="Oilers allow" map={d.heat.usAgainst} max={heatMax} side="us" />
-            <Heat title={`${oppShort} allow`} map={d.heat.themAgainst} max={heatMax} side="them" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <GoalieList goalies={d.goalies?.us ?? []} team="Oilers" />
+            <GoalieList goalies={d.goalies?.them ?? []} team={oppShort} />
           </div>
         </section>
-      )}
-
-      <section className="card p-4 sm:p-5" aria-labelledby="goalies">
-        <h3 id="goalies" className="display text-2xl">
-          Goalie matchup
-        </h3>
-        <p className="mb-3 text-xs text-fg-muted">
-          {seasonLabel(d.season)} numbers. Likely starter = who played the team&apos;s last game; the NHL doesn&apos;t confirm starters in advance.
-        </p>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Goalie g={d.goalies?.us ?? null} team="Oilers" />
-          <Goalie g={d.goalies?.them ?? null} team={oppShort} />
-        </div>
-      </section>
+      </PregameToggle>
     </div>
   );
 }
 
 const share = (f: number, a: number) => (f + a > 0 ? (f / (f + a)) * 100 : 50);
+
+// ------------------------------------------------------------------ last game
+
+export function LastGame({ d }: { d: HomeData }) {
+  if (!d.last) return <p className="text-fg-muted">No games played yet this season.</p>;
+  const v = teamView(d.last);
+  const r = d.lastReport;
+  const side = r ? (r.home.abbrev === "EDM" ? "home" : "away") : null;
+  const us = r && side ? r[side] : null;
+  const them = r && side ? r[side === "home" ? "away" : "home"] : null;
+  const stats: [string, string, string][] =
+    us && them
+      ? [
+          ["Expected goals", us.xg.toFixed(1), them.xg.toFixed(1)],
+          ["High-danger chances", String(us.hd), String(them.hd)],
+          ["Shots on goal", String(us.sog), String(them.sog)],
+          ["5-on-5 shot share", `${share(us.attempts5, them.attempts5).toFixed(0)}%`, `${share(them.attempts5, us.attempts5).toFixed(0)}%`],
+        ]
+      : [];
+  return (
+    <div className="card grid gap-5 p-4 sm:p-5 lg:grid-cols-[auto_1fr_auto] lg:items-center">
+      <div className="flex items-center gap-4">
+        <TeamLogo abbrev={v.opp.abbrev} logo={v.opp.logo} darkLogo={v.opp.darkLogo} size={48} />
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
+            {formatGameDate(d.last.startTimeUTC)} · {v.prefix} {txt(v.opp.commonName, v.opp.abbrev)}
+          </p>
+          <p className="mt-1 flex items-center gap-2">
+            <span className="numeral text-4xl leading-none">
+              {v.us.score}–{v.opp.score}
+            </span>
+            {v.outcome && <ResultBadge outcome={v.outcome} />}
+            {v.decidedIn !== "REG" && <span className="text-xs font-semibold text-fg-muted">{v.decidedIn}</span>}
+          </p>
+        </div>
+      </div>
+      <div className="min-w-0">
+        {r?.summary && <p className="text-sm sm:text-base">{r.summary}</p>}
+        {stats.length > 0 && (
+          <dl className="mt-3 grid grid-cols-2 gap-2 text-center text-sm sm:grid-cols-4">
+            {stats.map(([k, a, b]) => (
+              <div key={k} className="rounded bg-sunken px-2 py-1.5">
+                <dt className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
+                <dd className="numeral">
+                  {a}–{b}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {!r && <p className="text-sm text-fg-muted">The game breakdown isn&apos;t available right now.</p>}
+      </div>
+      <Link href={`/game/${d.last.id}`} className="btn btn-primary justify-self-start">
+        Full game report <ArrowRight size={16} aria-hidden />
+      </Link>
+    </div>
+  );
+}
 
 // ------------------------------------------------------------------ 3. stat tiles
 
@@ -405,7 +508,10 @@ export function RecentPerformance({ d }: { d: HomeData }) {
                   <ResultBadge outcome={o} />
                 </p>
                 <p className="mt-1 text-xs">
-                  <span className="text-fg-muted">xG</span> <span className="numeral">{g.xgf.toFixed(1)}–{g.xga.toFixed(1)}</span>
+                  <span className="text-fg-muted">xG</span>{" "}
+                  <span className="numeral">
+                    {g.xgf.toFixed(1)}–{g.xga.toFixed(1)}
+                  </span>
                 </p>
                 <p className="text-xs">
                   <span className="text-fg-muted">Shot share</span> <span className="numeral">{cf.toFixed(0)}%</span>
@@ -415,18 +521,19 @@ export function RecentPerformance({ d }: { d: HomeData }) {
           );
         })}
       </ol>
-      {d.recentNote && <p className="text-xs text-fg-muted">{d.recentNote}</p>}
       <section className="card p-4 sm:p-5" aria-labelledby="season-trend">
         <h3 id="season-trend" className="display text-2xl">
           Season trend
         </h3>
-        <p className="text-xs text-fg-muted">
-          5-on-5 expected-goals share, rolling 5 games, {seasonLabel(d.season)} · above 50% = controlling play
-        </p>
-        <ShareChart
+        <p className="text-xs text-fg-muted">5-on-5 expected-goals share, rolling 5 games, {seasonLabel(d.season)} · above 50% = controlling play</p>
+        {d.trend.length >= 3 ? (
+          <ShareChart
           ariaLabel={`Oilers 5-on-5 expected-goals share, rolling five games, ${seasonLabel(d.season)}`}
           series={[{ key: "us", name: "Oilers", points: d.trend.map((t) => ({ label: shortDate(t.date), detail: "5-game average", value: t.value })) }]}
         />
+        ) : (
+          <p className="mt-3 text-sm text-fg-muted">The trend line appears after three games.</p>
+        )}
       </section>
     </div>
   );
@@ -436,14 +543,13 @@ export function RecentPerformance({ d }: { d: HomeData }) {
 
 export function Leaders({ d }: { d: HomeData }) {
   const L = d.leaders;
-  const lastV = d.last ? teamView(d.last) : null;
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       <section className="card p-4" aria-labelledby="lead-pts">
         <h3 id="lead-pts" className="display text-2xl">
           Points
         </h3>
-        <p className="mb-2 text-xs text-fg-muted">{seasonLabel(d.leadersSeason)}</p>
+        <p className="mb-2 text-xs text-fg-muted">{seasonLabel(d.season)}</p>
         <ol className="space-y-1.5 text-sm">
           {L.points.map((p, i) => (
             <li key={p.id} className="flex items-baseline justify-between gap-2">
@@ -452,7 +558,10 @@ export function Leaders({ d }: { d: HomeData }) {
                 {p.name}
               </Link>
               <span className="numeral whitespace-nowrap">
-                {p.points} <span className="text-xs font-normal text-fg-muted">({p.goals}G {p.assists}A)</span>
+                {p.points}{" "}
+                <span className="text-xs font-normal text-fg-muted">
+                  ({p.goals}G {p.assists}A)
+                </span>
               </span>
             </li>
           ))}
@@ -473,7 +582,10 @@ export function Leaders({ d }: { d: HomeData }) {
                 {p.name}
               </Link>
               <span className="numeral whitespace-nowrap">
-                {p.ixg.toFixed(1)} <span className="text-xs font-normal text-fg-muted">({p.goals}G · {p.hd} HD)</span>
+                {p.ixg.toFixed(1)}{" "}
+                <span className="text-xs font-normal text-fg-muted">
+                  ({p.goals}G · {p.hd} HD)
+                </span>
               </span>
             </li>
           ))}
@@ -485,7 +597,7 @@ export function Leaders({ d }: { d: HomeData }) {
         <h3 id="lead-g" className="display text-2xl">
           Goalies
         </h3>
-        <p className="mb-2 text-xs text-fg-muted">{seasonLabel(d.leadersSeason)} · save % · goals saved above expected</p>
+        <p className="mb-2 text-xs text-fg-muted">{seasonLabel(d.season)} · save % · goals saved above expected</p>
         <ul className="space-y-1.5 text-sm">
           {L.goalies.map((g) => (
             <li key={g.id} className="flex items-baseline justify-between gap-2">
@@ -501,53 +613,6 @@ export function Leaders({ d }: { d: HomeData }) {
           {L.goalies.length === 0 && <li className="text-fg-muted">No games yet.</li>}
         </ul>
       </section>
-
-      <section className="card p-4" aria-labelledby="lead-last">
-        <h3 id="lead-last" className="display text-2xl">
-          Last game
-        </h3>
-        {d.last && lastV ? (
-          <>
-            <p className="mb-2 text-xs text-fg-muted">
-              {formatGameDate(d.last.startTimeUTC)} · {lastV.prefix} {txt(lastV.opp.commonName, lastV.opp.abbrev)}
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="numeral text-4xl leading-none">
-                {lastV.us.score}–{lastV.opp.score}
-              </span>
-              {lastV.outcome && <ResultBadge outcome={lastV.outcome} />}
-              {lastV.decidedIn !== "REG" && <span className="text-xs font-semibold text-fg-muted">{lastV.decidedIn}</span>}
-            </p>
-            {d.lastGameStats ? (
-              <dl className="mt-3 grid grid-cols-3 gap-2 text-center text-sm">
-                <div className="rounded bg-sunken py-1.5">
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">xG</dt>
-                  <dd className="numeral">
-                    {d.lastGameStats.xgf.toFixed(1)}–{d.lastGameStats.xga.toFixed(1)}
-                  </dd>
-                </div>
-                <div className="rounded bg-sunken py-1.5">
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">HD 5v5</dt>
-                  <dd className="numeral">
-                    {d.lastGameStats.hdcf}–{d.lastGameStats.hdca}
-                  </dd>
-                </div>
-                <div className="rounded bg-sunken py-1.5">
-                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Shot share</dt>
-                  <dd className="numeral">{d.lastGameStats.cfPct.toFixed(0)}%</dd>
-                </div>
-              </dl>
-            ) : (
-              <p className="mt-2 text-xs text-fg-muted">Advanced numbers appear once the game is stored (within 15 minutes of the final horn when the worker runs).</p>
-            )}
-            <Link href={`/game/${d.last.id}`} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent-ink underline">
-              Game report <ArrowRight size={14} aria-hidden />
-            </Link>
-          </>
-        ) : (
-          <p className="text-sm text-fg-muted">No games yet.</p>
-        )}
-      </section>
     </div>
   );
 }
@@ -562,7 +627,7 @@ export function EdgeSection({ d }: { d: HomeData }) {
     return p ? `${p.firstName?.default ?? ""} ${p.lastName?.default ?? ""}`.trim() : null;
   };
   const avg = (a: unknown, unit: string, digits = 1) => {
-    const v = typeof a === "number" ? a : (a as { imperial?: number; value?: number } | undefined)?.imperial ?? (a as { value?: number } | undefined)?.value;
+    const v = typeof a === "number" ? a : ((a as { imperial?: number; value?: number } | undefined)?.imperial ?? (a as { value?: number } | undefined)?.value);
     return typeof v === "number" ? `League avg ${v.toFixed(digits)}${unit}` : null;
   };
   const z = e.zoneTimeDetails;

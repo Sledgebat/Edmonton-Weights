@@ -10,7 +10,6 @@ import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
 import { load } from "@/lib/load";
 import { nhl, txt, type GameLogEntry, type PlayerLanding, type SeasonTotal, type StatLine } from "@/lib/nhl";
-import { previousSeason } from "@/lib/nhl/endpoints";
 import { goalieSeasons, playerShooting } from "@/lib/stats/team";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
 
@@ -160,17 +159,12 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
   const seasonStats = featured?.regularSeason?.subSeason;
   const playoffStats = featured?.playoffs?.subSeason;
 
-  // Game log for the featured season; fall back a season if it's empty.
-  let log = season ? await load(() => nhl.gameLog(playerId, season, 2)) : null;
-  let logSeason = season;
-  if (season && log?.ok && log.data.gameLog.length === 0) {
-    const prev = previousSeason(season);
-    const older = await load(() => nhl.gameLog(playerId, prev, 2));
-    if (older.ok && older.data.gameLog.length) {
-      log = older;
-      logSeason = prev;
-    }
-  }
+  // This season only: the game log and the trend never reach back into last season.
+  const log = season ? await load(() => nhl.gameLog(playerId, season, 2)) : null;
+  const logSeason = season;
+  const games = log?.ok ? [...log.data.gameLog].sort((a, b) => b.gameDate.localeCompare(a.gameDate)) : [];
+  const trend = trendFor(games, goalie);
+
   // NHL EDGE tracking and our own shot-model numbers.
   const [skaterEdge, goalieEdge] = await Promise.all([
     goalie ? Promise.resolve(null) : load(() => nhl.edgeSkater(playerId)),
@@ -178,19 +172,6 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
   ]);
   const shooting = goalie ? [] : playerShooting(playerId);
   const goalieAdv = goalie ? goalieSeasons(playerId) : [];
-  const games = log?.ok ? [...log.data.gameLog].sort((a, b) => b.gameDate.localeCompare(a.gameDate)) : [];
-
-  // The trend always covers the last 10 NHL games, reaching back into last season early on.
-  let trendGames = games;
-  if (logSeason && games.length < 10) {
-    const prev = await load(() => nhl.gameLog(playerId, previousSeason(logSeason), 2));
-    if (prev.ok) trendGames = [...games, ...prev.data.gameLog];
-  }
-  const trend = trendFor(trendGames, goalie);
-  const spansSeasons = [...trendGames]
-    .sort((a, b) => b.gameDate.localeCompare(a.gameDate))
-    .slice(0, 10)
-    .some((g) => !games.includes(g));
 
   const bio: [string, string][] = [
     ["Position", POSITION[p.position] ?? p.position],
@@ -311,7 +292,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
             <div>
               <p className="text-sm text-fg-muted">
                 {trend.summary}
-                {spansSeasons ? " · includes last season" : logSeason && logSeason !== season ? ` · ${seasonShort(logSeason)}` : ""}
+                
               </p>
               <TrendChart
                 data={trend.points}

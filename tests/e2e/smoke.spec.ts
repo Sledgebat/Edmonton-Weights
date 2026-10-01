@@ -122,14 +122,23 @@ test("advanced stats engine: league table API and data page", async ({ page, req
   await expect(page.locator("table").filter({ hasText: "xGF%" }).getByText("EDM")).toBeVisible();
 });
 
-test("home page shows all six sections", async ({ page }) => {
+test("home page shows every section, with the pre-game breakdown folded away", async ({ page }) => {
   await page.goto("/");
-  for (const name of ["Next game", "Team stats at a glance", "Recent performance", "Leaders", "NHL EDGE tracking"]) {
+  for (const name of ["Next game", "Last game", "Team stats at a glance", "Recent performance", "Leaders", "NHL EDGE tracking"]) {
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   }
   await expect(page.getByRole("heading", { name: /^Oilers \d{4}-\d{2}$/ })).toBeVisible();
+  // The breakdown starts closed and opens from the button beside "Game page".
+  const toggle = page.getByRole("button", { name: /Pre-game breakdown/ });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByText("Tale of the tape")).toBeHidden();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByText("Tale of the tape")).toBeVisible();
-  await expect(page.getByText("Top skating speed").first()).toBeVisible();
+  await expect(page.getByText("Pace of play")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Goalie matchup" })).toBeVisible();
+  // Last game links to its report.
+  await expect(page.getByRole("link", { name: /Full game report/ })).toHaveAttribute("href", "/game/2026020004");
 });
 
 test("game report shows the analysis for a finished game", async ({ page }) => {

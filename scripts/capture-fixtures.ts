@@ -194,6 +194,8 @@ async function main() {
     const oppId = next.homeTeam.abbrev === "EDM" ? next.awayTeam.id : next.homeTeam.id;
     picks.nextOpponentId = oppId;
     await capture("edge", "EDGE team: next opponent", endpoints.edgeTeam(oppId));
+    const oppAbbrev = next.homeTeam.abbrev === "EDM" ? next.awayTeam.abbrev : next.homeTeam.abbrev;
+    await capture("core", "Roster: next opponent", endpoints.rosterCurrent(oppAbbrev));
   }
   await capture("edge", "EDGE skater: McDavid", endpoints.edgeSkater(PLAYERS.mcdavid));
   await capture("edge", "EDGE skater: Draisaitl", endpoints.edgeSkater(PLAYERS.draisaitl));

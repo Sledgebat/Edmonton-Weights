@@ -6,8 +6,9 @@ import { getDb } from "@/db";
 import { load, type Loaded } from "@/lib/load";
 import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
 import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type StandingsRow, type TeamSummaryRow } from "@/lib/nhl";
-import { TEAM, TEAM_ID, previousSeason } from "@/lib/nhl/endpoints";
+import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
+import { analyzeGame, type GameReport } from "@/lib/stats/game";
 import {
   METRICS,
   goalieTable,
@@ -22,8 +23,15 @@ import {
   type TeamGame,
 } from "@/lib/stats/team";
 
-/** Use this season once the Oilers have this many games stored; before that, last season. */
-export const MIN_GAMES_FOR_SEASON = 5;
+/** Below this many games, the page reminds readers that the sample is small. */
+export const SMALL_SAMPLE_GAMES = 10;
+
+/** A plain-language note on how far into the season the numbers are, or null once it's meaningful. */
+export function sampleNote(gp: number): string | null {
+  if (gp === 0) return "No games played yet this season. Numbers fill in after opening night.";
+  if (gp < SMALL_SAMPLE_GAMES) return `Only ${gp} game${gp === 1 ? "" : "s"} into the season, so these numbers will move a lot.`;
+  return null;
+}
 
 // ------------------------------------------------------------------ tiles
 
@@ -105,7 +113,8 @@ export type TapeRow = {
   of: number;
 };
 
-export type GoalieCard = { id: number; name: string; gp: number; svPct: number; gsax: number; xSvPct: number } | null;
+/** A goalie on the team's roster with this season's numbers (null stats = no games yet). */
+export type GoalieCard = { id: number; name: string; number?: number; gp: number; svPct: number | null; gsax: number | null; xSvPct: number | null };
 
 export type HeatBin = { x: number; y: number; xg: number };
 /** `bins` hold expected goals per game above the league average; `vsLeague` is the overall difference (0.08 = 8% more). */
@@ -114,7 +123,7 @@ export type HeatMap = { bins: HeatBin[]; games: number; max: number; vsLeague: n
 export type HomeData = {
   season: number;
   currentSeason: number;
-  /** Set when early-season numbers come from last season. */
+  /** Set while the season is only a few games old. */
   seasonNote: string | null;
   standings: Loaded<{ standings: StandingsRow[] }>;
   edm: StandingsRow | null;
@@ -127,23 +136,21 @@ export type HomeData = {
   tape: TapeRow[] | null;
   opponent: { abbrev: string; id: number; name: string } | null;
   keys: string[];
-  goalies: { us: GoalieCard; them: GoalieCard } | null;
+  goalies: { us: GoalieCard[]; them: GoalieCard[] } | null;
   heat: { usFor: HeatMap; themFor: HeatMap; usAgainst: HeatMap; themAgainst: HeatMap } | null;
   form: { us: TeamGame[]; them: TeamGame[] };
   recent: TeamGame[];
-  recentNote: string | null;
   trend: { gameId: number; date: string; value: number }[];
   leaders: {
     points: { id: number; name: string; points: number; goals: number; assists: number; gp: number }[];
     ixg: { id: number; name: string; ixg: number; goals: number; hd: number }[];
     goalies: { id: number; name: string; gp: number; svPct: number; gsax: number | null }[];
   };
-  lastGameStats: { xgf: number; xga: number; hdcf: number; hdca: number; cfPct: number } | null;
+  /** The most recent finished game, analysed from its play-by-play. */
+  lastReport: GameReport | null;
   edge: Loaded<EdgeTeam>;
   updated: { stats: number | null };
   sources: { summary: Loaded<{ data: TeamSummaryRow[] }>; clubStats: Loaded<ClubStats> };
-  /** Which season the leaders' points come from (falls back to this season if last season's isn't available). */
-  leadersSeason: number;
 };
 
 const NX = 15; // 5 ft columns from the blue line (x 25) to the end boards
@@ -227,17 +234,22 @@ function heatMap(teamId: number, season: number, side: "for" | "against"): HeatM
   };
 }
 
-/** Likely starter: whoever faced the most shots in the team's most recent stored game. */
-function likelyGoalie(teamId: number): number | null {
-  const row = getDb()
-    .$client.prepare(
-      `SELECT s.goalie_id g, COUNT(*) n FROM shots s
-       WHERE s.opp_team_id = ? AND s.goalie_id IS NOT NULL AND s.game_id = (
-         SELECT id FROM stats_games WHERE home_id = ? OR away_id = ? ORDER BY game_date DESC, id DESC LIMIT 1)
-       GROUP BY s.goalie_id ORDER BY n DESC LIMIT 1`,
-    )
-    .get(teamId, teamId, teamId) as { g: number } | undefined;
-  return row?.g ?? null;
+/** Every goalie on a team's roster with this season's numbers; falls back to goalies who've played if the roster can't load. */
+async function teamGoalies(abbrev: string, teamId: number, season: number): Promise<GoalieCard[]> {
+  const db = getDb().$client;
+  const stats = new Map(goalieTable(season).filter((g) => g.teamId === teamId).map((g) => [g.goalieId, g]));
+  const gpOf = (id: number) =>
+    (db.prepare(`SELECT COUNT(DISTINCT game_id) n FROM shots WHERE goalie_id = ? AND opp_team_id = ? AND season = ? AND game_type = 2`).get(id, teamId, season) as { n: number }).n;
+  const roster = await load(() => nhl.roster(abbrev));
+  const people: { id: number; name: string; number?: number }[] = roster.ok
+    ? roster.data.goalies.map((g) => ({ id: g.id, name: `${txt(g.firstName)} ${txt(g.lastName)}`, number: g.sweaterNumber }))
+    : await Promise.all([...stats.keys()].map(async (id) => ({ id, name: await playerName(id) })));
+  return people
+    .map((p) => {
+      const g = stats.get(p.id);
+      return { ...p, gp: gpOf(p.id), svPct: g ? g.svPct : null, gsax: g ? g.gsax : null, xSvPct: g ? g.xSvPct : null };
+    })
+    .sort((a, b) => b.gp - a.gp || a.name.localeCompare(b.name));
 }
 
 export function gamesCount(teamId: number, season: number) {
@@ -248,13 +260,9 @@ export function gamesCount(teamId: number, season: number) {
   ).n;
 }
 
-/** The last `n` regular-season games, reaching back into the previous season if needed. */
-function lastN(teamId: number, season: number, n: number): { games: TeamGame[]; spans: boolean } {
-  const now = teamGames(teamId, season);
-  if (now.length >= n) return { games: now.slice(-n), spans: false };
-  const before = teamGames(teamId, previousSeason(season));
-  const games = [...before, ...now].slice(-n);
-  return { games, spans: games.some((g) => !now.includes(g)) };
+/** The last `n` regular-season games of this season. */
+function lastN(teamId: number, season: number, n: number): TeamGame[] {
+  return teamGames(teamId, season).slice(-n);
 }
 
 async function playerName(id: number, clubStats?: ClubStats): Promise<string> {
@@ -272,15 +280,10 @@ export async function homeData(): Promise<HomeData> {
     load(() => nhl.edgeTeam(TEAM_ID)),
   ]);
   const currentSeason = schedule.ok ? schedule.data.currentSeason : 20262027;
-  const enough = gamesCount(TEAM_ID, currentSeason) >= MIN_GAMES_FOR_SEASON;
-  const season = enough ? currentSeason : previousSeason(currentSeason);
-  const seasonNote = enough
-    ? null
-    : `Early in the season: team stats and ranks are from 2025-26 until the Oilers have played ${MIN_GAMES_FOR_SEASON} games.`;
-  const [summary, seasonStats] = await Promise.all([
-    load(() => nhl.teamSummary(season)),
-    season === currentSeason ? Promise.resolve(clubStats) : load(() => nhl.clubStatsSeason(season)),
-  ]);
+  // Everything uses this season only: the roster turns over too much for last season to mean much.
+  const season = currentSeason;
+  const seasonNote = sampleNote(gamesCount(TEAM_ID, season));
+  const summary = await load(() => nhl.teamSummary(season));
 
   const games = schedule.ok ? schedule.data.games : [];
   const next = liveGame(games) ?? nextGame(games) ?? null;
@@ -430,11 +433,26 @@ export async function homeData(): Promise<HomeData> {
         of: all.length,
       };
     };
-    const edgeRow = (label: string, pick: (e: EdgeTeam) => { v?: number | null; rank?: number | null }, unit: string): TapeRow => {
-      const a = edge.ok ? pick(edge.data) : {};
-      const b = oppEdge.ok ? pick(oppEdge.data) : {};
-      const f = (x?: number | null) => (typeof x === "number" ? `${x.toFixed(1)} ${unit}` : "—");
+    const edgeRow = (label: string, pick: (e: EdgeTeam, gp: number) => { v?: number | null; rank?: number | null }, fmt: (x: number) => string): TapeRow => {
+      const gpOf = (abbrev: string) => rows.find((r) => teamOf(r) === abbrev)?.gamesPlayed ?? 0;
+      const a = edge.ok ? pick(edge.data, gpOf(TEAM)) : {};
+      const b = oppEdge.ok ? pick(oppEdge.data, gpOf(v.opp.abbrev)) : {};
+      const f = (x?: number | null) => (typeof x === "number" && Number.isFinite(x) ? fmt(x) : "—");
       return { key: label, label, us: { value: f(a.v), rank: a.rank ?? null }, them: { value: f(b.v), rank: b.rank ?? null }, of: 32 };
+    };
+    // Pace of play: 5-on-5 shot attempts per 60 by both teams in that team's games. Rank 1 = fastest.
+    const pace = (t?: RankedTeam) => (t ? t.metrics.cf60 + t.metrics.ca60 : null);
+    const paces = table.map((t) => t.metrics.cf60 + t.metrics.ca60);
+    const paceRow = (): TapeRow => {
+      const a = pace(us);
+      const b = pace(them);
+      return {
+        key: "pace",
+        label: "Pace of play",
+        us: { value: a === null ? "—" : a.toFixed(1), rank: a === null ? null : rankOf(a, paces, true) },
+        them: { value: b === null ? "—" : b.toFixed(1), rank: b === null ? null : rankOf(b, paces, true) },
+        of: table.length,
+      };
     };
     tape = [
       advRow("xgfPct"),
@@ -444,49 +462,38 @@ export async function homeData(): Promise<HomeData> {
       basicRow("gaPg", "Goals against per game", false),
       sumRow("powerPlayPct", "Power play"),
       sumRow("penaltyKillPct", "Penalty kill"),
-      edgeRow("Top skating speed", (e) => ({ v: e.skatingSpeed?.speedMax?.imperial, rank: e.skatingSpeed?.speedMax?.rank }), "mph"),
-      edgeRow("Hardest shot", (e) => ({ v: e.shotSpeed?.topShotSpeed?.imperial, rank: e.shotSpeed?.topShotSpeed?.rank }), "mph"),
+      paceRow(),
+      edgeRow(
+        "Speed bursts per game",
+        (e, gp) => ({ v: gp && typeof e.skatingSpeed?.burstsOver20?.value === "number" ? e.skatingSpeed.burstsOver20.value / gp : null, rank: e.skatingSpeed?.burstsOver20?.rank }),
+        (x) => x.toFixed(1),
+      ),
+      edgeRow(
+        "Offensive-zone time",
+        (e) => ({ v: typeof e.zoneTimeDetails?.offensiveZonePctg === "number" ? e.zoneTimeDetails.offensiveZonePctg * 100 : null, rank: (e.zoneTimeDetails as { offensiveZoneRank?: number } | undefined)?.offensiveZoneRank }),
+        (x) => `${x.toFixed(1)}%`,
+      ),
     ];
     keys = keysToTheGame(tape, opponent.abbrev);
 
-    const usG = likelyGoalie(TEAM_ID);
-    const themG = likelyGoalie(v.opp.id);
-    const card = async (id: number | null, teamId: number): Promise<GoalieCard> => {
-      if (!id) return null;
-      const g = goalies.find((x) => x.goalieId === id && x.teamId === teamId) ?? goalies.find((x) => x.goalieId === id);
-      const gp = (
-        getDb()
-          .$client.prepare(`SELECT COUNT(DISTINCT game_id) n FROM shots WHERE goalie_id = ? AND season = ? AND game_type = 2`)
-          .get(id, season) as { n: number }
-      ).n;
-      return {
-        id,
-        name: await playerName(id, teamId === TEAM_ID ? (seasonStats.ok ? seasonStats.data : clubStats.ok ? clubStats.data : undefined) : undefined),
-        gp,
-        svPct: g?.svPct ?? 0,
-        gsax: g?.gsax ?? 0,
-        xSvPct: g?.xSvPct ?? 0,
-      };
-    };
-    goalieCards = { us: await card(usG, TEAM_ID), them: await card(themG, v.opp.id) };
+    goalieCards = { us: await teamGoalies(TEAM, TEAM_ID, season), them: await teamGoalies(v.opp.abbrev, v.opp.id, season) };
     heat = {
       usFor: heatMap(TEAM_ID, season, "for"),
       themFor: heatMap(v.opp.id, season, "for"),
       usAgainst: heatMap(TEAM_ID, season, "against"),
       themAgainst: heatMap(v.opp.id, season, "against"),
     };
-    form = { us: lastN(TEAM_ID, currentSeason, 10).games, them: lastN(v.opp.id, currentSeason, 10).games };
+    form = { us: lastN(TEAM_ID, season, 10), them: lastN(v.opp.id, season, 10) };
   }
 
   // ------------------------------------------------ recent performance
-  const recent = lastN(TEAM_ID, currentSeason, 10);
+  const recent = lastN(TEAM_ID, season, 10);
   const trendGames = teamGames(TEAM_ID, season);
 
   // ------------------------------------------------ leaders
-  const cs = seasonStats.ok ? seasonStats.data : clubStats.ok ? clubStats.data : undefined;
-  const leadersSeason = seasonStats.ok ? season : currentSeason;
+  const cs = clubStats.ok ? clubStats.data : undefined;
   const leaderGsax = new Map<number, number>();
-  for (const g of goalieTable(leadersSeason)) {
+  for (const g of goalies) {
     if (g.teamId === TEAM_ID) leaderGsax.set(g.goalieId, (leaderGsax.get(g.goalieId) ?? 0) + g.gsax);
   }
   const leaders: HomeData["leaders"] = {
@@ -517,18 +524,10 @@ export async function homeData(): Promise<HomeData> {
   };
 
   // ------------------------------------------------ last game
-  let lastGameStats: HomeData["lastGameStats"] = null;
+  let lastReport: GameReport | null = null;
   if (last) {
-    const g = teamGames(TEAM_ID, last.season).find((x) => x.gameId === last.id);
-    if (g) {
-      lastGameStats = {
-        xgf: g.xgf,
-        xga: g.xga,
-        hdcf: g.hdcf,
-        hdca: g.hdca,
-        cfPct: g.cf5 + g.ca5 ? (g.cf5 / (g.cf5 + g.ca5)) * 100 : 50,
-      };
-    }
+    const [pbp, landing] = await Promise.all([load(() => nhl.playByPlay(last.id)), load(() => nhl.gameLanding(last.id))]);
+    if (pbp.ok) lastReport = analyzeGame(pbp.data, landing.ok ? landing.data : null);
   }
 
   const statsUpdated = (getDb().$client.prepare(`SELECT MAX(ingested_at) t FROM stats_games`).get() as { t: number | null }).t;
@@ -551,15 +550,13 @@ export async function homeData(): Promise<HomeData> {
     goalies: goalieCards,
     heat,
     form,
-    recent: recent.games,
-    recentNote: recent.spans ? "Includes games from last season." : null,
+    recent,
     trend: rollingShare(trendGames, "xgf5", "xga5", 5),
     leaders,
-    lastGameStats,
+    lastReport,
     edge,
     updated: { stats: statsUpdated },
     sources: { summary, clubStats },
-    leadersSeason,
   };
 }
 
