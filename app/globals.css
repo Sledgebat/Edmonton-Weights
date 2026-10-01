@@ -157,10 +157,45 @@ a {
     border-radius: 10px;
   }
 
+  /* Charts: Recharts draws SVG attributes, so colours come from theme tokens via CSS. */
+  .trend-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--text-muted);
+  }
+  .trend-chart .trend-grid line {
+    stroke: var(--border);
+  }
+  .trend-chart .trend-line path,
+  .trend-chart path.trend-line,
+  .trend-chart .recharts-line-curve {
+    stroke: var(--accent-ink);
+  }
+  .trend-chart .trend-dot,
+  .trend-chart .recharts-dot {
+    stroke: var(--surface-raised);
+    fill: var(--accent-ink);
+  }
+  .trend-chart .trend-cursor,
+  .trend-chart .recharts-tooltip-cursor {
+    stroke: var(--border-strong);
+  }
+
+  /* Team logos: show the variant that suits the current mode. */
+  .logo-dark {
+    display: none;
+  }
+  [data-mode="dark"] .logo-light {
+    display: none;
+  }
+  [data-mode="dark"] .logo-dark {
+    display: block;
+  }
+
   /* Spoiler-free mode: anything marked .spoiler is hidden until tapped. */
   [data-spoilers="on"] .spoiler:not([data-revealed]) {
     filter: blur(7px);
     user-select: none;
     cursor: pointer;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--text) 8%, transparent);
   }
 }

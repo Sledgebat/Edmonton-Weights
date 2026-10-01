@@ -5,7 +5,7 @@ Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainm
 
 ## Status
 
-Phases 1–3 of 8 are done:
+Phases 1–4 of 8 are done:
 
 1. **Setup:** Next.js 16 + TypeScript (strict) + Tailwind 4, with Drizzle, better-sqlite3, Zod, Recharts,
    node-cron, Vitest and Playwright.
@@ -14,6 +14,10 @@ Phases 1–3 of 8 are done:
    and a `/styleguide` page with contrast ratios. Routes for later phases show a "coming in Phase N" placeholder.
 3. **Data layer:** typed NHL client with Zod schemas, a SQLite cache with last-good fallback and backoff,
    `/api/*` routes for browsers, fixtures mode and replay mode. `/data` shows it all working.
+4. **Core pages:** Home dashboard (next game with countdown, last result, division position, form, top
+   scorers), Schedule, Standings (division, wild card, conference), Roster and Player pages (bio, season and
+   career stats, game log, last-10 trend), all respecting spoiler-free mode. NHL logos and headshots are flagged
+   in `LICENSING.md`.
 
 ## First run
 
@@ -66,7 +70,7 @@ Replay settings: `REPLAY_SPEED` (default 10), `REPLAY_PREGAME_SECONDS` (30), `RE
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Dev server at http://localhost:3000 |
-| `npm run fixtures:capture` | Save one response per endpoint to `fixtures/v1/...` (add `-- --history` for every season since 1979-80) |
+| `npm run fixtures:capture` | Save one response per endpoint to `fixtures/v1/...`, including every roster player (about a minute; add `-- --history` for every season since 1979-80) |
 | `npm run db:migrate` | Create or upgrade the SQLite database (also happens automatically) |
 | `npm run db:generate` | Generate a migration after editing `db/schema.ts` |
 | `npm run themes:build` | Regenerate `styles/themes.css` after editing colours in `lib/theme/tokens.ts` |

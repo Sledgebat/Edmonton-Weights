@@ -13,7 +13,7 @@ type Props = {
 export function PlayerCard({ name, number, position, href, detail }: Props) {
   const [first, ...rest] = name.split(" ");
   const body = (
-    <div className="card group relative isolate flex h-40 flex-col justify-end overflow-hidden p-4 transition hover:border-line-strong">
+    <div className="card group relative isolate flex min-h-40 flex-col justify-end overflow-hidden p-4 transition hover:border-line-strong">
       <span
         aria-hidden
         className="numeral pointer-events-none absolute -right-2 -top-6 -z-10 text-[9.5rem] leading-none text-primary opacity-[0.12] [[data-mode=dark]_&]:text-fg [[data-mode=dark]_&]:opacity-[0.1]"

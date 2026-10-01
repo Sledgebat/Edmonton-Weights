@@ -151,16 +151,21 @@ async function main() {
     await capture("game", "Boxscore (upcoming)", endpoints.gameBoxscore(next.id));
   }
 
-  // 3. Players: McDavid, Draisaitl and one goalie (goalie stats have a different shape).
+  // 3. Players: everyone on the roster (so every player page works offline), McDavid and
+  //    Draisaitl first. Goalies matter: their stats have a different shape.
   const goalieId: number | undefined = roster?.goalies?.[0]?.id;
-  const players: [string, number][] = [
-    ["McDavid", PLAYERS.mcdavid],
-    ["Draisaitl", PLAYERS.draisaitl],
-  ];
-  if (goalieId) players.push(["Goalie", goalieId]);
   picks.goalieId = goalieId ?? null;
+  const players = new Map<number, string>([
+    [PLAYERS.mcdavid, "McDavid"],
+    [PLAYERS.draisaitl, "Draisaitl"],
+  ]);
+  for (const group of ["forwards", "defensemen", "goalies"] as const) {
+    for (const p of roster?.[group] ?? []) {
+      if (!players.has(p.id)) players.set(p.id, `${p.firstName?.default ?? ""} ${p.lastName?.default ?? p.id}`.trim());
+    }
+  }
 
-  for (const [label, id] of players) {
+  for (const [id, label] of players) {
     const landing = await capture("player", `${label} landing`, endpoints.playerLanding(id));
     // Game logs: this season's regular season, plus last season's so there is always data.
     const seasons = new Set<number>([currentSeason, previousSeason(currentSeason)]);

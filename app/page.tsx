@@ -1,143 +1,334 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import Link from "next/link";
 import { connection } from "next/server";
+import { ArrowRight, Radio, Tv } from "lucide-react";
+import { DataError, Module } from "@/components/data/Module";
+import { ResultBadge } from "@/components/data/ResultBadge";
+import { Countdown } from "@/components/ui/Countdown";
+import { LastUpdated } from "@/components/ui/LastUpdated";
+import { Rivets } from "@/components/ui/Rivets";
+import { Spoiler } from "@/components/ui/Spoiler";
+import { TeamLogo } from "@/components/ui/TeamLogo";
+import { load } from "@/lib/load";
+import { nhl, txt, type ScheduleGame, type StandingsRow } from "@/lib/nhl";
+import { edmontonDate } from "@/lib/nhl/resources";
+import {
+  GAME_TYPE_LABEL,
+  formatGameDate,
+  formatGameTime,
+  formatRecord,
+  lastGame,
+  liveGame,
+  nextGame,
+  ordinal,
+  pointPct,
+  record,
+  streakLabel,
+  teamOf,
+  teamView,
+  topScorers,
+  wildCardTable,
+} from "@/lib/oilers";
 
-/**
- * Temporary home page: confirms the app runs and shows the
- * endpoint report from `npm run fixtures:capture`. Phase 4 replaces it
- * with the real Home dashboard.
- */
+const PERIOD = (n?: number) => (!n ? "" : n <= 3 ? `${ordinal(n)} period` : n === 4 ? "Overtime" : "Shootout");
 
-type CaptureResult = {
-  group: string;
-  path: string;
-  ok: boolean;
-  status: number | null;
-  bytes: number;
-  error?: string;
-};
-
-type CaptureReport = {
-  capturedAt: string;
-  totals: { requested: number; ok: number; failed: number };
-  picks: Record<string, unknown>;
-  results: CaptureResult[];
-};
-
-async function loadReport(): Promise<CaptureReport | null> {
-  try {
-    const raw = await readFile(path.join(process.cwd(), "fixtures", "_report.json"), "utf8");
-    return JSON.parse(raw) as CaptureReport;
-  } catch {
-    return null;
-  }
+function recordOf(rows: StandingsRow[] | undefined, abbrev: string) {
+  const r = rows?.find((x) => teamOf(x) === abbrev);
+  return r ? `${r.wins}-${r.losses}-${r.otLosses}` : undefined;
 }
 
-const PHASES = [
-  "Setup",
-  "Design system and site shell",
-  "Data layer",
-  "Core pages",
-  "Game Day Hub",
-  "Models and trackers",
-  "History, fan ratings and polish",
-  "Blog",
-];
-
-export default async function Home() {
-  await connection(); // read the report on every request, not at build time
-  const report = await loadReport();
-
-  const done = 3; // phases complete
+function NextGameHero({ game, standings }: { game: ScheduleGame; standings?: StandingsRow[] }) {
+  const v = teamView(game);
+  const isToday = edmontonDate(new Date(game.startTimeUTC)) === edmontonDate();
+  const tv = (game.tvBroadcasts ?? []).filter((b) => b.countryCode === "CA" || b.market === "N").map((b) => b.network);
+  const side = (t: typeof v.us, label: string) => (
+    <div className="flex min-w-0 flex-col items-center gap-2 text-center">
+      <TeamLogo abbrev={t.abbrev} logo={t.logo} darkLogo={t.darkLogo} size={72} />
+      <div>
+        <p className="display text-3xl leading-none sm:text-4xl">{txt(t.commonName, t.abbrev)}</p>
+        <p className="mt-1 text-xs uppercase tracking-widest text-header-fg/75">
+          {label}
+          {recordOf(standings, t.abbrev) ? ` · ${recordOf(standings, t.abbrev)}` : ""}
+        </p>
+      </div>
+    </div>
+  );
+  const away = v.isHome ? v.opp : v.us;
+  const home = v.isHome ? v.us : v.opp;
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">
-        Prototype · Phase {done} of {PHASES.length} complete
-      </p>
-      <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Oil Country Hub</h1>
-      <p className="mt-3 max-w-2xl text-lg text-fg-muted">
-        The data layer is in: a typed, validated NHL client with a local cache, plus offline and game-replay modes. See it
-        working on the{" "}
-        <Link href="/data" className="font-semibold text-accent-ink underline">
-          data status
-        </Link>{" "}
-        page, and every colour and component in the{" "}
-        <Link href="/styleguide" className="font-semibold text-accent-ink underline">
-          style guide
-        </Link>
-        . This temporary status board becomes the real home dashboard in Phase 4.
-      </p>
+    <div className="relative overflow-hidden rounded-xl bg-header text-header-fg shadow-lg">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-5 pt-4 text-sm">
+        <span className="numeral uppercase tracking-widest">
+          {v.live ? (
+            <span className="inline-flex items-center gap-2 text-header-accent">
+              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-current" aria-hidden /> Live now
+            </span>
+          ) : isToday ? (
+            <span className="text-header-accent">Game day</span>
+          ) : (
+            "Next game"
+          )}
+          {game.gameType !== 2 && <span className="ml-2 opacity-75">· {GAME_TYPE_LABEL[game.gameType]}</span>}
+        </span>
+        <Rivets className="text-header-accent" size={5} />
+      </div>
 
-      <ol className="mt-8 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4" aria-label="Build phases">
-        {PHASES.map((name, i) => {
-          const state = i < done ? "done" : i === done ? "next" : "later";
-          return (
-            <li
-              key={name}
-              className={`rounded-md border px-3 py-2 ${
-                state === "done"
-                  ? "border-header bg-header text-header-fg"
-                  : state === "next"
-                    ? "border-line-strong border-dashed bg-raised"
-                    : "border-line bg-raised text-fg-muted"
-              }`}
-            >
-              <span className="numeral block text-xs tracking-wide">
-                Phase {i + 1}
-                {state === "done" ? " · done" : state === "next" ? " · next" : ""}
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-6 sm:px-8">
+        {side(away, "Away")}
+        <div className="text-center">
+          {v.live ? (
+            <Spoiler label="score" className="numeral block text-5xl leading-none sm:text-6xl">
+              {away.score ?? 0}–{home.score ?? 0}
+            </Spoiler>
+          ) : (
+            <p className="display-hero text-4xl text-header-accent sm:text-5xl">{v.isHome ? "vs" : "@"}</p>
+          )}
+          {v.live && <p className="mt-1 text-xs uppercase tracking-widest opacity-80">{PERIOD(game.periodDescriptor?.number)}</p>}
+        </div>
+        {side(home, "Home")}
+      </div>
+
+      <div className="sleeve-stripes-thin" aria-hidden />
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-black/15 px-5 py-4">
+        <div className="text-sm">
+          <p className="font-semibold">
+            {formatGameDate(game.startTimeUTC, { weekday: "long", month: "long", day: "numeric" })} ·{" "}
+            {formatGameTime(game.startTimeUTC)} MT
+          </p>
+          <p className="mt-0.5 flex flex-wrap items-center gap-x-3 opacity-80">
+            {txt(game.venue)}
+            {tv.length > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <Tv size={14} aria-hidden /> {tv.join(", ")}
               </span>
-              {name}
-            </li>
-          );
-        })}
-      </ol>
-
-      <div className="sleeve-stripes mt-12 rounded-sm" aria-hidden />
-
-      <section className="mt-10" aria-labelledby="endpoints">
-        <h2 id="endpoints" className="display text-4xl">NHL endpoint check</h2>
-
-        {!report ? (
-          <div className="card mt-4 p-5">
-            <p>No fixtures captured yet. In a terminal, from the project folder, run:</p>
-            <pre className="mt-3 overflow-x-auto rounded bg-sunken p-3 text-sm">npm run fixtures:capture</pre>
-            <p className="mt-3 text-sm text-fg-muted">Then refresh this page.</p>
-          </div>
+            )}
+          </p>
+        </div>
+        {v.live || isToday ? (
+          <Link href={`/game/${game.id}`} className="btn btn-primary">
+            <Radio size={16} aria-hidden /> Game Day Hub
+          </Link>
         ) : (
-          <>
-            <p className="mt-2 text-sm text-fg-muted">
-              {report.totals.ok} of {report.totals.requested} endpoints returned data · captured{" "}
-              {new Date(report.capturedAt).toLocaleString("en-CA", { timeZone: "America/Edmonton" })}
-            </p>
-            <div className="card mt-4 overflow-x-auto">
-              <table className="tabular w-full text-left text-sm">
-                <thead className="bg-header text-header-fg">
-                  <tr>
-                    <th className="hidden px-3 py-2 sm:table-cell">Group</th>
-                    <th className="px-3 py-2">Endpoint</th>
-                    <th className="px-3 py-2 text-right">Size</th>
-                    <th className="px-3 py-2">Result</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {report.results.map((r) => (
-                    <tr key={r.path} className="border-t border-line">
-                      <td className="hidden px-3 py-2 text-fg-muted sm:table-cell">{r.group}</td>
-                      <td className="break-all px-3 py-2 font-mono text-xs">{r.path}</td>
-                      <td className="whitespace-nowrap px-3 py-2 text-right">{(r.bytes / 1024).toFixed(1)} KB</td>
-                      <td className={`whitespace-nowrap px-3 py-2 font-semibold ${r.ok ? "text-win" : "text-loss"}`}>
-                        {r.ok ? "OK" : `Failed (${r.error})`}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+          <p className="text-2xl sm:text-3xl">
+            <Countdown to={game.startTimeUTC} />
+          </p>
         )}
-      </section>
+      </div>
+    </div>
+  );
+}
+
+export default async function Home() {
+  await connection();
+  const [schedule, standings, stats] = await Promise.all([load(nhl.schedule), load(nhl.standings), load(nhl.clubStats)]);
+
+  const games = schedule.ok ? schedule.data.games : [];
+  const live = liveGame(games);
+  const next = live ?? nextGame(games);
+  const last = lastGame(games);
+  const lastView = last ? teamView(last) : undefined;
+  const rows = standings.ok ? standings.data.standings : undefined;
+  const edm = rows?.find((r) => teamOf(r) === "EDM");
+  const regRecord = record(games, 2);
+
+  let wildCardNote = "";
+  if (rows && edm) {
+    const wc = wildCardTable(rows, edm.conferenceAbbrev);
+    const wcIndex = wc.wildCard.findIndex((r) => teamOf(r) === "EDM");
+    wildCardNote =
+      wcIndex === -1
+        ? "In a division playoff spot"
+        : wcIndex < wc.cutAfter
+          ? `Holds wild card ${wcIndex + 1}`
+          : `${wcIndex - wc.cutAfter + 1} back of the wild card line`;
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+      <h1 className="sr-only">Oil Country Hub: Edmonton Oilers dashboard</h1>
+
+      {/* Next / live game */}
+      {!schedule.ok ? (
+        <Module title="Next game">
+          <DataError what="the schedule" error={schedule.error} />
+        </Module>
+      ) : next ? (
+        <div>
+          <NextGameHero game={next} standings={rows} />
+          <LastUpdated at={schedule.meta.fetchedAt} stale={schedule.meta.stale} className="mt-2 block text-right" />
+        </div>
+      ) : (
+        <Module title="Next game" meta={schedule.meta}>
+          <p className="text-fg-muted">No upcoming games on the schedule. Enjoy the off-season.</p>
+        </Module>
+      )}
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Last result */}
+        <Module
+          title="Last result"
+          meta={schedule.ok ? schedule.meta : undefined}
+          action={
+            last ? (
+              <Link href={`/game/${last.id}`} className="text-sm font-semibold text-accent-ink underline">
+                Recap
+              </Link>
+            ) : undefined
+          }
+        >
+          {!schedule.ok ? (
+            <DataError what="results" error={schedule.error} />
+          ) : !last || !lastView ? (
+            <p className="text-fg-muted">No games played yet.</p>
+          ) : (
+            <div>
+              <p className="text-sm text-fg-muted">
+                {formatGameDate(last.startTimeUTC)} · {lastView.prefix} {txt(lastView.opp.commonName, lastView.opp.abbrev)}
+                {last.gameType !== 2 && ` · ${GAME_TYPE_LABEL[last.gameType]}`}
+              </p>
+              <Spoiler label="result" as="div" className="mt-2 flex items-center gap-3">
+                <TeamLogo abbrev={lastView.opp.abbrev} logo={lastView.opp.logo} darkLogo={lastView.opp.darkLogo} size={44} />
+                <p className="numeral text-5xl leading-none">
+                  {lastView.us.score}–{lastView.opp.score}
+                </p>
+                <div className="flex flex-col items-start gap-1">
+                  {lastView.outcome && <ResultBadge outcome={lastView.outcome} />}
+                  {lastView.decidedIn !== "REG" && <span className="text-xs font-semibold text-fg-muted">{lastView.decidedIn}</span>}
+                </div>
+              </Spoiler>
+              {last.winningGoalScorer && (
+                <Spoiler label="winning goal scorer" as="div" className="mt-3 text-sm text-fg-muted">
+                  Winner: {txt(last.winningGoalScorer.firstInitial)} {txt(last.winningGoalScorer.lastName)}
+                  {last.winningGoalie && ` · Win in goal: ${txt(last.winningGoalie.firstInitial)} ${txt(last.winningGoalie.lastName)}`}
+                </Spoiler>
+              )}
+            </div>
+          )}
+        </Module>
+
+        {/* Standing */}
+        <Module
+          title="Division"
+          meta={standings.ok ? standings.meta : undefined}
+          action={
+            <Link href="/standings" className="text-sm font-semibold text-accent-ink underline">
+              Standings
+            </Link>
+          }
+        >
+          {!standings.ok ? (
+            <DataError what="standings" error={standings.error} />
+          ) : !edm ? (
+            <p className="text-fg-muted">The Oilers aren&apos;t in the current standings.</p>
+          ) : (
+            <div>
+              <Spoiler label="standings position" as="div">
+                <p className="display text-5xl leading-none">
+                  {ordinal(edm.divisionSequence)} <span className="text-fg-muted">in the {edm.divisionName}</span>
+                </p>
+                <p className="mt-2 text-sm text-fg-muted">
+                  {ordinal(edm.conferenceSequence)} in the {edm.conferenceName} · {wildCardNote}
+                </p>
+              </Spoiler>
+              <dl className="mt-4 grid grid-cols-4 gap-2 text-center">
+                {[
+                  ["Record", `${edm.wins}-${edm.losses}-${edm.otLosses}`],
+                  ["PTS", String(edm.points)],
+                  ["P%", pointPct(edm)],
+                  ["GP", String(edm.gamesPlayed)],
+                ].map(([k, val]) => (
+                  <div key={k} className="rounded-md bg-sunken px-1 py-2">
+                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
+                    <dd className="numeral text-lg">
+                      <Spoiler label={k}>{val}</Spoiler>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+        </Module>
+
+        {/* Streak */}
+        <Module title="Form" meta={standings.ok ? standings.meta : undefined}>
+          {!standings.ok ? (
+            <DataError what="the streak" error={standings.error} />
+          ) : !edm ? (
+            <p className="text-fg-muted">No games yet.</p>
+          ) : (
+            <Spoiler label="streak" as="div">
+              <p className="text-sm text-fg-muted">Current streak</p>
+              <p className="numeral text-6xl leading-none">{streakLabel(edm) || "—"}</p>
+              <p className="mt-3 text-sm">
+                <span className="font-semibold">Last 10:</span> {edm.l10Wins}-{edm.l10Losses}-{edm.l10OtLosses} ·{" "}
+                <span className="font-semibold">Home:</span> {edm.homeWins}-{edm.homeLosses}-{edm.homeOtLosses} ·{" "}
+                <span className="font-semibold">Road:</span> {edm.roadWins}-{edm.roadLosses}-{edm.roadOtLosses}
+              </p>
+              {schedule.ok && <p className="mt-1 text-xs text-fg-muted">Regular season from the schedule: {formatRecord(regRecord)}</p>}
+            </Spoiler>
+          )}
+        </Module>
+
+        {/* Top scorers */}
+        <Module
+          title="Top scorers"
+          meta={stats.ok ? stats.meta : undefined}
+          className="md:col-span-2"
+          action={
+            <Link href="/roster" className="text-sm font-semibold text-accent-ink underline">
+              Roster
+            </Link>
+          }
+        >
+          {!stats.ok ? (
+            <DataError what="team stats" error={stats.error} />
+          ) : stats.data.skaters.every((s) => s.gamesPlayed === 0) ? (
+            <p className="text-fg-muted">No games played yet this season.</p>
+          ) : (
+            <ol className="grid gap-3 sm:grid-cols-3">
+              {topScorers(stats.data.skaters).map((p, i) => (
+                <li key={p.playerId}>
+                  <Link
+                    href={`/player/${p.playerId}`}
+                    className="group flex h-full items-center gap-3 rounded-lg border border-line bg-surface p-3 transition hover:border-line-strong"
+                  >
+                    <span className="numeral text-3xl text-accent-ink">{i + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm text-fg-muted">{txt(p.firstName)}</span>
+                      <span className="display block truncate text-2xl leading-none group-hover:underline">{txt(p.lastName)}</span>
+                      <Spoiler label="stats" className="mt-1 block text-sm">
+                        <span className="numeral">{p.points}</span> PTS · {p.goals} G · {p.assists} A
+                      </Spoiler>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          )}
+        </Module>
+
+        {/* Blog (Phase 8) */}
+        <Module title="From the blog">
+          <p className="text-fg-muted">
+            Posts from you and your friends, with live stat embeds, land here in Phase 8: the latest three plus a pinned
+            featured post.
+          </p>
+          <Link href="/blog" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent-ink underline">
+            About the blog <ArrowRight size={14} aria-hidden />
+          </Link>
+        </Module>
+      </div>
+
+      <p className="mt-10 text-center text-xs text-fg-muted">
+        Prototype build · Phase 4 of 8 ·{" "}
+        <Link href="/data" className="underline">
+          Data status
+        </Link>{" "}
+        ·{" "}
+        <Link href="/styleguide" className="underline">
+          Style guide
+        </Link>
+      </p>
     </div>
   );
 }
