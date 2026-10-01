@@ -8,9 +8,9 @@ import { Rivets } from "./Rivets";
 
 export function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2 leading-none" aria-label="Oil Country Hub, home">
+    <Link href="/" className="flex items-center gap-2 leading-none" aria-label="EdmontonWeights, home">
       <span className="display-hero whitespace-nowrap text-2xl text-header-fg sm:text-3xl">
-        Oil Country <span className="text-header-accent">Hub</span>
+        Edmonton<span className="text-header-accent">Weights</span>
       </span>
       <span className="hidden text-header-accent sm:inline-flex">
         <Rivets size={5} />

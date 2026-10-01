@@ -98,7 +98,7 @@ function ThemePreview({ mode }: { mode: Mode }) {
       <div className="bg-header text-header-fg">
         <div className="flex items-center justify-between px-4 py-3">
           <span className="display-hero text-2xl">
-            Oil Country <span className="text-header-accent">Hub</span>
+            Edmonton<span className="text-header-accent">Weights</span>
           </span>
           <span className="numeral text-xs uppercase tracking-widest opacity-85">{mode}</span>
         </div>

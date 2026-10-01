@@ -15,7 +15,7 @@ import path from "node:path";
 import { eq } from "drizzle-orm";
 import type { z } from "zod";
 import { getDb, schema as dbSchema } from "@/db";
-import { NHL_API_BASE, USER_AGENT, fixturePathFor } from "./endpoints";
+import { USER_AGENT, baseFor, fixturePathFor } from "./endpoints";
 import { resourceForPath } from "./resources";
 
 export type NhlMode = "live" | "fixtures" | "replay";
@@ -176,7 +176,7 @@ async function refresh<T>(apiPath: string, zschema: z.ZodType<T>, row: CacheRow 
   const resource = resourceForPath(apiPath);
 
   try {
-    const res = await fetcher(NHL_API_BASE + apiPath, {
+    const res = await fetcher(baseFor(apiPath) + apiPath, {
       headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       cache: "no-store",
@@ -284,4 +284,34 @@ export function resetClientStateForTests() {
   inFlight.clear();
   coldFailures.clear();
   fixtureCapturedAt = undefined;
+}
+
+/**
+ * Fetch and validate one endpoint without touching the cache. Used by bulk jobs (the stats
+ * backfill) that read thousands of games once and keep only what they extract.
+ */
+export async function fetchFresh<T>(apiPath: string, zschema: z.ZodType<T>, retries = 3): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetcher(baseFor(apiPath) + apiPath, {
+        headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS * 2),
+        cache: "no-store",
+      });
+      if (res.status === 404) throw new NhlError(`Not found: ${apiPath}`, apiPath, 404);
+      if (res.status === 429 || res.status >= 500) throw new NhlError(`HTTP ${res.status} from NHL`, apiPath, res.status);
+      if (!res.ok) throw new NhlError(`HTTP ${res.status} from NHL`, apiPath, res.status);
+      const parsed = zschema.safeParse(await res.json());
+      if (!parsed.success) throw new NhlError(`Response failed validation: ${describeIssues(parsed.error)}`, apiPath);
+      return parsed.data;
+    } catch (err) {
+      lastErr = err;
+      const status = err instanceof NhlError ? err.status : undefined;
+      const retryable = status === undefined || status === 429 || status >= 500;
+      if (!retryable || attempt === retries) break;
+      await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+    }
+  }
+  throw lastErr;
 }

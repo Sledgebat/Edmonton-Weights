@@ -1,0 +1,12 @@
+{
+  "version": "provisional-1",
+  "provisional": true,
+  "trainedAt": null,
+  "trainedOn": "Hand-set starting values from published shot-quality research. Run `npm run stats:backfill` then `npm run xg:train` to replace them with a model trained on real NHL data.",
+  "features": ["distance", "logDistance", "angle", "angleSq", "distanceXAngle", "type:snap", "type:slap", "type:backhand", "type:tip-in", "type:deflected", "type:wrap-around", "type:other", "rebound", "rush", "strength:PP", "strength:SH", "strength:EV", "last:faceoff", "last:shot", "last:takeaway", "last:giveaway", "last:hit", "secondsSinceLast"],
+  "intercept": -0.2,
+  "coefficients": [-0.507, -0.17, -0.1, -0.02, 0, 0.1, 0.1, -0.2, 0.1, 0.1, -0.5, -0.3, 0.9, 0.4, 0.35, -0.1, 0.2, -0.15, 0.2, 0.2, 0.2, 0, -0.2],
+  "emptyNet": { "intercept": 1.5, "distance": -0.25 },
+  "baseRate": 0.07,
+  "metrics": {}
+}

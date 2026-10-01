@@ -1,4 +1,4 @@
-# Oil Country Hub
+# EdmontonWeights
 
 Edmonton Oilers stats, basic and advanced, in one place. Runs itself from the NHL's free public data and
 calculates its own advanced stats.
@@ -51,7 +51,7 @@ Replay settings: `REPLAY_SPEED` (default 10), `REPLAY_PREGAME_SECONDS` (30), `RE
 - **Refresh intervals** live in `lib/nhl/resources.ts` (standings 10 min; schedule hourly, 5 min on game days;
   scoreboard 1 min on game days; live game data 20–30 s; finished games a day; roster daily).
 - **Every response** is `{ data, meta }`, where `meta.fetchedAt` drives the "last updated" stamp.
-- **The database** (`db/oil-country-hub.sqlite`, gitignored) is created automatically on first use.
+- **The database** (`db/edmontonweights.sqlite`, gitignored) is created automatically on first use.
 
 | API route | Returns |
 | --- | --- |

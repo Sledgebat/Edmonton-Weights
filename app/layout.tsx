@@ -15,7 +15,7 @@ import { SiteHeader } from "@/components/ui/SiteHeader";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme/prefs";
 
 export const metadata: Metadata = {
-  title: { default: "Oil Country Hub", template: "%s · Oil Country Hub" },
+  title: { default: "EdmontonWeights", template: "%s · EdmontonWeights" },
   description: "Edmonton Oilers stats, basic and advanced, in one place.",
 };
 

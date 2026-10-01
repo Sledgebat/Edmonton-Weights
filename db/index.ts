@@ -9,12 +9,12 @@ import { drizzle, type BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import * as schema from "./schema";
 
-export type Db = BetterSQLite3Database<typeof schema>;
+export type Db = BetterSQLite3Database<typeof schema> & { $client: Database.Database };
 
 const MIGRATIONS = path.join(/*turbopackIgnore: true*/ process.cwd(), "db", "migrations");
 
 export function databasePath(): string {
-  return process.env.DATABASE_URL ?? path.join(/*turbopackIgnore: true*/ process.cwd(), "db", "oil-country-hub.sqlite");
+  return process.env.DATABASE_URL ?? path.join(/*turbopackIgnore: true*/ process.cwd(), "db", "edmontonweights.sqlite");
 }
 
 export function openDb(file = databasePath()): Db {

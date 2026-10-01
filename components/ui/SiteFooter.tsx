@@ -10,7 +10,7 @@ export function SiteFooter() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="display-hero text-3xl">
-              Oil Country <span className="text-header-accent">Hub</span>
+              Edmonton<span className="text-header-accent">Weights</span>
             </p>
             <Rivets className="mt-2 text-header-accent" />
           </div>

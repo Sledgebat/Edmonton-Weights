@@ -6,11 +6,14 @@
  *   meta.stale      -> true when the NHL couldn't be reached and a cached copy is shown
  */
 import { getResource } from "./client";
-import { TEAM, endpoints, type GameType } from "./endpoints";
+import { TEAM, TEAM_ID, endpoints, type GameType } from "./endpoints";
 import "./replay"; // registers the replay hook
 import {
   Boxscore,
   ClubSchedule,
+  EdgePlayer,
+  EdgeTeam,
+  TeamSummary,
   ClubStats,
   GameLanding,
   PlayByPlay,
@@ -36,6 +39,10 @@ export const nhl = {
   gameLog: (playerId: number, season: number, gameType: GameType = 2) =>
     getResource(endpoints.playerGameLog(playerId, season, gameType), PlayerGameLog),
   prospects: (team = TEAM) => getResource(endpoints.prospects(team), Prospects),
+  teamSummary: (season: number, gameType: GameType = 2) => getResource(endpoints.teamSummary(season, gameType), TeamSummary),
+  edgeTeam: (teamId = TEAM_ID) => getResource(endpoints.edgeTeam(teamId), EdgeTeam),
+  edgeSkater: (playerId: number) => getResource(endpoints.edgeSkater(playerId), EdgePlayer),
+  edgeGoalie: (playerId: number) => getResource(endpoints.edgeGoalie(playerId), EdgePlayer),
 };
 
 export { NhlError, cacheStatus, nhlMode, type Meta, type NhlMode, type Result, type Source } from "./client";

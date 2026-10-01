@@ -571,3 +571,94 @@ export const PlayerGameLog = z.object({
   gameLog: z.array(GameLogEntry),
 });
 export type PlayerGameLog = z.infer<typeof PlayerGameLog>;
+
+// ---------------------------------------------------------------- stats REST: team summary
+
+export const TeamSummaryRow = z.object({
+  teamId: z.number().int(),
+  teamFullName: z.string(),
+  seasonId: z.number().int(),
+  gamesPlayed: z.number().int(),
+  wins: z.number().int().nullable().optional(),
+  losses: z.number().int().nullable().optional(),
+  otLosses: z.number().int().nullable().optional(),
+  points: z.number().int().nullable().optional(),
+  pointPct: z.number().nullable().optional(),
+  goalsFor: z.number().int().nullable().optional(),
+  goalsAgainst: z.number().int().nullable().optional(),
+  goalsForPerGame: z.number().nullable().optional(),
+  goalsAgainstPerGame: z.number().nullable().optional(),
+  shotsForPerGame: z.number().nullable().optional(),
+  shotsAgainstPerGame: z.number().nullable().optional(),
+  powerPlayPct: z.number().nullable().optional(),
+  penaltyKillPct: z.number().nullable().optional(),
+  powerPlayNetPct: z.number().nullable().optional(),
+  penaltyKillNetPct: z.number().nullable().optional(),
+  faceoffWinPct: z.number().nullable().optional(),
+});
+export type TeamSummaryRow = z.infer<typeof TeamSummaryRow>;
+
+export const TeamSummary = z.object({ data: z.array(TeamSummaryRow), total: z.number().int().optional() });
+export type TeamSummary = z.infer<typeof TeamSummary>;
+
+// ---------------------------------------------------------------- NHL EDGE (tracking)
+
+/**
+ * EDGE values come as `{ imperial, metric, rank, leagueAvg }` or `{ value, rank }`. Declared
+ * loosely so a new field doesn't break the site; the fields the pages read are typed.
+ */
+const EdgeAvg = z.union([z.number(), z.object({ imperial: z.number().optional(), metric: z.number().optional(), value: z.number().optional() }).loose()]);
+export const EdgeValue = z
+  .object({
+    value: z.number().nullable().optional(),
+    imperial: z.number().nullable().optional(),
+    metric: z.number().nullable().optional(),
+    rank: z.number().int().nullable().optional(),
+    leagueAvg: EdgeAvg.nullable().optional(),
+  })
+  .loose();
+export type EdgeValue = z.infer<typeof EdgeValue>;
+
+export const EdgeTeam = z
+  .object({
+    team: z.object({ id: z.number().int(), abbrev: z.string(), commonName: Localized.optional() }).loose(),
+    shotSpeed: z.object({ shotAttemptsOver90: EdgeValue.optional(), topShotSpeed: EdgeValue.optional() }).loose().optional(),
+    skatingSpeed: z
+      .object({ burstsOver22: EdgeValue.optional(), burstsOver20: EdgeValue.optional(), speedMax: EdgeValue.optional() })
+      .loose()
+      .optional(),
+    distanceSkated: z.object({ total: EdgeValue.optional() }).loose().optional(),
+    sogSummary: z
+      .array(
+        z
+          .object({
+            locationCode: z.string(),
+            shots: z.number().optional(),
+            shotsRank: z.number().optional(),
+            shootingPctg: z.number().optional(),
+            shootingPctgRank: z.number().optional(),
+            goals: z.number().optional(),
+            goalsRank: z.number().optional(),
+          })
+          .loose(),
+      )
+      .optional(),
+    sogDetails: z.array(z.object({ area: z.string(), shots: z.number().optional(), shotsRank: z.number().optional() }).loose()).optional(),
+    zoneTimeDetails: z
+      .object({
+        offensiveZonePctg: z.number().optional(),
+        offensiveZoneRank: z.number().optional(),
+        offensiveZoneLeagueAvg: z.number().optional(),
+        neutralZonePctg: z.number().optional(),
+        defensiveZonePctg: z.number().optional(),
+        defensiveZoneRank: z.number().optional(),
+      })
+      .loose()
+      .optional(),
+  })
+  .loose();
+export type EdgeTeam = z.infer<typeof EdgeTeam>;
+
+/** Skater and goalie EDGE pages: shapes confirmed from captured fixtures in step 3. */
+export const EdgePlayer = z.record(z.string(), z.unknown());
+export type EdgePlayer = z.infer<typeof EdgePlayer>;

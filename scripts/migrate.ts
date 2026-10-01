@@ -1,4 +1,4 @@
-/** Creates or upgrades the SQLite database (db/oil-country-hub.sqlite, or DATABASE_URL). */
+/** Creates or upgrades the SQLite database (db/edmontonweights.sqlite, or DATABASE_URL). */
 import { databasePath, openDb } from "../db";
 
 openDb();

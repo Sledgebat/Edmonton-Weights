@@ -8,6 +8,9 @@ import { isFinished, isLive } from "./endpoints";
 import {
   Boxscore,
   ClubSchedule,
+  EdgePlayer,
+  EdgeTeam,
+  TeamSummary,
   ClubStats,
   GameLanding,
   PlayByPlay,
@@ -130,6 +133,24 @@ export const RESOURCES: Resource[] = [
         ? 7 * DAY
         : 1 * HOUR;
     },
+  },
+  {
+    label: "Team summary",
+    pattern: /^\/stats\/rest\/en\/team\/summary\?/,
+    schema: TeamSummary,
+    ttl: () => 1 * HOUR,
+  },
+  {
+    label: "NHL EDGE team",
+    pattern: /^\/edge\/team-detail\/\d+\/now$/,
+    schema: EdgeTeam,
+    ttl: () => 12 * HOUR,
+  },
+  {
+    label: "NHL EDGE player",
+    pattern: /^\/edge\/(skater|goalie)-detail\/\d+\/now$/,
+    schema: EdgePlayer,
+    ttl: () => 12 * HOUR,
   },
   {
     label: "Prospects",

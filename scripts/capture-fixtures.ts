@@ -13,6 +13,8 @@ import path from "node:path";
 import {
   FIRST_NHL_SEASON,
   NHL_API_BASE,
+  TEAM_ID,
+  baseFor,
   PLAYERS,
   USER_AGENT,
   endpoints,
@@ -46,7 +48,7 @@ async function fetchJson(apiPath: string): Promise<{ status: number; body: strin
   let lastErr: unknown;
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      const res = await fetch(NHL_API_BASE + apiPath, {
+      const res = await fetch(baseFor(apiPath) + apiPath, {
         headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
         redirect: "follow",
       });
@@ -94,7 +96,14 @@ async function capture(group: string, name: string, apiPath: string): Promise<an
   }
 }
 
-type Game = { id: number; gameType: number; gameState: string; startTimeUTC: string };
+type Game = {
+  id: number;
+  gameType: number;
+  gameState: string;
+  startTimeUTC: string;
+  homeTeam: { id: number; abbrev: string };
+  awayTeam: { id: number; abbrev: string };
+};
 
 function pickGames(games: Game[]) {
   const sorted = [...games].sort((a, b) => a.startTimeUTC.localeCompare(b.startTimeUTC));
@@ -175,7 +184,20 @@ async function main() {
     }
   }
 
-  // 4. On This Day history: 3 sample seasons by default, every season with --history.
+  // 4. League team summary (power play, penalty kill, faceoffs) and NHL EDGE tracking data
+  //    for the Oilers, their next opponent, two stars and the starting goalie.
+  await capture("stats", "Team summary (all teams)", endpoints.teamSummary(currentSeason));
+  await capture("edge", "EDGE team: Oilers", endpoints.edgeTeam(TEAM_ID));
+  if (next) {
+    const oppId = next.homeTeam.abbrev === "EDM" ? next.awayTeam.id : next.homeTeam.id;
+    picks.nextOpponentId = oppId;
+    await capture("edge", "EDGE team: next opponent", endpoints.edgeTeam(oppId));
+  }
+  await capture("edge", "EDGE skater: McDavid", endpoints.edgeSkater(PLAYERS.mcdavid));
+  await capture("edge", "EDGE skater: Draisaitl", endpoints.edgeSkater(PLAYERS.draisaitl));
+  if (goalieId) await capture("edge", "EDGE goalie", endpoints.edgeGoalie(goalieId));
+
+  // 5. On This Day history: 3 sample seasons by default, every season with --history.
   const historySeasons = fullHistory
     ? seasonsSince(FIRST_NHL_SEASON, currentSeason)
     : [19791980, 19831984, 20052006];
@@ -183,7 +205,7 @@ async function main() {
     await capture("history", `Schedule ${s}`, endpoints.scheduleSeason(s));
   }
 
-  // 5. Report.
+  // 6. Report.
   const failed = results.filter((r) => !r.ok);
   const report = {
     capturedAt: new Date().toISOString(),
