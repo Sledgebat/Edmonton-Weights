@@ -5,6 +5,7 @@ import { LastUpdated } from "@/components/ui/LastUpdated";
 import { NhlError, nhl, txt, type Meta } from "@/lib/nhl";
 import { isFinished } from "@/lib/nhl/endpoints";
 import { dataStatus } from "@/lib/nhl/status";
+import { StatsEngineStatus } from "@/components/data/StatsEngineStatus";
 
 export const metadata: Metadata = { title: "Data status" };
 
@@ -66,6 +67,8 @@ export default async function DataPage() {
   ]);
 
   const status = await dataStatus();
+  const scheduleFeed = await feed("Season", nhl.schedule, (d) => String(d.currentSeason));
+  const season = Number(scheduleFeed.summary ?? 20262027);
   const mode = MODE_INFO[status.mode];
 
   return (
@@ -115,6 +118,16 @@ NHL_MODE=replay GAME_ID=2026020004 npm run dev`}
           </div>
         </section>
       )}
+
+      <section className="mt-10" aria-labelledby="engine">
+        <h2 id="engine" className="display text-4xl">
+          Advanced stats engine
+        </h2>
+        <p className="mt-1 text-fg-muted">Shot attempts from every NHL game, our expected-goals model, and the league table it produces.</p>
+        <div className="mt-4">
+          <StatsEngineStatus season={season} />
+        </div>
+      </section>
 
       <section className="mt-10" aria-labelledby="feeds">
         <h2 id="feeds" className="display text-4xl">

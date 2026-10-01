@@ -154,3 +154,40 @@ describe("ingest", () => {
     expect(statsCounts()).toEqual({ games: [{ season: 20262027, n: 1 }], shots: 116 });
   });
 });
+
+describe("team and goalie tables", () => {
+  afterEach(() => setDbForTests(undefined));
+
+  it("builds both teams' metrics from one game, with complementary shares and ranks", async () => {
+    setDbForTests(openDb(":memory:"));
+    ingestGame(pbp);
+    const { leagueTable, teamGames, goalieTable, shooterTable, rollingShare } = await import("@/lib/stats/team");
+    const table = leagueTable(20262027);
+    expect(table.map((t) => t.abbrev).sort()).toEqual(["EDM", "VAN"]);
+    const edm = table.find((t) => t.abbrev === "EDM")!;
+    const van = table.find((t) => t.abbrev === "VAN")!;
+    expect(edm.metrics.cfPct + van.metrics.cfPct).toBeCloseTo(100, 6);
+    expect(edm.metrics.xgfPct + van.metrics.xgfPct).toBeCloseTo(100, 6);
+    expect(edm.cf).toBe(van.ca);
+    expect(edm.toi5).toBe(van.toi5);
+    // EDM outshot VAN 37-23, so they lead shot share and rank 1st.
+    expect(edm.metrics.cfPct).toBeGreaterThan(50);
+    expect(edm.ranks.cfPct).toBe(1);
+    expect(van.ranks.cfPct).toBe(2);
+    // Lower-is-better metrics rank the other way.
+    expect(edm.ranks.ca60).toBe(edm.metrics.ca60 < van.metrics.ca60 ? 1 : 2);
+
+    const games = teamGames(22, 20262027);
+    expect(games).toHaveLength(1);
+    expect(games[0]).toMatchObject({ opponent: "VAN", isHome: true, gf: 5, ga: 6, lastPeriodType: "OT" });
+    expect(rollingShare(games, "xgf", "xga")[0].value).toBeGreaterThan(0);
+
+    const goalies = goalieTable(20262027);
+    const edmGoalies = goalies.filter((g) => g.teamId === 22);
+    expect(edmGoalies.reduce((s, g) => s + g.goalsAllowed, 0)).toBe(6);
+    expect(edmGoalies.reduce((s, g) => s + g.shotsFaced, 0)).toBe(23);
+
+    const shooters = shooterTable(22, 20262027);
+    expect(shooters.reduce((s, p) => s + p.goals, 0)).toBe(5);
+  });
+});

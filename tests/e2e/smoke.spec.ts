@@ -104,3 +104,17 @@ test.describe("pages", () => {
     expect(await page.locator("time[datetime]").count()).toBeGreaterThanOrEqual(5);
   });
 });
+
+test("advanced stats engine: league table API and data page", async ({ page, request }) => {
+  const res = await request.get("/api/stats/teams");
+  expect(res.status()).toBe(200);
+  const body = await res.json();
+  const edm = body.teams.find((t: { abbrev: string }) => t.abbrev === "EDM");
+  expect(edm.gp).toBeGreaterThanOrEqual(1);
+  expect(edm.metrics.cfPct).toBeGreaterThan(0);
+  expect(edm.ranks.xgfPct).toBeGreaterThanOrEqual(1);
+
+  await page.goto("/data");
+  await expect(page.getByRole("heading", { name: "Advanced stats engine" })).toBeVisible();
+  await expect(page.locator("table").filter({ hasText: "xGF%" }).getByText("EDM")).toBeVisible();
+});

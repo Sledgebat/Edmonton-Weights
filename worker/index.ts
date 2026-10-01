@@ -6,11 +6,15 @@
  * ever exceeding the refresh intervals, and a live Oilers game is polled by exactly one process
  * no matter how many people are watching.
  *
- * Later phases add: nightly playoff simulation (6) and the yearly On This Day backfill (7).
+ * Advanced stats: finished games (every team) are stored every 15 minutes and a full-season
+ * catch-up runs nightly, so league ranks stay current.
  */
 import cron from "node-cron";
 import { nhl, nhlMode } from "@/lib/nhl";
-import { isLive } from "@/lib/nhl/endpoints";
+import { fetchFresh } from "@/lib/nhl/client";
+import { endpoints, isFinished, isLive } from "@/lib/nhl/endpoints";
+import { PlayByPlay } from "@/lib/nhl/schemas";
+import { ingestGame, ingestMissing, isIngested, listSeasonGames } from "@/lib/stats/ingest";
 
 const tz = "America/Edmonton";
 const log = (msg: string) => console.log(`[worker ${new Date().toLocaleTimeString("en-CA", { timeZone: tz })}] ${msg}`);
@@ -40,6 +44,26 @@ async function warmLiveGame() {
   log(`live ${d.awayTeam.abbrev} ${d.awayTeam.score ?? 0} @ ${d.homeTeam.abbrev} ${d.homeTeam.score ?? 0} (${d.clock?.timeRemaining ?? ""})`);
 }
 
+/** Advanced stats: store any game on today's scoreboard that has finished (every team, for league ranks). */
+async function ingestToday() {
+  const { data } = await nhl.score();
+  for (const g of data.games) {
+    if ((g.gameType === 2 || g.gameType === 3) && isFinished(g.gameState) && !isIngested(g.id)) {
+      const pbp = await fetchFresh(endpoints.gamePlayByPlay(g.id), PlayByPlay);
+      ingestGame(pbp);
+      log(`stats: stored ${g.awayTeam.abbrev} @ ${g.homeTeam.abbrev} (${g.id})`);
+    }
+  }
+}
+
+/** Nightly catch-up: every finished game this season that isn't stored yet. */
+async function ingestSeason() {
+  const season = (await nhl.schedule()).data.currentSeason;
+  const games = await listSeasonGames(season);
+  const r = await ingestMissing(games, { concurrency: 2, delayMs: 300 });
+  log(`stats: season catch-up ${r.attempted - r.failed.length} added, ${r.skipped} already stored, ${r.failed.length} failed`);
+}
+
 async function warmDaily() {
   await safely("roster", nhl.roster);
   await safely("club stats", nhl.clubStats);
@@ -54,8 +78,10 @@ if (mode !== "live") {
     cron.schedule("*/20 * * * * *", () => safely("live game", warmLiveGame), { timezone: tz, name: "live-game" }),
     cron.schedule("15 5 * * *", () => safely("daily", warmDaily), { timezone: tz, name: "daily" }),
     cron.schedule("0 * * * *", () => safely("team stats", nhl.clubStats), { timezone: tz, name: "club-stats" }),
+    cron.schedule("*/15 * * * *", () => safely("stats: today's games", ingestToday), { timezone: tz, name: "ingest-today" }),
+    cron.schedule("40 4 * * *", () => safely("stats: season catch-up", ingestSeason), { timezone: tz, name: "ingest-season" }),
   ];
-  log("started: core feeds every minute (fetching only when stale), live game every 20 s, roster daily 5:15.");
+  log("started: core feeds every minute (fetching only when stale), live game every 20 s, finished games stored every 15 min, season catch-up 4:40, roster 5:15.");
   void warmCore().then(warmDaily);
 
   process.on("SIGINT", () => {
