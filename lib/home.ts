@@ -108,7 +108,8 @@ export type TapeRow = {
 export type GoalieCard = { id: number; name: string; gp: number; svPct: number; gsax: number; xSvPct: number } | null;
 
 export type HeatBin = { x: number; y: number; xg: number };
-export type HeatMap = { bins: HeatBin[]; games: number; max: number };
+/** `bins` hold expected goals per game above the league average; `vsLeague` is the overall difference (0.08 = 8% more). */
+export type HeatMap = { bins: HeatBin[]; games: number; max: number; vsLeague: number };
 
 export type HomeData = {
   season: number;
@@ -145,21 +146,85 @@ export type HomeData = {
   leadersSeason: number;
 };
 
-/** Shots-on-target-weighted heat map bins (5 ft squares, offensive half, shooter attacking +x). */
-function heatMap(teamId: number, season: number, side: "for" | "against"): HeatMap {
-  const db = getDb().$client;
-  const col = side === "for" ? "team_id" : "opp_team_id";
-  const bins = db
-    .prepare(
+const NX = 15; // 5 ft columns from the blue line (x 25) to the end boards
+const NY = 17; // 5 ft rows across the ice
+
+function heatGrid(where: string, args: (number | string)[]): number[][] {
+  const grid = Array.from({ length: NX }, () => Array<number>(NY).fill(0));
+  const rows = getDb()
+    .$client.prepare(
       `SELECT CAST((x - 25) / 5 AS INT) bx, CAST((y + 42.5) / 5 AS INT) by, SUM(xg) xg
-       FROM shots WHERE ${col} = ? AND season = ? AND game_type = 2 AND type != 'blocked-shot' AND x >= 25 AND x <= 100 AND y IS NOT NULL
+       FROM shots WHERE ${where} AND game_type = 2 AND type != 'blocked-shot' AND x >= 25 AND x < 100 AND y IS NOT NULL
          AND strength != 'EN'
        GROUP BY bx, by`,
     )
-    .all(teamId, season) as { bx: number; by: number; xg: number }[];
-  const games = (db.prepare(`SELECT COUNT(*) n FROM stats_games WHERE season = ? AND game_type = 2 AND (home_id = ? OR away_id = ?)`).get(season, teamId, teamId) as { n: number }).n;
-  const perGame = bins.map((b) => ({ x: 25 + b.bx * 5 + 2.5, y: -42.5 + b.by * 5 + 2.5, xg: games ? b.xg / games : 0 }));
-  return { bins: perGame, games, max: Math.max(0.0001, ...perGame.map((b) => b.xg)) };
+    .all(...args) as { bx: number; by: number; xg: number }[];
+  for (const r of rows) if (r.bx >= 0 && r.bx < NX && r.by >= 0 && r.by < NY) grid[r.bx][r.by] += r.xg;
+  return grid;
+}
+
+/** Light 3×3 smoothing so one lucky bounce doesn't paint a hot square. */
+function smooth(g: number[][]): number[][] {
+  const w = [
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1],
+  ];
+  return g.map((col, i) =>
+    col.map((_, j) => {
+      let sum = 0;
+      let wt = 0;
+      for (let di = -1; di <= 1; di++)
+        for (let dj = -1; dj <= 1; dj++) {
+          const v = g[i + di]?.[j + dj];
+          if (v === undefined) continue;
+          sum += v * w[di + 1][dj + 1];
+          wt += w[di + 1][dj + 1];
+        }
+      return sum / wt;
+    }),
+  );
+}
+
+const leagueHeatCache = new Map<number, { grid: number[][]; total: number; at: number }>();
+
+/** League-average expected goals per team-game in each 5 ft square. */
+function leagueHeat(season: number) {
+  const hit = leagueHeatCache.get(season);
+  if (hit && Date.now() - hit.at < 15 * 60_000) return hit;
+  const teamGames = 2 * (getDb().$client.prepare(`SELECT COUNT(*) n FROM stats_games WHERE season = ? AND game_type = 2`).get(season) as { n: number }).n;
+  const raw = heatGrid("season = ?", [season]);
+  const grid = smooth(raw).map((col) => col.map((v) => (teamGames ? v / teamGames : 0)));
+  const total = raw.flat().reduce((a, b) => a + b, 0) / Math.max(1, teamGames);
+  const out = { grid, total, at: Date.now() };
+  leagueHeatCache.set(season, out);
+  return out;
+}
+
+/**
+ * Where a team's chances (for or against) come from compared with the league average: each
+ * 5 ft square shows how many more expected goals per game it sees there than an average team.
+ * Squares at or below average stay blank, so the map highlights what's unusual about the team.
+ */
+function heatMap(teamId: number, season: number, side: "for" | "against"): HeatMap {
+  const col = side === "for" ? "team_id" : "opp_team_id";
+  const games = gamesCount(teamId, season);
+  const league = leagueHeat(season);
+  const raw = heatGrid(`${col} = ? AND season = ?`, [teamId, season]);
+  const team = smooth(raw).map((c) => c.map((v) => (games ? v / games : 0)));
+  const bins: HeatBin[] = [];
+  for (let i = 0; i < NX; i++)
+    for (let j = 0; j < NY; j++) {
+      const excess = team[i][j] - league.grid[i][j];
+      if (excess > 0) bins.push({ x: 25 + i * 5 + 2.5, y: -42.5 + j * 5 + 2.5, xg: excess });
+    }
+  const perGame = games ? raw.flat().reduce((a, b) => a + b, 0) / games : 0;
+  return {
+    bins,
+    games,
+    max: Math.max(0.0001, ...bins.map((b) => b.xg)),
+    vsLeague: league.total ? perGame / league.total - 1 : 0,
+  };
 }
 
 /** Likely starter: whoever faced the most shots in the team's most recent stored game. */

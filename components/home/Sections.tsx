@@ -175,10 +175,15 @@ function TaleOfTheTape({ rows, oppAbbrev }: { rows: TapeRow[]; oppAbbrev: string
 }
 
 function Heat({ title, map, max, side }: { title: string; map: HeatMap; max: number; side: "us" | "them" }) {
+  const pct = Math.round(map.vsLeague * 100);
+  const vs = pct === 0 ? "league average overall" : `${Math.abs(pct)}% ${pct > 0 ? "more" : "less"} than average overall`;
   return (
     <figure>
-      <HalfRink bins={map.bins} max={max} color={`var(--chart-${side})`} label={`${title}: expected goals by location`} />
-      <figcaption className="mt-1 text-center text-xs font-semibold">{title}</figcaption>
+      <HalfRink bins={map.bins} max={max} color={`var(--chart-${side})`} label={`${title}: where they get more chances than an average team. ${vs}.`} />
+      <figcaption className="mt-1 text-center text-xs">
+        <span className="block font-semibold">{title}</span>
+        <span className="text-fg-muted">{vs}</span>
+      </figcaption>
     </figure>
   );
 }
@@ -308,7 +313,7 @@ export function NextGame({ d }: { d: HomeData }) {
             Where the chances come from
           </h3>
           <p className="text-xs text-fg-muted">
-            Expected goals per game by shot location, {seasonLabel(d.season)}. Darker = more danger. Net at the top.
+            Shaded areas are where each team creates or allows more dangerous chances than an average NHL team, {seasonLabel(d.season)}. Darker = further above average; blank = average or below. Net at the top.
           </p>
           <div className="mt-3 grid grid-cols-2 gap-4 lg:grid-cols-4">
             <Heat title="Oilers create" map={d.heat.usFor} max={heatMax} side="us" />
