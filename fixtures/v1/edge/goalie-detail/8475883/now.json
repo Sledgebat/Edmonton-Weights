@@ -1,0 +1,270 @@
+{
+  "player": {
+    "id": 8475883,
+    "firstName": {
+      "default": "Frederik"
+    },
+    "lastName": {
+      "default": "Andersen"
+    },
+    "birthDate": "1989-10-02",
+    "shootsCatches": "L",
+    "sweaterNumber": 31,
+    "slug": "frederik-andersen-8475883",
+    "headshot": "https://assets.nhle.com/mugs/nhl/20252026/CAR/8475883.png",
+    "wins": 16,
+    "losses": 14,
+    "overtimeLosses": 5,
+    "goalsAgainstAvg": 3.054428,
+    "savePctg": 0.873969,
+    "gamesPlayed": 35,
+    "team": {
+      "commonName": {
+        "default": "Hurricanes"
+      },
+      "placeNameWithPreposition": {
+        "default": "Carolina",
+        "fr": "de la Caroline"
+      },
+      "abbrev": "CAR",
+      "teamLogo": {
+        "light": "https://assets.nhle.com/logos/nhl/svg/CAR_light.svg",
+        "dark": "https://assets.nhle.com/logos/nhl/svg/CAR_dark.svg"
+      }
+    }
+  },
+  "seasonsWithEdgeStats": [
+    {
+      "id": 20212022,
+      "gameTypes": [
+        2
+      ]
+    },
+    {
+      "id": 20222023,
+      "gameTypes": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 20232024,
+      "gameTypes": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 20242025,
+      "gameTypes": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 20252026,
+      "gameTypes": [
+        2,
+        3
+      ]
+    }
+  ],
+  "stats": {
+    "goalsAgainstAvg": {
+      "value": 3.05443,
+      "percentile": 0.3559,
+      "leagueAvg": 2.9917
+    },
+    "gamesAbove900": {
+      "value": 0.2571,
+      "percentile": 0.0339,
+      "leagueAvg": 0.4901
+    },
+    "goalDifferentialPer60": {
+      "value": 0.11418,
+      "percentile": 0.5254,
+      "leagueAvg": 0.1128
+    },
+    "goalSupportAvg": {
+      "value": 3.16861,
+      "percentile": 0.678,
+      "leagueAvg": 2.9917
+    },
+    "pointPctg": {
+      "value": 0.5286,
+      "percentile": 0.4576,
+      "leagueAvg": 0.4628
+    }
+  },
+  "shotLocationSummary": [
+    {
+      "locationCode": "all",
+      "goalsAgainst": 107,
+      "goalsAgainstPercentile": 0.5254,
+      "goalsAgainstLeagueAvg": 77.0816,
+      "saves": 742,
+      "savesPercentile": 0.2881,
+      "savesLeagueAvg": 663.0204,
+      "savePctg": 0.873969,
+      "savePctgPercentile": 0.0847,
+      "savePctgLeagueAvg": 0.89585
+    },
+    {
+      "locationCode": "high",
+      "goalsAgainst": 60,
+      "goalsAgainstPercentile": 0.4746,
+      "goalsAgainstLeagueAvg": 39.8367,
+      "saves": 235,
+      "savesPercentile": 0.4576,
+      "savesLeagueAvg": 170.9082,
+      "savePctg": 0.79661,
+      "savePctgPercentile": 0.339,
+      "savePctgLeagueAvg": 0.810972
+    },
+    {
+      "locationCode": "long",
+      "goalsAgainst": 4,
+      "goalsAgainstPercentile": 0.8814,
+      "goalsAgainstLeagueAvg": 4.9796,
+      "saves": 132,
+      "savesPercentile": 0.0508,
+      "savesLeagueAvg": 149.6224,
+      "savePctg": 0.970588,
+      "savePctgPercentile": 0.5424,
+      "savePctgLeagueAvg": 0.967791
+    },
+    {
+      "locationCode": "mid",
+      "goalsAgainst": 34,
+      "goalsAgainstPercentile": 0.5593,
+      "goalsAgainstLeagueAvg": 24.8469,
+      "saves": 192,
+      "savesPercentile": 0.1864,
+      "savesLeagueAvg": 189.7041,
+      "savePctg": 0.849558,
+      "savePctgPercentile": 0.0678,
+      "savePctgLeagueAvg": 0.884191
+    }
+  ],
+  "shotLocationDetails": [
+    {
+      "area": "Behind the Net",
+      "saves": 11,
+      "savesPercentile": 0.9082,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "Beyond Red Line",
+      "saves": 37,
+      "savesPercentile": 0.8878,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "Center Point",
+      "saves": 41,
+      "savesPercentile": 0.398,
+      "savePctg": 0.931818,
+      "savePctgPercentile": 0.1525
+    },
+    {
+      "area": "Crease",
+      "saves": 28,
+      "savesPercentile": 0.7041,
+      "savePctg": 0.7,
+      "savePctgPercentile": 0.2542
+    },
+    {
+      "area": "High Slot",
+      "saves": 70,
+      "savesPercentile": 0.5816,
+      "savePctg": 0.813953,
+      "savePctgPercentile": 0.1695
+    },
+    {
+      "area": "L Circle",
+      "saves": 71,
+      "savesPercentile": 0.551,
+      "savePctg": 0.910256,
+      "savePctgPercentile": 0.5424
+    },
+    {
+      "area": "L Corner",
+      "saves": 1,
+      "savesPercentile": 0.5816,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "L Net Side",
+      "saves": 14,
+      "savesPercentile": 0.4796,
+      "savePctg": 0.823529,
+      "savePctgPercentile": 0.0847
+    },
+    {
+      "area": "L Point",
+      "saves": 44,
+      "savesPercentile": 0.5204,
+      "savePctg": 0.977778,
+      "savePctgPercentile": 0.5593
+    },
+    {
+      "area": "Low Slot",
+      "saves": 207,
+      "savesPercentile": 0.6735,
+      "savePctg": 0.811765,
+      "savePctgPercentile": 0.4576
+    },
+    {
+      "area": "Offensive Neutral Zone",
+      "saves": 18,
+      "savesPercentile": 0.602,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "Outside L",
+      "saves": 53,
+      "savesPercentile": 0.6633,
+      "savePctg": 0.981481,
+      "savePctgPercentile": 0.7966
+    },
+    {
+      "area": "Outside R",
+      "saves": 31,
+      "savesPercentile": 0.4286,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "R Circle",
+      "saves": 51,
+      "savesPercentile": 0.398,
+      "savePctg": 0.822581,
+      "savePctgPercentile": 0.0508
+    },
+    {
+      "area": "R Corner",
+      "saves": 1,
+      "savesPercentile": 0.7653,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    },
+    {
+      "area": "R Net Side",
+      "saves": 17,
+      "savesPercentile": 0.6122,
+      "savePctg": 0.772727,
+      "savePctgPercentile": 0.0678
+    },
+    {
+      "area": "R Point",
+      "saves": 47,
+      "savesPercentile": 0.5,
+      "savePctg": 1,
+      "savePctgPercentile": 1
+    }
+  ]
+}

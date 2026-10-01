@@ -1,0 +1,327 @@
+{
+  "team": {
+    "id": 23,
+    "commonName": {
+      "default": "Canucks"
+    },
+    "placeNameWithPreposition": {
+      "default": "Vancouver",
+      "fr": "de Vancouver"
+    },
+    "abbrev": "VAN",
+    "teamLogo": {
+      "light": "https://assets.nhle.com/logos/nhl/svg/VAN_light.svg",
+      "dark": "https://assets.nhle.com/logos/nhl/svg/VAN_dark.svg"
+    },
+    "slug": "vancouver-canucks-23",
+    "conference": "Western",
+    "division": "Pacific",
+    "wins": 1,
+    "losses": 0,
+    "otLosses": 0,
+    "gamesPlayed": 1,
+    "points": 2
+  },
+  "seasonsWithEdgeStats": [
+    {
+      "id": 20212022,
+      "gameTypes": [
+        2
+      ]
+    },
+    {
+      "id": 20222023,
+      "gameTypes": [
+        2
+      ]
+    },
+    {
+      "id": 20232024,
+      "gameTypes": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 20242025,
+      "gameTypes": [
+        2
+      ]
+    },
+    {
+      "id": 20252026,
+      "gameTypes": [
+        2
+      ]
+    },
+    {
+      "id": 20262027,
+      "gameTypes": [
+        2
+      ]
+    }
+  ],
+  "shotSpeed": {
+    "shotAttemptsOver90": {
+      "value": 0,
+      "rank": 8
+    },
+    "topShotSpeed": {
+      "imperial": 86.92,
+      "metric": 139.8842,
+      "rank": 12,
+      "leagueAvg": {
+        "imperial": 90.09,
+        "metric": 144.9858
+      },
+      "overlay": {
+        "player": {
+          "firstName": {
+            "default": "Liam"
+          },
+          "lastName": {
+            "default": "Ohgren",
+            "cs": "Öhgren",
+            "fi": "Öhgren",
+            "sk": "Öhgren",
+            "sv": "Öhgren"
+          }
+        },
+        "gameDate": "2026-09-29",
+        "awayTeam": {
+          "abbrev": "VAN",
+          "score": 6
+        },
+        "homeTeam": {
+          "abbrev": "EDM",
+          "score": 5
+        },
+        "gameOutcome": {
+          "lastPeriodType": "OT",
+          "otPeriods": 1
+        },
+        "periodDescriptor": {
+          "maxRegulationPeriods": 3,
+          "number": 1,
+          "periodType": "REG"
+        },
+        "timeInPeriod": "08:03",
+        "gameType": 2
+      }
+    }
+  },
+  "skatingSpeed": {
+    "burstsOver22": {
+      "value": 2,
+      "rank": 4
+    },
+    "burstsOver20": {
+      "value": 34,
+      "rank": 3,
+      "leagueAvg": {
+        "value": 25
+      }
+    },
+    "speedMax": {
+      "imperial": 22.8069,
+      "metric": 36.7041,
+      "rank": 6,
+      "leagueAvg": {
+        "imperial": 22.5405,
+        "metric": 36.2753
+      },
+      "overlay": {
+        "player": {
+          "firstName": {
+            "default": "Max"
+          },
+          "lastName": {
+            "default": "Sasson"
+          }
+        },
+        "gameDate": "2026-09-29",
+        "awayTeam": {
+          "abbrev": "VAN",
+          "score": 6
+        },
+        "homeTeam": {
+          "abbrev": "EDM",
+          "score": 5
+        },
+        "gameOutcome": {
+          "lastPeriodType": "OT",
+          "otPeriods": 1
+        },
+        "periodDescriptor": {
+          "maxRegulationPeriods": 3,
+          "number": 2,
+          "periodType": "REG"
+        },
+        "timeInPeriod": "00:26",
+        "gameType": 2
+      }
+    }
+  },
+  "distanceSkated": {
+    "total": {
+      "imperial": 46.3821,
+      "metric": 74.6412,
+      "rank": 5,
+      "leagueAvg": {
+        "imperial": 48.7385,
+        "metric": 78.4332
+      }
+    }
+  },
+  "sogSummary": [
+    {
+      "locationCode": "all",
+      "shots": 23,
+      "shotsRank": 11,
+      "shotsLeagueAvg": 28.4667,
+      "shootingPctg": 0.2609,
+      "shootingPctgRank": 2,
+      "shootingPctgLeagueAvg": 0.1148,
+      "goals": 6,
+      "goalsRank": 3,
+      "goalsLeagueAvg": 3.2667
+    },
+    {
+      "locationCode": "high",
+      "shots": 7,
+      "shotsRank": 9,
+      "shotsLeagueAvg": 8.2,
+      "shootingPctg": 0.5714,
+      "shootingPctgRank": 1,
+      "shootingPctgLeagueAvg": 0.187,
+      "goals": 4,
+      "goalsRank": 1,
+      "goalsLeagueAvg": 1.5333
+    },
+    {
+      "locationCode": "long",
+      "shots": 5,
+      "shotsRank": 7,
+      "shotsLeagueAvg": 5.6667,
+      "shootingPctg": 0,
+      "shootingPctgRank": 5,
+      "shootingPctgLeagueAvg": 0.0588,
+      "goals": 0,
+      "goalsRank": 5,
+      "goalsLeagueAvg": 0.3333
+    },
+    {
+      "locationCode": "mid",
+      "shots": 9,
+      "shotsRank": 4,
+      "shotsLeagueAvg": 8.3333,
+      "shootingPctg": 0.2222,
+      "shootingPctgRank": 5,
+      "shootingPctgLeagueAvg": 0.144,
+      "goals": 2,
+      "goalsRank": 5,
+      "goalsLeagueAvg": 1.2
+    }
+  ],
+  "sogDetails": [
+    {
+      "area": "Behind the Net",
+      "shots": 0,
+      "shotsRank": 5
+    },
+    {
+      "area": "Beyond Red Line",
+      "shots": 1,
+      "shotsRank": 4
+    },
+    {
+      "area": "Center Point",
+      "shots": 3,
+      "shotsRank": 3
+    },
+    {
+      "area": "Crease",
+      "shots": 1,
+      "shotsRank": 4
+    },
+    {
+      "area": "High Slot",
+      "shots": 2,
+      "shotsRank": 7
+    },
+    {
+      "area": "L Circle",
+      "shots": 5,
+      "shotsRank": 4
+    },
+    {
+      "area": "L Corner",
+      "shots": 0,
+      "shotsRank": 2
+    },
+    {
+      "area": "L Net Side",
+      "shots": 0,
+      "shotsRank": 8
+    },
+    {
+      "area": "L Point",
+      "shots": 0,
+      "shotsRank": 14
+    },
+    {
+      "area": "Low Slot",
+      "shots": 6,
+      "shotsRank": 9
+    },
+    {
+      "area": "Offensive Neutral Zone",
+      "shots": 1,
+      "shotsRank": 5
+    },
+    {
+      "area": "Outside L",
+      "shots": 0,
+      "shotsRank": 14
+    },
+    {
+      "area": "Outside R",
+      "shots": 0,
+      "shotsRank": 11
+    },
+    {
+      "area": "R Circle",
+      "shots": 2,
+      "shotsRank": 9
+    },
+    {
+      "area": "R Corner",
+      "shots": 0,
+      "shotsRank": 1
+    },
+    {
+      "area": "R Net Side",
+      "shots": 0,
+      "shotsRank": 9
+    },
+    {
+      "area": "R Point",
+      "shots": 2,
+      "shotsRank": 5
+    }
+  ],
+  "zoneTimeDetails": {
+    "offensiveZonePctg": 0.3458052,
+    "offensiveZoneRank": 15,
+    "offensiveZoneLeagueAvg": 0.4204301,
+    "offensiveZoneEvPctg": 0.3403371,
+    "offensiveZoneEvRank": 15,
+    "offensiveZoneEvLeagueAvg": 0.4141623,
+    "neutralZonePctg": 0.1821546,
+    "neutralZoneRank": 5,
+    "neutralZoneLeagueAvg": 0.1591398,
+    "defensiveZonePctg": 0.4720403,
+    "defensiveZoneRank": 15,
+    "defensiveZoneLeagueAvg": 0.4204301
+  }
+}

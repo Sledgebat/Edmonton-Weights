@@ -1,16 +1,17 @@
 {
-  "capturedAt": "2026-09-30T17:43:32.695Z",
+  "capturedAt": "2026-10-01T16:14:26.041Z",
   "base": "https://api-web.nhle.com/v1",
   "fullHistory": false,
   "picks": {
     "currentSeason": 20262027,
     "lastFinishedGameId": 2026020004,
     "nextGameId": 2026020015,
-    "goalieId": 8475883
+    "goalieId": 8475883,
+    "nextOpponentId": 23
   },
   "totals": {
-    "requested": 22,
-    "ok": 22,
+    "requested": 103,
+    "ok": 103,
     "failed": 0
   },
   "results": [
@@ -20,8 +21,8 @@
       "path": "/standings/now",
       "ok": true,
       "status": 200,
-      "bytes": 53507,
-      "ms": 269,
+      "bytes": 54480,
+      "ms": 416,
       "file": "fixtures/v1/standings/now.json"
     },
     {
@@ -31,7 +32,7 @@
       "ok": true,
       "status": 200,
       "bytes": 176227,
-      "ms": 185,
+      "ms": 222,
       "file": "fixtures/v1/club-schedule-season/EDM/now.json"
     },
     {
@@ -40,8 +41,8 @@
       "path": "/score/now",
       "ok": true,
       "status": 200,
-      "bytes": 12998,
-      "ms": 168,
+      "bytes": 29271,
+      "ms": 86,
       "file": "fixtures/v1/score/now.json"
     },
     {
@@ -51,7 +52,7 @@
       "ok": true,
       "status": 200,
       "bytes": 11377,
-      "ms": 236,
+      "ms": 78,
       "file": "fixtures/v1/roster/EDM/current.json"
     },
     {
@@ -61,7 +62,7 @@
       "ok": true,
       "status": 200,
       "bytes": 8507,
-      "ms": 351,
+      "ms": 307,
       "file": "fixtures/v1/club-stats/EDM/now.json"
     },
     {
@@ -71,7 +72,7 @@
       "ok": true,
       "status": 200,
       "bytes": 4425,
-      "ms": 186,
+      "ms": 177,
       "file": "fixtures/v1/prospects/EDM.json"
     },
     {
@@ -81,7 +82,7 @@
       "ok": true,
       "status": 200,
       "bytes": 17233,
-      "ms": 121,
+      "ms": 224,
       "file": "fixtures/v1/gamecenter/2026020004/landing.json"
     },
     {
@@ -91,7 +92,7 @@
       "ok": true,
       "status": 200,
       "bytes": 137198,
-      "ms": 44,
+      "ms": 49,
       "file": "fixtures/v1/gamecenter/2026020004/play-by-play.json"
     },
     {
@@ -101,7 +102,7 @@
       "ok": true,
       "status": 200,
       "bytes": 13095,
-      "ms": 52,
+      "ms": 39,
       "file": "fixtures/v1/gamecenter/2026020004/boxscore.json"
     },
     {
@@ -111,8 +112,28 @@
       "ok": true,
       "status": 200,
       "bytes": 18757,
-      "ms": 371,
+      "ms": 109,
       "file": "fixtures/v1/gamecenter/2026020015/landing.json"
+    },
+    {
+      "group": "game",
+      "name": "Play-by-play (upcoming)",
+      "path": "/gamecenter/2026020015/play-by-play",
+      "ok": true,
+      "status": 200,
+      "bytes": 1311,
+      "ms": 39,
+      "file": "fixtures/v1/gamecenter/2026020015/play-by-play.json"
+    },
+    {
+      "group": "game",
+      "name": "Boxscore (upcoming)",
+      "path": "/gamecenter/2026020015/boxscore",
+      "ok": true,
+      "status": 200,
+      "bytes": 1097,
+      "ms": 38,
+      "file": "fixtures/v1/gamecenter/2026020015/boxscore.json"
     },
     {
       "group": "player",
@@ -131,7 +152,7 @@
       "ok": true,
       "status": 200,
       "bytes": 909,
-      "ms": 202,
+      "ms": 176,
       "file": "fixtures/v1/player/8478402/game-log/20262027/2.json"
     },
     {
@@ -141,7 +162,7 @@
       "ok": true,
       "status": 200,
       "bytes": 32599,
-      "ms": 201,
+      "ms": 239,
       "file": "fixtures/v1/player/8478402/game-log/20252026/2.json"
     },
     {
@@ -151,7 +172,7 @@
       "ok": true,
       "status": 200,
       "bytes": 23358,
-      "ms": 120,
+      "ms": 205,
       "file": "fixtures/v1/player/8477934/landing.json"
     },
     {
@@ -161,7 +182,7 @@
       "ok": true,
       "status": 200,
       "bytes": 946,
-      "ms": 122,
+      "ms": 177,
       "file": "fixtures/v1/player/8477934/game-log/20262027/2.json"
     },
     {
@@ -171,38 +192,828 @@
       "ok": true,
       "status": 200,
       "bytes": 25981,
-      "ms": 120,
+      "ms": 202,
       "file": "fixtures/v1/player/8477934/game-log/20252026/2.json"
     },
     {
       "group": "player",
-      "name": "Goalie landing",
+      "name": "Colton Dach landing",
+      "path": "/player/8482703/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 12852,
+      "ms": 104,
+      "file": "fixtures/v1/player/8482703/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Colton Dach game log 20262027",
+      "path": "/player/8482703/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 572,
+      "ms": 188,
+      "file": "fixtures/v1/player/8482703/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Colton Dach game log 20252026",
+      "path": "/player/8482703/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 24242,
+      "ms": 188,
+      "file": "fixtures/v1/player/8482703/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Alex Formenton landing",
+      "path": "/player/8480029/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 11936,
+      "ms": 111,
+      "file": "fixtures/v1/player/8480029/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Alex Formenton game log 20262027",
+      "path": "/player/8480029/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 641,
+      "ms": 170,
+      "file": "fixtures/v1/player/8480029/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Alex Formenton game log 20252026",
+      "path": "/player/8480029/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 60,
+      "ms": 138,
+      "file": "fixtures/v1/player/8480029/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Trent Frederic landing",
+      "path": "/player/8479365/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 16638,
+      "ms": 109,
+      "file": "fixtures/v1/player/8479365/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Trent Frederic game log 20262027",
+      "path": "/player/8479365/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 794,
+      "ms": 227,
+      "file": "fixtures/v1/player/8479365/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Trent Frederic game log 20252026",
+      "path": "/player/8479365/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 29316,
+      "ms": 201,
+      "file": "fixtures/v1/player/8479365/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Isaac Howard landing",
+      "path": "/player/8483455/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 10578,
+      "ms": 106,
+      "file": "fixtures/v1/player/8483455/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Isaac Howard game log 20262027",
+      "path": "/player/8483455/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 533,
+      "ms": 195,
+      "file": "fixtures/v1/player/8483455/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Isaac Howard game log 20252026",
+      "path": "/player/8483455/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 11476,
+      "ms": 186,
+      "file": "fixtures/v1/player/8483455/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Zach Hyman landing",
+      "path": "/player/8475786/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 20407,
+      "ms": 244,
+      "file": "fixtures/v1/player/8475786/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Zach Hyman game log 20262027",
+      "path": "/player/8475786/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 913,
+      "ms": 176,
+      "file": "fixtures/v1/player/8475786/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Zach Hyman game log 20252026",
+      "path": "/player/8475786/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 23196,
+      "ms": 183,
+      "file": "fixtures/v1/player/8475786/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Janmark landing",
+      "path": "/player/8477406/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 22305,
+      "ms": 215,
+      "file": "fixtures/v1/player/8477406/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Janmark game log 20262027",
+      "path": "/player/8477406/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 446,
+      "ms": 188,
+      "file": "fixtures/v1/player/8477406/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Janmark game log 20252026",
+      "path": "/player/8477406/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 17226,
+      "ms": 188,
+      "file": "fixtures/v1/player/8477406/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Max Jones landing",
+      "path": "/player/8479368/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 15183,
+      "ms": 223,
+      "file": "fixtures/v1/player/8479368/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Max Jones game log 20262027",
+      "path": "/player/8479368/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 786,
+      "ms": 213,
+      "file": "fixtures/v1/player/8479368/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Max Jones game log 20252026",
+      "path": "/player/8479368/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 8578,
+      "ms": 180,
+      "file": "fixtures/v1/player/8479368/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mathieu Joseph landing",
+      "path": "/player/8478472/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 18314,
+      "ms": 241,
+      "file": "fixtures/v1/player/8478472/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Mathieu Joseph game log 20262027",
+      "path": "/player/8478472/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 794,
+      "ms": 181,
+      "file": "fixtures/v1/player/8478472/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mathieu Joseph game log 20252026",
+      "path": "/player/8478472/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 20291,
+      "ms": 116,
+      "file": "fixtures/v1/player/8478472/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Kasperi Kapanen landing",
+      "path": "/player/8477953/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 22632,
+      "ms": 233,
+      "file": "fixtures/v1/player/8477953/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Kasperi Kapanen game log 20262027",
+      "path": "/player/8477953/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 910,
+      "ms": 186,
+      "file": "fixtures/v1/player/8477953/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Kasperi Kapanen game log 20252026",
+      "path": "/player/8477953/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 16557,
+      "ms": 226,
+      "file": "fixtures/v1/player/8477953/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Owen Michaels landing",
+      "path": "/player/8486161/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 8549,
+      "ms": 236,
+      "file": "fixtures/v1/player/8486161/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Owen Michaels game log 20262027",
+      "path": "/player/8486161/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 496,
+      "ms": 206,
+      "file": "fixtures/v1/player/8486161/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Owen Michaels game log 20252026",
+      "path": "/player/8486161/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 108,
+      "ms": 176,
+      "file": "fixtures/v1/player/8486161/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Nugent-Hopkins landing",
+      "path": "/player/8476454/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 22757,
+      "ms": 229,
+      "file": "fixtures/v1/player/8476454/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Nugent-Hopkins game log 20262027",
+      "path": "/player/8476454/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 628,
+      "ms": 179,
+      "file": "fixtures/v1/player/8476454/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Nugent-Hopkins game log 20252026",
+      "path": "/player/8476454/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 28793,
+      "ms": 191,
+      "file": "fixtures/v1/player/8476454/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Vasily Podkolzin landing",
+      "path": "/player/8481617/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 16129,
+      "ms": 212,
+      "file": "fixtures/v1/player/8481617/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Vasily Podkolzin game log 20262027",
+      "path": "/player/8481617/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 684,
+      "ms": 194,
+      "file": "fixtures/v1/player/8481617/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Vasily Podkolzin game log 20252026",
+      "path": "/player/8481617/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32364,
+      "ms": 181,
+      "file": "fixtures/v1/player/8481617/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Matt Savoie landing",
+      "path": "/player/8483512/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 15845,
+      "ms": 248,
+      "file": "fixtures/v1/player/8483512/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Matt Savoie game log 20262027",
+      "path": "/player/8483512/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 182,
+      "ms": 187,
+      "file": "fixtures/v1/player/8483512/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Matt Savoie game log 20252026",
+      "path": "/player/8483512/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32252,
+      "ms": 186,
+      "file": "fixtures/v1/player/8483512/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Evan Bouchard landing",
+      "path": "/player/8480803/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 15948,
+      "ms": 212,
+      "file": "fixtures/v1/player/8480803/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Evan Bouchard game log 20262027",
+      "path": "/player/8480803/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 759,
+      "ms": 170,
+      "file": "fixtures/v1/player/8480803/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Evan Bouchard game log 20252026",
+      "path": "/player/8480803/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32446,
+      "ms": 179,
+      "file": "fixtures/v1/player/8480803/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Ekholm landing",
+      "path": "/player/8475218/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 28073,
+      "ms": 246,
+      "file": "fixtures/v1/player/8475218/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Ekholm game log 20262027",
+      "path": "/player/8475218/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 1061,
+      "ms": 185,
+      "file": "fixtures/v1/player/8475218/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Mattias Ekholm game log 20252026",
+      "path": "/player/8475218/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32746,
+      "ms": 175,
+      "file": "fixtures/v1/player/8475218/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ty Emberson landing",
+      "path": "/player/8480834/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 14182,
+      "ms": 233,
+      "file": "fixtures/v1/player/8480834/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Ty Emberson game log 20262027",
+      "path": "/player/8480834/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 184,
+      "ms": 210,
+      "file": "fixtures/v1/player/8480834/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ty Emberson game log 20252026",
+      "path": "/player/8480834/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 28349,
+      "ms": 174,
+      "file": "fixtures/v1/player/8480834/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Shakir Mukhamadullin landing",
+      "path": "/player/8482166/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 13068,
+      "ms": 231,
+      "file": "fixtures/v1/player/8482166/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Shakir Mukhamadullin game log 20262027",
+      "path": "/player/8482166/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 606,
+      "ms": 181,
+      "file": "fixtures/v1/player/8482166/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Shakir Mukhamadullin game log 20252026",
+      "path": "/player/8482166/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 19790,
+      "ms": 187,
+      "file": "fixtures/v1/player/8482166/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Connor Murphy landing",
+      "path": "/player/8476473/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 18537,
+      "ms": 275,
+      "file": "fixtures/v1/player/8476473/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Connor Murphy game log 20262027",
+      "path": "/player/8476473/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 970,
+      "ms": 188,
+      "file": "fixtures/v1/player/8476473/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Connor Murphy game log 20252026",
+      "path": "/player/8476473/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 32123,
+      "ms": 172,
+      "file": "fixtures/v1/player/8476473/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Alec Regula landing",
+      "path": "/player/8480831/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 12965,
+      "ms": 215,
+      "file": "fixtures/v1/player/8480831/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Alec Regula game log 20262027",
+      "path": "/player/8480831/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 216,
+      "ms": 179,
+      "file": "fixtures/v1/player/8480831/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Alec Regula game log 20252026",
+      "path": "/player/8480831/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 11548,
+      "ms": 209,
+      "file": "fixtures/v1/player/8480831/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Shea landing",
+      "path": "/player/8478854/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 12102,
+      "ms": 200,
+      "file": "fixtures/v1/player/8478854/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Shea game log 20262027",
+      "path": "/player/8478854/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 608,
+      "ms": 201,
+      "file": "fixtures/v1/player/8478854/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Ryan Shea game log 20252026",
+      "path": "/player/8478854/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 31701,
+      "ms": 187,
+      "file": "fixtures/v1/player/8478854/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Spencer Stastney landing",
+      "path": "/player/8481056/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 14728,
+      "ms": 224,
+      "file": "fixtures/v1/player/8481056/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Spencer Stastney game log 20262027",
+      "path": "/player/8481056/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 218,
+      "ms": 208,
+      "file": "fixtures/v1/player/8481056/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Spencer Stastney game log 20252026",
+      "path": "/player/8481056/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 26106,
+      "ms": 182,
+      "file": "fixtures/v1/player/8481056/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Jake Walman landing",
+      "path": "/player/8478013/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 14897,
+      "ms": 223,
+      "file": "fixtures/v1/player/8478013/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Jake Walman game log 20262027",
+      "path": "/player/8478013/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 755,
+      "ms": 175,
+      "file": "fixtures/v1/player/8478013/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Jake Walman game log 20252026",
+      "path": "/player/8478013/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 21129,
+      "ms": 188,
+      "file": "fixtures/v1/player/8478013/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Frederik Andersen landing",
       "path": "/player/8475883/landing",
       "ok": true,
       "status": 200,
       "bytes": 23157,
-      "ms": 224,
+      "ms": 211,
       "file": "fixtures/v1/player/8475883/landing.json"
     },
     {
       "group": "player",
-      "name": "Goalie game log 20262027",
+      "name": "Frederik Andersen game log 20262027",
       "path": "/player/8475883/game-log/20262027/2",
       "ok": true,
       "status": 200,
       "bytes": 562,
-      "ms": 201,
+      "ms": 229,
       "file": "fixtures/v1/player/8475883/game-log/20262027/2.json"
     },
     {
       "group": "player",
-      "name": "Goalie game log 20252026",
+      "name": "Frederik Andersen game log 20252026",
       "path": "/player/8475883/game-log/20252026/2",
       "ok": true,
       "status": 200,
       "bytes": 12232,
-      "ms": 200,
+      "ms": 196,
       "file": "fixtures/v1/player/8475883/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Tristan Jarry landing",
+      "path": "/player/8477465/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 17856,
+      "ms": 105,
+      "file": "fixtures/v1/player/8477465/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Tristan Jarry game log 20262027",
+      "path": "/player/8477465/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 803,
+      "ms": 203,
+      "file": "fixtures/v1/player/8477465/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Tristan Jarry game log 20252026",
+      "path": "/player/8477465/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 11293,
+      "ms": 189,
+      "file": "fixtures/v1/player/8477465/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Devon Levi landing",
+      "path": "/player/8482221/landing",
+      "ok": true,
+      "status": 200,
+      "bytes": 13333,
+      "ms": 216,
+      "file": "fixtures/v1/player/8482221/landing.json"
+    },
+    {
+      "group": "player",
+      "name": "Devon Levi game log 20262027",
+      "path": "/player/8482221/game-log/20262027/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 180,
+      "ms": 184,
+      "file": "fixtures/v1/player/8482221/game-log/20262027/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Devon Levi game log 20252026",
+      "path": "/player/8482221/game-log/20252026/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 180,
+      "ms": 199,
+      "file": "fixtures/v1/player/8482221/game-log/20252026/2.json"
+    },
+    {
+      "group": "player",
+      "name": "Devon Levi game log 20242025",
+      "path": "/player/8482221/game-log/20242025/2",
+      "ok": true,
+      "status": 200,
+      "bytes": 3139,
+      "ms": 220,
+      "file": "fixtures/v1/player/8482221/game-log/20242025/2.json"
+    },
+    {
+      "group": "stats",
+      "name": "Team summary (all teams)",
+      "path": "/stats/rest/en/team/summary?cayenneExp=seasonId=20262027%20and%20gameTypeId=2",
+      "ok": true,
+      "status": 200,
+      "bytes": 7764,
+      "ms": 213,
+      "file": "fixtures/v1/stats/rest/en/team/summary.json"
+    },
+    {
+      "group": "edge",
+      "name": "EDGE team: Oilers",
+      "path": "/edge/team-detail/22/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 3861,
+      "ms": 492,
+      "file": "fixtures/v1/edge/team-detail/22/now.json"
+    },
+    {
+      "group": "edge",
+      "name": "EDGE team: next opponent",
+      "path": "/edge/team-detail/23/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 3915,
+      "ms": 495,
+      "file": "fixtures/v1/edge/team-detail/23/now.json"
+    },
+    {
+      "group": "edge",
+      "name": "EDGE skater: McDavid",
+      "path": "/edge/skater-detail/8478402/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 4616,
+      "ms": 343,
+      "file": "fixtures/v1/edge/skater-detail/8478402/now.json"
+    },
+    {
+      "group": "edge",
+      "name": "EDGE skater: Draisaitl",
+      "path": "/edge/skater-detail/8477934/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 4778,
+      "ms": 353,
+      "file": "fixtures/v1/edge/skater-detail/8477934/now.json"
+    },
+    {
+      "group": "edge",
+      "name": "EDGE goalie",
+      "path": "/edge/goalie-detail/8475883/now",
+      "ok": true,
+      "status": 200,
+      "bytes": 4052,
+      "ms": 383,
+      "file": "fixtures/v1/edge/goalie-detail/8475883/now.json"
     },
     {
       "group": "history",
@@ -211,7 +1022,7 @@
       "ok": true,
       "status": 200,
       "bytes": 112382,
-      "ms": 295,
+      "ms": 233,
       "file": "fixtures/v1/club-schedule-season/EDM/19791980.json"
     },
     {
@@ -221,7 +1032,7 @@
       "ok": true,
       "status": 200,
       "bytes": 137646,
-      "ms": 321,
+      "ms": 262,
       "file": "fixtures/v1/club-schedule-season/EDM/19831984.json"
     },
     {
@@ -231,7 +1042,7 @@
       "ok": true,
       "status": 200,
       "bytes": 157065,
-      "ms": 278,
+      "ms": 260,
       "file": "fixtures/v1/club-schedule-season/EDM/20052006.json"
     }
   ]
