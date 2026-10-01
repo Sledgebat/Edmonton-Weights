@@ -10,7 +10,7 @@
 import modelJson from "./xg-model.json";
 import type { ShotAttempt } from "./extract";
 
-export const SHOT_TYPES = ["snap", "slap", "backhand", "tip-in", "deflected", "wrap-around", "other"] as const; // wrist = baseline
+export const SHOT_TYPES = ["snap", "slap", "backhand", "tip-in", "deflected", "wrap-around", "bat", "poke", "other"] as const; // wrist = baseline
 const KNOWN_TYPES = new Set(["wrist", ...SHOT_TYPES]);
 
 /** Feature names, in the order of the model's coefficients. */
@@ -32,16 +32,26 @@ export const FEATURES = [
   "last:giveaway",
   "last:hit",
   "secondsSinceLast",
+  "distanceSq",
+  "under10ft",
+  "behindNet",
+  "reboundXDistance",
+  "within2s",
+  "extraAttacker",
 ] as const;
 
 export type ModelShot = Pick<
   ShotAttempt,
   "type" | "distance" | "angle" | "shotType" | "rebound" | "rush" | "strength" | "lastEvent" | "secondsSinceLast"
->;
+> & {
+  /** Normalised x (shooter attacks +x); behind the net when > 89. */
+  x?: number | null;
+};
 
 export function features(s: ModelShot): number[] {
   const d = Math.max(1, s.distance ?? 30);
   const a = s.angle ?? 0;
+  const secs = Math.min(s.secondsSinceLast, 30);
   const st = s.shotType && KNOWN_TYPES.has(s.shotType) ? s.shotType : s.shotType ? "other" : "wrist";
   return [
     d / 10,
@@ -60,7 +70,14 @@ export function features(s: ModelShot): number[] {
     s.lastEvent === "takeaway" ? 1 : 0,
     s.lastEvent === "giveaway" ? 1 : 0,
     s.lastEvent === "hit" ? 1 : 0,
-    Math.min(s.secondsSinceLast, 30) / 30,
+    secs / 30,
+    (d / 10) ** 2,
+    d < 10 ? 1 : 0,
+    (s.x ?? 0) > 89 ? 1 : 0,
+    s.rebound ? d / 10 : 0,
+    secs <= 2 ? 1 : 0,
+    // Shooting team has pulled its own goalie (opponent's net is never empty here).
+    s.strength === "EN" ? 1 : 0,
   ];
 }
 
@@ -81,14 +98,23 @@ export type XgModel = {
 
 export const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
 
-let model = modelJson as XgModel;
+function checked(m: XgModel): XgModel {
+  if (m.coefficients.length !== FEATURES.length) {
+    throw new Error(
+      `xG model has ${m.coefficients.length} coefficients but the code expects ${FEATURES.length} features. Re-train with \`npm run xg:train\`.`,
+    );
+  }
+  return m;
+}
+
+let model = checked(modelJson as XgModel);
 
 export function currentModel(): XgModel {
   return model;
 }
 /** Tests and the trainer swap models in. */
 export function setModel(m: XgModel) {
-  model = m;
+  model = checked(m);
 }
 
 export function predict(s: ModelShot & { oppGoalieIn?: boolean }, m: XgModel = model): number {

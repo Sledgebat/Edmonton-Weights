@@ -9,10 +9,11 @@
  *   Corsi       every shot attempt: goals, shots on goal, missed and blocked shots
  *   Fenwick     unblocked attempts: Corsi minus blocked shots
  *   Rebound     an attempt within 3 s of the same team's shot on goal, with no stoppage between
- *   Rush        an attempt within 4 s of any event in the shooting team's own half or neutral zone
+ *   Rush        an offensive-zone attempt within 4 s of play outside the offensive zone
  *   High danger an unblocked attempt from the inner slot (within 20 ft of the goal line and 9 ft
- *               of centre), or a rebound or rush attempt from the slot (between the faceoff dots,
- *               up to the top of the circles)
+ *               of centre), or a rebound from the slot (between the faceoff dots, up to the top of
+ *               the circles). Rush shots aren't included: in NHL data they score less often than
+ *               other shots from the same spot.
  */
 import type { Play, PlayByPlay } from "@/lib/nhl/schemas";
 
@@ -104,6 +105,9 @@ export function inInnerSlot(x: number, y: number) {
 export function inSlot(x: number, y: number) {
   return x >= NET_X - 35 && x <= NET_X && Math.abs(y) <= 22;
 }
+export function isHighDanger(x: number, y: number, rebound: boolean) {
+  return inInnerSlot(x, y) || (rebound && inSlot(x, y));
+}
 
 /**
  * Which way does `teamId` attack in this play? Uses homeTeamDefendingSide, corrected by the
@@ -153,13 +157,13 @@ export function extractShots(pbp: PlayByPlay): ShotAttempt[] {
         const prevIsStop = !prev || STOPS.has(prev.typeDescKey);
         const lastSog = lastSogByTeam.get(teamId);
         const rebound = lastSog !== undefined && t - lastSog <= 3;
+        // A rush: taken in the offensive zone within 4 s of play outside it.
         let rush = false;
-        if (prev && !prevIsStop && sinceLast <= 4 && prev.details?.xCoord !== undefined) {
+        if (x !== null && x >= BLUE_LINE_X && prev && !prevIsStop && sinceLast <= 4 && prev.details?.xCoord !== undefined) {
           rush = prev.details.xCoord * sign < BLUE_LINE_X;
         }
         const unblocked = type !== "blocked-shot";
-        const highDanger =
-          unblocked && x !== null && y !== null && (inInnerSlot(x, y) || ((rebound || rush) && inSlot(x, y)));
+        const highDanger = unblocked && x !== null && y !== null && isHighDanger(x, y, rebound);
 
         out.push({
           gameId: pbp.id,

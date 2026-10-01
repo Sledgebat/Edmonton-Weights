@@ -8,6 +8,7 @@ import { predict, setModel, type XgModel } from "./xg";
 
 type Row = {
   game_id: number;
+  x: number | null;
   event_id: number;
   season: number;
   type: string;
@@ -31,7 +32,9 @@ function toShot(r: Row) {
     shotType: r.shot_type,
     distance: r.distance,
     angle: r.angle,
-    strength: (r.strength === "EN-own" ? "5v5" : r.strength) as Strength,
+    // "EN-own": the shooting team pulled its goalie (main model); "EN": shooting at an empty net.
+    strength: (r.strength === "EN-own" ? "EN" : r.strength) as Strength,
+    x: r.x,
     rebound: !!r.rebound,
     rush: !!r.rush,
     lastEvent: r.last_event as LastEvent,
@@ -42,9 +45,26 @@ function toShot(r: Row) {
   };
 }
 
+/**
+ * Bring stored shots up to the current definitions (idempotent). Everything needed is in the
+ * stored columns, so no re-download.
+ */
+export function applyDefinitionFixes(log: (m: string) => void = console.log) {
+  const sqlite = getDb().$client;
+  const rush = sqlite.prepare(`UPDATE shots SET rush = 0 WHERE rush = 1 AND (x IS NULL OR x < 25)`).run().changes;
+  const hd = sqlite
+    .prepare(
+      `UPDATE shots SET high_danger = (type != 'blocked-shot' AND x IS NOT NULL AND y IS NOT NULL AND x <= 89 AND (
+         (x >= 69 AND abs(y) <= 9) OR (rebound = 1 AND x >= 54 AND abs(y) <= 22)))`,
+    )
+    .run().changes;
+  log(`Definitions applied (rush flags corrected: ${rush}, high-danger re-checked: ${hd}).`);
+}
+
 export function trainFromDatabase(opts: { seasons?: number[]; log?: (m: string) => void } = {}): XgModel {
   const log = opts.log ?? console.log;
   const sqlite = getDb().$client;
+  applyDefinitionFixes(log);
   const where = opts.seasons?.length ? `AND season IN (${opts.seasons.map(Number).join(",")})` : "";
   const rows = sqlite
     .prepare(`SELECT * FROM shots WHERE type != 'blocked-shot' AND game_type IN (2, 3) ${where}`)
@@ -66,7 +86,7 @@ export function rescoreAll(log: (m: string) => void = console.log) {
   sqlite.transaction(() => {
     for (const r of rows) {
       const s = toShot(r);
-      update.run(predict({ ...s, oppGoalieIn: !s.emptyNet }), r.game_id, r.event_id);
+      update.run(r.type === "blocked-shot" ? 0 : predict({ ...s, oppGoalieIn: !s.emptyNet }), r.game_id, r.event_id);
     }
   })();
   log(`Re-scored ${rows.length.toLocaleString()} shots.`);

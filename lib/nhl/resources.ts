@@ -136,7 +136,7 @@ export const RESOURCES: Resource[] = [
   },
   {
     label: "Team summary",
-    pattern: /^\/stats\/rest\/en\/team\/summary\?/,
+    pattern: /^\/stats\/rest\/en\/team\/summary(\?|$)/,
     schema: TeamSummary,
     ttl: () => 1 * HOUR,
   },

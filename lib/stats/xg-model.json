@@ -1,12 +1,147 @@
 {
-  "version": "provisional-1",
-  "provisional": true,
-  "trainedAt": null,
-  "trainedOn": "Hand-set starting values from published shot-quality research. Run `npm run stats:backfill` then `npm run xg:train` to replace them with a model trained on real NHL data.",
-  "features": ["distance", "logDistance", "angle", "angleSq", "distanceXAngle", "type:snap", "type:slap", "type:backhand", "type:tip-in", "type:deflected", "type:wrap-around", "type:other", "rebound", "rush", "strength:PP", "strength:SH", "strength:EV", "last:faceoff", "last:shot", "last:takeaway", "last:giveaway", "last:hit", "secondsSinceLast"],
-  "intercept": -0.2,
-  "coefficients": [-0.507, -0.17, -0.1, -0.02, 0, 0.1, 0.1, -0.2, 0.1, 0.1, -0.5, -0.3, 0.9, 0.4, 0.35, -0.1, 0.2, -0.15, 0.2, 0.2, 0.2, 0, -0.2],
-  "emptyNet": { "intercept": 1.5, "distance": -0.25 },
-  "baseRate": 0.07,
-  "metrics": {}
+  "version": "trained-2026-10-01",
+  "provisional": false,
+  "trainedAt": "2026-10-01T16:26:01.082Z",
+  "trainedOn": "Unblocked shot attempts from 20242025, 20252026 (regular season and playoffs)",
+  "features": [
+    "distance",
+    "logDistance",
+    "angle",
+    "angleSq",
+    "distanceXAngle",
+    "type:snap",
+    "type:slap",
+    "type:backhand",
+    "type:tip-in",
+    "type:deflected",
+    "type:wrap-around",
+    "type:bat",
+    "type:poke",
+    "type:other",
+    "rebound",
+    "rush",
+    "strength:PP",
+    "strength:SH",
+    "strength:EV",
+    "last:faceoff",
+    "last:shot",
+    "last:takeaway",
+    "last:giveaway",
+    "last:hit",
+    "secondsSinceLast",
+    "distanceSq",
+    "under10ft",
+    "behindNet",
+    "reboundXDistance",
+    "within2s",
+    "extraAttacker"
+  ],
+  "intercept": 2.5649121748175103,
+  "coefficients": [
+    0.630366343990377,
+    -1.3018559990432017,
+    0.15723126743905166,
+    -0.03064307025329238,
+    -0.055633118917098504,
+    0.297886420480047,
+    0.420002516724068,
+    -0.4127326393227501,
+    -0.919218064797995,
+    -0.5022572817925437,
+    -1.2069131206702002,
+    -0.36725899112615173,
+    -0.3128464452247492,
+    -0.7796405521192618,
+    0.5459308706381779,
+    -0.7755988005815412,
+    0.25025058460168864,
+    0.21062634693725546,
+    0.19810761396823878,
+    -1.3966895131731802,
+    -1.2494273293277438,
+    -1.1646201918171675,
+    -1.2187011803057242,
+    -1.3739224508243755,
+    -0.16448236303407854,
+    -0.09785478671454816,
+    -0.3540718067946332,
+    -0.6279812015938931,
+    -0.04777057017404351,
+    -1.187203525821638,
+    -0.019095743784505417
+  ],
+  "emptyNet": {
+    "intercept": 1.6459085427294249,
+    "distance": -0.1592175962351634
+  },
+  "baseRate": 0.0669511285011363,
+  "metrics": {
+    "trainingShots": 237173,
+    "trainingGoals": 15879,
+    "seasons": [
+      20242025,
+      20252026
+    ],
+    "holdout": {
+      "testSeason": 20252026,
+      "shots": 118251,
+      "goals": 8019,
+      "expectedGoals": 8387.6,
+      "logLoss": 0.2209299565138167,
+      "baselineLogLoss": 0.24794575825918327,
+      "auc": 0.7538812420571902,
+      "calibration": [
+        {
+          "predicted": 0.003262066628906557,
+          "actual": 0.0044820295983086685,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.011235018077308156,
+          "actual": 0.012600422832980972,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.020873120382183145,
+          "actual": 0.019281183932346724,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.032395054990734876,
+          "actual": 0.029767441860465118,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.04570155446719435,
+          "actual": 0.04135306553911205,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.060791649149398906,
+          "actual": 0.05784355179704017,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.078411928536484,
+          "actual": 0.080338266384778,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.10013319134539361,
+          "actual": 0.10384778012684989,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.13346926061108846,
+          "actual": 0.13285412262156449,
+          "shots": 11825
+        },
+        {
+          "predicted": 0.22301764848725364,
+          "actual": 0.19575511584644004,
+          "shots": 11826
+        }
+      ]
+    }
+  }
 }

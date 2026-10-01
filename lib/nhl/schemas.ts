@@ -568,7 +568,8 @@ export const PlayerGameLog = z.object({
   seasonId: z.number().int(),
   gameTypeId: z.number().int(),
   playerStatsSeasons: z.array(z.object({ season: z.number().int(), gameTypes: z.array(z.number().int()) })).optional(),
-  gameLog: z.array(GameLogEntry),
+  /** Missing when the player has no games that season. */
+  gameLog: z.array(GameLogEntry).default([]),
 });
 export type PlayerGameLog = z.infer<typeof PlayerGameLog>;
 
@@ -659,6 +660,44 @@ export const EdgeTeam = z
   .loose();
 export type EdgeTeam = z.infer<typeof EdgeTeam>;
 
-/** Skater and goalie EDGE pages: shapes confirmed from captured fixtures in step 3. */
-export const EdgePlayer = z.record(z.string(), z.unknown());
+/** Player EDGE values use league percentiles (0–1) rather than ranks. */
+const EdgePct = z
+  .object({
+    value: z.number().nullable().optional(),
+    imperial: z.number().nullable().optional(),
+    metric: z.number().nullable().optional(),
+    percentile: z.number().nullable().optional(),
+    leagueAvg: EdgeAvg.nullable().optional(),
+  })
+  .loose();
+
+export const EdgeSkater = z
+  .object({
+    player: z.object({ id: z.number().int(), firstName: Localized, lastName: Localized }).loose(),
+    topShotSpeed: EdgePct.optional(),
+    skatingSpeed: z.object({ speedMax: EdgePct.optional(), burstsOver20: EdgePct.optional() }).loose().optional(),
+    totalDistanceSkated: EdgePct.optional(),
+    distanceMaxGame: EdgePct.optional(),
+    sogSummary: z.array(z.object({ locationCode: z.string() }).loose()).optional(),
+    sogDetails: z.array(z.object({ area: z.string(), shots: z.number().optional() }).loose()).optional(),
+    zoneTimeDetails: z
+      .object({ offensiveZonePctg: z.number().optional(), offensiveZonePercentile: z.number().optional() })
+      .loose()
+      .optional(),
+  })
+  .loose();
+export type EdgeSkater = z.infer<typeof EdgeSkater>;
+
+export const EdgeGoalie = z
+  .object({
+    player: z.object({ id: z.number().int() }).loose().optional(),
+    stats: z.record(z.string(), EdgePct).optional(),
+    shotLocationSummary: z.array(z.object({ locationCode: z.string(), savePctg: z.number().optional() }).loose()).optional(),
+    shotLocationDetails: z.array(z.object({ area: z.string(), saves: z.number().optional(), savePctg: z.number().optional() }).loose()).optional(),
+  })
+  .loose();
+export type EdgeGoalie = z.infer<typeof EdgeGoalie>;
+
+/** Either player page (the cache's resource registry validates both with this). */
+export const EdgePlayer = z.union([EdgeSkater, EdgeGoalie]);
 export type EdgePlayer = z.infer<typeof EdgePlayer>;

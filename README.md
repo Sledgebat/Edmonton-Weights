@@ -6,13 +6,15 @@ Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainm
 
 ## Status
 
-Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), step 1 of 5 done.
+Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), steps 1–2 of 5 done.
 
 1. **Trim (done):** the earlier fan-site prototype reduced to its foundation: the NHL data layer (validation,
    SQLite cache, fixtures and replay modes), schedule, standings, roster and player pages, and one theme
    (Oilers blue and orange, light and dark). Blog, On This Day, milestones, playoff odds, fan ratings,
    spoiler-free mode and the extra jersey themes were removed.
-2. Stats engine: shot extraction, our own expected-goals model, league-wide nightly ingest, NHL EDGE data.
+2. **Stats engine (done):** shot extraction from NHL play-by-play, our own expected-goals model (trained on
+   2024-25 and 2025-26; held-out AUC 0.754, see `lib/stats/xg-report.md`), team and goalie advanced stats with
+   league ranks, league-wide ingest by the worker, NHL EDGE and team-summary clients.
 3. Home page: snapshot, team stats with league ranks, recent performance, leaders, NHL EDGE.
 4. Game reports, players table, stats guide.
 5. Polish.
@@ -28,6 +30,19 @@ npm run fixtures:capture          # hits every NHL endpoint, saves fixtures/, wr
 npm run dev                       # http://localhost:3000
 npm run worker                    # optional, second terminal: keeps the cache warm
 ```
+
+## Advanced stats
+
+| Command | What it does |
+| --- | --- |
+| `npm run stats:backfill` | One-time: download 2024-25, 2025-26 and this season so far, keep only the shots, train the xG model (15–30 min, ~55 MB) |
+| `npm run stats:rescore` | Apply the current shot definitions and re-score every stored shot with `lib/stats/xg-model.json` (no download) |
+| `npm run xg:train` | Re-train the model on the complete seasons stored |
+| `npm run stats:fixtures` | Offline: store the finished games saved in `fixtures/` (used by the tests) |
+
+Definitions (also on the site): Corsi = all shot attempts; Fenwick = unblocked attempts; high-danger = unblocked
+attempts from the inner slot, or rebounds from the slot; xG = probability an unblocked attempt scores; GSAx = expected
+goals faced minus goals allowed. The worker stores every finished NHL game every 15 minutes and catches up nightly.
 
 ## Data modes
 
@@ -85,7 +100,7 @@ Replay settings: `REPLAY_SPEED` (default 10), `REPLAY_PREGAME_SECONDS` (30), `RE
 app/            routes
 components/     ui/, game/, charts/, rink/, theme/
 lib/nhl/        endpoints, Zod schemas, cached client, replay engine
-lib/stats/      shot extraction, xG model (step 2)
+lib/stats/      shot extraction, xG model and training, team/goalie aggregates
 db/             Drizzle schema, migrations, sqlite file (gitignored)
 worker/         cron jobs
 fixtures/       saved NHL responses, committed so tests run offline

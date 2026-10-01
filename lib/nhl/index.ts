@@ -11,7 +11,8 @@ import "./replay"; // registers the replay hook
 import {
   Boxscore,
   ClubSchedule,
-  EdgePlayer,
+  EdgeGoalie,
+  EdgeSkater,
   EdgeTeam,
   TeamSummary,
   ClubStats,
@@ -41,8 +42,8 @@ export const nhl = {
   prospects: (team = TEAM) => getResource(endpoints.prospects(team), Prospects),
   teamSummary: (season: number, gameType: GameType = 2) => getResource(endpoints.teamSummary(season, gameType), TeamSummary),
   edgeTeam: (teamId = TEAM_ID) => getResource(endpoints.edgeTeam(teamId), EdgeTeam),
-  edgeSkater: (playerId: number) => getResource(endpoints.edgeSkater(playerId), EdgePlayer),
-  edgeGoalie: (playerId: number) => getResource(endpoints.edgeGoalie(playerId), EdgePlayer),
+  edgeSkater: (playerId: number) => getResource(endpoints.edgeSkater(playerId), EdgeSkater),
+  edgeGoalie: (playerId: number) => getResource(endpoints.edgeGoalie(playerId), EdgeGoalie),
 };
 
 export { NhlError, cacheStatus, nhlMode, type Meta, type NhlMode, type Result, type Source } from "./client";

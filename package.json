@@ -18,7 +18,8 @@
     "db:generate": "drizzle-kit generate",
     "stats:backfill": "tsx scripts/stats-backfill.ts",
     "xg:train": "tsx scripts/xg-train.ts",
-    "stats:fixtures": "tsx scripts/stats-fixtures.ts"
+    "stats:fixtures": "tsx scripts/stats-fixtures.ts",
+    "stats:rescore": "tsx scripts/stats-rescore.ts"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.3.0",
