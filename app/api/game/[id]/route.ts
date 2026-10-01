@@ -6,7 +6,7 @@ const PARTS = ["landing", "pbp", "boxscore"] as const;
 type Part = (typeof PARTS)[number];
 
 /**
- * Everything the Game Day Hub needs in one poll.
+ * Everything a game page needs in one poll.
  * GET /api/game/2026020004?parts=landing,pbp,boxscore   (default: all three)
  */
 export async function GET(req: NextRequest, ctx: RouteContext<"/api/game/[id]">) {

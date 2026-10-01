@@ -103,8 +103,8 @@ NHL_MODE=replay GAME_ID=2026020004 npm run dev`}
             Replay
           </h2>
           <p className="mt-1 text-fg-muted">
-            A finished game played back at {status.replay?.speed ?? 10}x speed, updating below without a page reload. The Game
-            Day Hub (Phase 5) will use the same feed.
+            A finished game played back at {status.replay?.speed ?? 10}x speed, updating below without a page reload. Game
+            pages use the same feed.
           </p>
           <div className="mt-4 max-w-xl">
             {status.replayError ? (

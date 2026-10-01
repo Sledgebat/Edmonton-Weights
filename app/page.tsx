@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { ArrowRight, Radio, Tv } from "lucide-react";
+import { Radio, Tv } from "lucide-react";
 import { DataError, Module } from "@/components/data/Module";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { Countdown } from "@/components/ui/Countdown";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type ScheduleGame, type StandingsRow } from "@/lib/nhl";
@@ -77,9 +76,9 @@ function NextGameHero({ game, standings }: { game: ScheduleGame; standings?: Sta
         {side(away, "Away")}
         <div className="text-center">
           {v.live ? (
-            <Spoiler label="score" className="numeral block text-5xl leading-none sm:text-6xl">
+            <span className="numeral block text-5xl leading-none sm:text-6xl">
               {away.score ?? 0}–{home.score ?? 0}
-            </Spoiler>
+            </span>
           ) : (
             <p className="display-hero text-4xl text-header-accent sm:text-5xl">{v.isHome ? "vs" : "@"}</p>
           )}
@@ -106,7 +105,7 @@ function NextGameHero({ game, standings }: { game: ScheduleGame; standings?: Sta
         </div>
         {v.live || isToday ? (
           <Link href={`/game/${game.id}`} className="btn btn-primary">
-            <Radio size={16} aria-hidden /> Game Day Hub
+            <Radio size={16} aria-hidden /> Game page
           </Link>
         ) : (
           <p className="text-2xl sm:text-3xl">
@@ -186,7 +185,7 @@ export default async function Home() {
                 {formatGameDate(last.startTimeUTC)} · {lastView.prefix} {txt(lastView.opp.commonName, lastView.opp.abbrev)}
                 {last.gameType !== 2 && ` · ${GAME_TYPE_LABEL[last.gameType]}`}
               </p>
-              <Spoiler label="result" as="div" className="mt-2 flex items-center gap-3">
+              <div className="mt-2 flex items-center gap-3">
                 <TeamLogo abbrev={lastView.opp.abbrev} logo={lastView.opp.logo} darkLogo={lastView.opp.darkLogo} size={44} />
                 <p className="numeral text-5xl leading-none">
                   {lastView.us.score}–{lastView.opp.score}
@@ -195,12 +194,12 @@ export default async function Home() {
                   {lastView.outcome && <ResultBadge outcome={lastView.outcome} />}
                   {lastView.decidedIn !== "REG" && <span className="text-xs font-semibold text-fg-muted">{lastView.decidedIn}</span>}
                 </div>
-              </Spoiler>
+              </div>
               {last.winningGoalScorer && (
-                <Spoiler label="winning goal scorer" as="div" className="mt-3 text-sm text-fg-muted">
+                <div className="mt-3 text-sm text-fg-muted">
                   Winner: {txt(last.winningGoalScorer.firstInitial)} {txt(last.winningGoalScorer.lastName)}
                   {last.winningGoalie && ` · Win in goal: ${txt(last.winningGoalie.firstInitial)} ${txt(last.winningGoalie.lastName)}`}
-                </Spoiler>
+                </div>
               )}
             </div>
           )}
@@ -222,14 +221,14 @@ export default async function Home() {
             <p className="text-fg-muted">The Oilers aren&apos;t in the current standings.</p>
           ) : (
             <div>
-              <Spoiler label="standings position" as="div">
+              <div>
                 <p className="display text-5xl leading-none">
                   {ordinal(edm.divisionSequence)} <span className="text-fg-muted">in the {edm.divisionName}</span>
                 </p>
                 <p className="mt-2 text-sm text-fg-muted">
                   {ordinal(edm.conferenceSequence)} in the {edm.conferenceName} · {wildCardNote}
                 </p>
-              </Spoiler>
+              </div>
               <dl className="mt-4 grid grid-cols-4 gap-2 text-center">
                 {[
                   ["Record", `${edm.wins}-${edm.losses}-${edm.otLosses}`],
@@ -240,7 +239,7 @@ export default async function Home() {
                   <div key={k} className="rounded-md bg-sunken px-1 py-2">
                     <dt className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
                     <dd className="numeral text-lg">
-                      <Spoiler label={k}>{val}</Spoiler>
+                      <span>{val}</span>
                     </dd>
                   </div>
                 ))}
@@ -256,7 +255,7 @@ export default async function Home() {
           ) : !edm ? (
             <p className="text-fg-muted">No games yet.</p>
           ) : (
-            <Spoiler label="streak" as="div">
+            <div>
               <p className="text-sm text-fg-muted">Current streak</p>
               <p className="numeral text-6xl leading-none">{streakLabel(edm) || "—"}</p>
               <p className="mt-3 text-sm">
@@ -265,7 +264,7 @@ export default async function Home() {
                 <span className="font-semibold">Road:</span> {edm.roadWins}-{edm.roadLosses}-{edm.roadOtLosses}
               </p>
               {schedule.ok && <p className="mt-1 text-xs text-fg-muted">Regular season from the schedule: {formatRecord(regRecord)}</p>}
-            </Spoiler>
+            </div>
           )}
         </Module>
 
@@ -273,10 +272,10 @@ export default async function Home() {
         <Module
           title="Top scorers"
           meta={stats.ok ? stats.meta : undefined}
-          className="md:col-span-2"
+          className="md:col-span-2 lg:col-span-3"
           action={
             <Link href="/roster" className="text-sm font-semibold text-accent-ink underline">
-              Roster
+              All players
             </Link>
           }
         >
@@ -296,9 +295,9 @@ export default async function Home() {
                     <span className="min-w-0">
                       <span className="block truncate text-sm text-fg-muted">{txt(p.firstName)}</span>
                       <span className="display block truncate text-2xl leading-none group-hover:underline">{txt(p.lastName)}</span>
-                      <Spoiler label="stats" className="mt-1 block text-sm">
+                      <span className="mt-1 block text-sm">
                         <span className="numeral">{p.points}</span> PTS · {p.goals} G · {p.assists} A
-                      </Spoiler>
+                      </span>
                     </span>
                   </Link>
                 </li>
@@ -307,20 +306,10 @@ export default async function Home() {
           )}
         </Module>
 
-        {/* Blog (Phase 8) */}
-        <Module title="From the blog">
-          <p className="text-fg-muted">
-            Posts from you and your friends, with live stat embeds, land here in Phase 8: the latest three plus a pinned
-            featured post.
-          </p>
-          <Link href="/blog" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent-ink underline">
-            About the blog <ArrowRight size={14} aria-hidden />
-          </Link>
-        </Module>
       </div>
 
       <p className="mt-10 text-center text-xs text-fg-muted">
-        Prototype build · Phase 4 of 8 ·{" "}
+        Stats site build · step 1 of 5 · the stats home page arrives in step 3 ·{" "}
         <Link href="/data" className="underline">
           Data status
         </Link>{" "}

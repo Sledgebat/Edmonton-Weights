@@ -5,14 +5,13 @@ import { Tv } from "lucide-react";
 import { DataError } from "@/components/data/Module";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { LastUpdated } from "@/components/ui/LastUpdated";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type ScheduleGame } from "@/lib/nhl";
 import { edmontonDate } from "@/lib/nhl/resources";
 import { GAME_TYPE_LABEL, byMonth, formatGameDate, formatGameTime, formatRecord, nextGame, record, seasonShort, teamView } from "@/lib/oilers";
 
-export const metadata: Metadata = { title: "Schedule" };
+export const metadata: Metadata = { title: "Games" };
 
 type Filter = "all" | "regular" | "preseason";
 const FILTERS: { key: Filter; label: string }[] = [
@@ -59,13 +58,13 @@ function GameRow({ game, isNext }: { game: ScheduleGame; isNext: boolean }) {
 
         <span className="text-right">
           {v.finished && v.outcome ? (
-            <Spoiler label="result" className="inline-flex items-center gap-2">
+            <span className="inline-flex items-center gap-2">
               <span className="numeral text-lg">
                 {v.us.score}–{v.opp.score}
                 {v.decidedIn !== "REG" && <span className="ml-1 text-xs text-fg-muted">{v.decidedIn}</span>}
               </span>
               <ResultBadge outcome={v.outcome} />
-            </Spoiler>
+            </span>
           ) : v.live ? (
             <span className="numeral inline-flex items-center gap-1.5 text-sm uppercase text-loss">
               <span className="h-2 w-2 animate-pulse rounded-full bg-current" aria-hidden /> Live
@@ -95,7 +94,7 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
   if (!schedule.ok) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-        <h1 className="display-hero text-6xl">Schedule</h1>
+        <h1 className="display-hero text-6xl">Games</h1>
         <div className="mt-6">
           <DataError what="the schedule" error={schedule.error} />
         </div>
@@ -113,20 +112,20 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">{seasonShort(schedule.data.currentSeason)} season</p>
-      <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Schedule</h1>
+      <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Games</h1>
       <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-1">
         <p>
           <span className="text-fg-muted">Regular season:</span>{" "}
-          <Spoiler label="record" className="numeral text-lg">
+          <span className="numeral text-lg">
             {formatRecord(reg)}
-          </Spoiler>
+          </span>
         </p>
         {pre.w + pre.l + pre.otl > 0 && (
           <p>
             <span className="text-fg-muted">Preseason:</span>{" "}
-            <Spoiler label="record" className="numeral text-lg">
+            <span className="numeral text-lg">
               {formatRecord(pre)}
-            </Spoiler>
+            </span>
           </p>
         )}
         <LastUpdated at={schedule.meta.fetchedAt} stale={schedule.meta.stale} />

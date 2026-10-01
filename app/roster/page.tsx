@@ -3,12 +3,11 @@ import { connection } from "next/server";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { PlayerCard } from "@/components/ui/PlayerCard";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { load } from "@/lib/load";
 import { nhl, txt, type ClubGoalieStats, type ClubSkaterStats, type RosterPlayer } from "@/lib/nhl";
 import { age, savePct } from "@/lib/oilers";
 
-export const metadata: Metadata = { title: "Roster" };
+export const metadata: Metadata = { title: "Players" };
 
 const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Right wing", D: "Defence", G: "Goalie" };
 
@@ -36,9 +35,9 @@ export default async function RosterPage() {
       <>
         <span className="block">{bio}</span>
         {line && (
-          <Spoiler label="season stats" className="numeral block text-fg">
+          <span className="numeral block text-fg">
             {line}
-          </Spoiler>
+          </span>
         )}
       </>
     );
@@ -55,7 +54,7 @@ export default async function RosterPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">Current roster</p>
-      <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Roster</h1>
+      <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Players</h1>
       {roster.ok && (
         <p className="mt-2 flex flex-wrap items-baseline gap-x-4 text-fg-muted">
           {roster.data.forwards.length + roster.data.defensemen.length + roster.data.goalies.length} players

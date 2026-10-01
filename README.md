@@ -1,23 +1,21 @@
 # Oil Country Hub
 
-A data-first Edmonton Oilers fan-site prototype built from the NHL's public web API.
+Edmonton Oilers stats, basic and advanced, in one place. Runs itself from the NHL's free public data and
+calculates its own advanced stats.
 Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainment Group or the NHL.
 
 ## Status
 
-Phases 1–4 of 8 are done:
+Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), step 1 of 5 done.
 
-1. **Setup:** Next.js 16 + TypeScript (strict) + Tailwind 4, with Drizzle, better-sqlite3, Zod, Recharts,
-   node-cron, Vitest and Playwright.
-2. **Design system and site shell:** three jersey-era themes (Dynasty, Copper & Blue, Gear) in light and dark,
-   header with jersey-swatch picker, light/dark and spoiler-free toggles, phone bottom nav, footer disclaimer,
-   and a `/styleguide` page with contrast ratios. Routes for later phases show a "coming in Phase N" placeholder.
-3. **Data layer:** typed NHL client with Zod schemas, a SQLite cache with last-good fallback and backoff,
-   `/api/*` routes for browsers, fixtures mode and replay mode. `/data` shows it all working.
-4. **Core pages:** Home dashboard (next game with countdown, last result, division position, form, top
-   scorers), Schedule, Standings (division, wild card, conference), Roster and Player pages (bio, season and
-   career stats, game log, last-10 trend), all respecting spoiler-free mode. NHL logos and headshots are flagged
-   in `LICENSING.md`.
+1. **Trim (done):** the earlier fan-site prototype reduced to its foundation: the NHL data layer (validation,
+   SQLite cache, fixtures and replay modes), schedule, standings, roster and player pages, and one theme
+   (Oilers blue and orange, light and dark). Blog, On This Day, milestones, playoff odds, fan ratings,
+   spoiler-free mode and the extra jersey themes were removed.
+2. Stats engine: shot extraction, our own expected-goals model, league-wide nightly ingest, NHL EDGE data.
+3. Home page: snapshot, team stats with league ranks, recent performance, leaders, NHL EDGE.
+4. Game reports, players table, stats guide.
+5. Polish.
 
 ## First run
 
@@ -76,7 +74,7 @@ Replay settings: `REPLAY_SPEED` (default 10), `REPLAY_PREGAME_SECONDS` (30), `RE
 | `npm run themes:build` | Regenerate `styles/themes.css` after editing colours in `lib/theme/tokens.ts` |
 | `npm run worker` | Keeps the cache warm: core feeds every minute (fetching only when stale), a live Oilers game every 20 s |
 | `npm test` | Vitest unit tests (offline): schemas vs every fixture, cache fallback, replay |
-| `npm run test:e2e` | Playwright smoke test in fixtures mode: every page in all three themes, desktop and phone |
+| `npm run test:e2e` | Playwright smoke test in fixtures mode: every page in light and dark, desktop and phone |
 | `npm run lint` / `npm run typecheck` | ESLint / TypeScript |
 
 `NHL_API_BASE` can point the capture script at another host (used for a mock server in testing).
@@ -87,9 +85,7 @@ Replay settings: `REPLAY_SPEED` (default 10), `REPLAY_PREGAME_SECONDS` (30), `RE
 app/            routes
 components/     ui/, game/, charts/, rink/, theme/
 lib/nhl/        endpoints, Zod schemas, cached client, replay engine
-lib/sim/        playoff Monte Carlo (Phase 6)
-lib/history/    On This Day builder (Phase 7)
-lib/milestones/ milestone math (Phase 6)
+lib/stats/      shot extraction, xG model (step 2)
 db/             Drizzle schema, migrations, sqlite file (gitignored)
 worker/         cron jobs
 fixtures/       saved NHL responses, committed so tests run offline
@@ -101,9 +97,8 @@ tests/          unit/ (Vitest), e2e/ (Playwright)
 
 - **Colours** live in `lib/theme/tokens.ts`; `styles/themes.css` is generated from it. A unit test fails if any
   text/background pair drops below WCAG AA or if the CSS is out of date.
-- **Themes** switch with `data-era="dynasty|copper|gear"` and `data-mode="light|dark"` on `<html>`, set before
-  first paint by a small inline script and remembered in `localStorage`.
-- **Spoiler-free mode** sets `data-spoilers="on"`; anything with the `spoiler` class blurs until tapped.
+- **Light and dark** switch with `data-mode="light|dark"` on `<html>`, set before first paint by a small inline
+  script and remembered in `localStorage`.
 - **Fonts** (Saira Extra Condensed, Oswald, Barlow) are self-hosted through Fontsource packages rather than
   `next/font/google`, so builds and tests work offline. Saira Extra Condensed has no italic, so the hero slant
   is synthesised by the browser.

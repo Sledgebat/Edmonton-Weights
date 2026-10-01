@@ -12,12 +12,11 @@ import "./globals.css";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { SiteFooter } from "@/components/ui/SiteFooter";
 import { SiteHeader } from "@/components/ui/SiteHeader";
-import { SpoilerRevealer } from "@/components/ui/SpoilerRevealer";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme/prefs";
 
 export const metadata: Metadata = {
   title: { default: "Oil Country Hub", template: "%s · Oil Country Hub" },
-  description: "Independent, data-first Edmonton Oilers fan site (prototype).",
+  description: "Edmonton Oilers stats, basic and advanced, in one place.",
 };
 
 export const viewport: Viewport = {
@@ -28,7 +27,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // The boot script sets data-era / data-mode / data-spoilers before paint, so the server
+    // The boot script sets data-mode before paint, so the server
     // markup intentionally differs from the hydrated attributes.
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -47,7 +46,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <SiteFooter />
         <BottomNav />
-        <SpoilerRevealer />
       </body>
     </html>
   );

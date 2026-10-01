@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DataError, Module } from "@/components/data/Module";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt } from "@/lib/nhl";
@@ -12,7 +11,7 @@ export const metadata: Metadata = { title: "Game" };
 
 const STATE: Record<string, string> = { FUT: "Upcoming", PRE: "Pre-game", LIVE: "Live", CRIT: "Live", FINAL: "Final", OFF: "Final" };
 
-/** Placeholder until the Game Day Hub (Phase 5): the matchup and score. */
+/** Placeholder until the game report (step 4): the matchup and score. */
 export default async function GamePage({ params }: PageProps<"/game/[id]">) {
   const { id } = await params;
   if (!/^\d{10}$/.test(id)) notFound();
@@ -21,7 +20,7 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">Game Day Hub · coming in Phase 5</p>
+      <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">Game report · coming in step 4</p>
       {!landing.ok ? (
         <>
           <h1 className="display-hero mt-2 text-5xl">Game {id}</h1>
@@ -45,9 +44,9 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
                 ) : (
                   <div key={i}>
                     {landing.data.awayTeam.score !== undefined ? (
-                      <Spoiler label="score" className="numeral text-6xl">
+                      <span className="numeral text-6xl">
                         {landing.data.awayTeam.score}–{landing.data.homeTeam.score}
-                      </Spoiler>
+                      </span>
                     ) : (
                       <span className="display-hero text-4xl text-accent-ink">@</span>
                     )}
@@ -61,12 +60,12 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
             </p>
           </Module>
           <p className="mt-6 text-fg-muted">
-            The full hub (live play-by-play, shot map, box score, win probability and fan ratings) is built in Phase 5.
+            The full game report (expected goals, shot map, high-danger chances and top performers) is built in step 4.
           </p>
         </>
       )}
       <Link href="/schedule" className="btn btn-secondary mt-8">
-        Full schedule
+        All games
       </Link>
     </div>
   );

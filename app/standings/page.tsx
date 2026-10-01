@@ -3,7 +3,6 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
@@ -108,12 +107,12 @@ function StandingsTable({
                   <td className="px-2 py-2 text-right">{pointPct(r)}</td>
                   <td className="px-2 py-2 text-right">{signed(r.goalDifferential)}</td>
                   <td className="whitespace-nowrap px-2 py-2 text-right">
-                    <Spoiler label="last 10 record">
+                    <span>
                       {r.l10Wins}-{r.l10Losses}-{r.l10OtLosses}
-                    </Spoiler>
+                    </span>
                   </td>
                   <td className="px-2 py-2 pr-3 text-right">
-                    <Spoiler label="streak">{streakLabel(r) || "—"}</Spoiler>
+                    <span>{streakLabel(r) || "—"}</span>
                   </td>
                 </tr>
               );
@@ -211,7 +210,7 @@ export default async function StandingsPage({ searchParams }: PageProps<"/standi
             );
           })}
           <p className="text-xs text-fg-muted">
-            Spoiler-free mode hides the last-10 records and streaks. Ties are broken by the NHL&apos;s own ordering.
+            Ties are broken by the NHL&apos;s own ordering.
           </p>
         </div>
       )}

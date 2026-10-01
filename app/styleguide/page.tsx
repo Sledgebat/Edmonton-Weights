@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PlayerCard } from "@/components/ui/PlayerCard";
 import { Rivets } from "@/components/ui/Rivets";
 import { AA_MIN, contrastRatio } from "@/lib/theme/contrast";
-import { CONTRAST_PAIRS, ERAS, ERA_INFO, MODES, THEMES, type Era, type Mode, type Tokens } from "@/lib/theme/tokens";
+import { CONTRAST_PAIRS, MODES, THEMES, type Mode, type Tokens } from "@/lib/theme/tokens";
 
 export const metadata: Metadata = { title: "Style guide" };
 
@@ -90,10 +90,10 @@ function ContrastTable({ tokens }: { tokens: Tokens }) {
   );
 }
 
-function ThemePreview({ era, mode }: { era: Era; mode: Mode }) {
-  const t = THEMES[era][mode];
+function ThemePreview({ mode }: { mode: Mode }) {
+  const t = THEMES[mode];
   return (
-    <div data-era={era} data-mode={mode} className="overflow-hidden rounded-xl border border-line shadow-sm">
+    <div data-mode={mode} className="overflow-hidden rounded-xl border border-line shadow-sm">
       {/* Mini header */}
       <div className="bg-header text-header-fg">
         <div className="flex items-center justify-between px-4 py-3">
@@ -127,12 +127,11 @@ function ThemePreview({ era, mode }: { era: Era; mode: Mode }) {
         {/* Buttons, badges, links */}
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" className="btn btn-primary">
-            Game Day Hub
+            Game report
           </button>
           <button type="button" className="btn btn-secondary">
             Full schedule
           </button>
-          <span className="metal numeral rounded px-2 py-1 text-xs uppercase tracking-widest">Metal badge</span>
           <a href="#themes" className="font-semibold text-accent-ink underline">
             Text link
           </a>
@@ -196,7 +195,7 @@ export default function StyleguidePage() {
       <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">Design system</p>
       <h1 className="display-hero mt-2 text-6xl sm:text-7xl">Style guide</h1>
       <p className="mt-3 max-w-prose text-lg text-fg-muted">
-        Every colour, font and component, in all three jersey eras, light and dark. The page itself follows the theme you
+        Every colour, font and component, in light and dark. The page itself follows the mode you
         pick in the header; the previews below are fixed.
       </p>
 
@@ -245,9 +244,9 @@ export default function StyleguidePage() {
       <Section
         id="motifs"
         title="Motifs"
-        intro="Sleeve stripes divide sections, five rivets mark the five Cups, and the Gear era gets a faint generic cog texture. No team logos, crests or wordmarks are used anywhere."
+        intro="Sleeve stripes divide sections and five rivets mark the five Cups. No team logos, crests or wordmarks are used anywhere."
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           <div className="card p-5">
             <p className="text-sm font-semibold">Sleeve stripes</p>
             <div className="sleeve-stripes mt-3 rounded-sm" aria-hidden />
@@ -257,31 +256,17 @@ export default function StyleguidePage() {
             <p className="text-sm font-semibold">Five rivets</p>
             <Rivets className="mt-4 text-accent-ink" size={10} />
           </div>
-          <div className="card p-5">
-            <p className="text-sm font-semibold">Metallic silver (badges and headers only)</p>
-            <div className="metal display mt-3 rounded px-3 py-2 text-2xl">Gear Era</div>
-          </div>
         </div>
       </Section>
 
       <Section
         id="themes"
-        title="Jersey-era themes"
-        intro="Heritage shades are approximations to verify against high-resolution jersey photos before launch. Orange fails contrast on white at small sizes, so light themes use a darker accent ink for text and keep bright orange for fills with dark text."
+        title="Colours"
+        intro="Oilers navy and orange, in light and dark. Orange fails contrast on white at small sizes, so light mode uses a darker accent ink for text and keeps bright orange for fills with dark text. Dark mode uses navy as the page background."
       >
-        <div className="space-y-12">
-          {ERAS.map((era) => (
-            <div key={era}>
-              <h3 className="display text-3xl">
-                {ERA_INFO[era].name} <span className="text-fg-muted">· {ERA_INFO[era].years}</span>
-              </h3>
-              <p className="mt-1 text-fg-muted">{ERA_INFO[era].blurb}</p>
-              <div className="mt-4 grid gap-5 lg:grid-cols-2">
-                {MODES.map((mode) => (
-                  <ThemePreview key={mode} era={era} mode={mode} />
-                ))}
-              </div>
-            </div>
+        <div className="grid gap-5 lg:grid-cols-2">
+          {MODES.map((mode) => (
+            <ThemePreview key={mode} mode={mode} />
           ))}
         </div>
       </Section>

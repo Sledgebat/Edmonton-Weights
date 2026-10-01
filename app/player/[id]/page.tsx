@@ -7,17 +7,14 @@ import { Headshot } from "@/components/ui/Headshot";
 import { DataError, Module } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
-import { Spoiler } from "@/components/ui/Spoiler";
 import { load } from "@/lib/load";
 import { nhl, txt, type GameLogEntry, type PlayerLanding, type SeasonTotal, type StatLine } from "@/lib/nhl";
 import { previousSeason } from "@/lib/nhl/endpoints";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
 
 const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Right wing", D: "Defence", G: "Goalie" };
-const RECENT_MS = 36 * 3600 * 1000;
 /** NHL goalie decisions: W, L, and O for an overtime/shootout loss. */
 const DECISION: Record<string, string> = { W: "W", L: "L", O: "OTL" };
-const isRecent = (gameDate: string) => Date.now() - Date.parse(gameDate + "T12:00:00Z") < RECENT_MS;
 
 export async function generateMetadata({ params }: PageProps<"/player/[id]">): Promise<Metadata> {
   const { id } = await params;
@@ -98,17 +95,6 @@ function StatTable<T>({ rows, cols, first, caption }: { rows: T[]; cols: Col<T>[
   );
 }
 
-/** Blur only when the content could spoil a game from the last day and a half. */
-function MaybeSpoiler({ on, children }: { on: boolean; children: React.ReactNode }) {
-  return on ? (
-    <Spoiler label="recent form" as="div">
-      {children}
-    </Spoiler>
-  ) : (
-    <div>{children}</div>
-  );
-}
-
 function trendFor(log: GameLogEntry[], goalie: boolean): { points: TrendPoint[]; summary: string } {
   const recent = [...log].sort((a, b) => a.gameDate.localeCompare(b.gameDate)).slice(-10);
   if (goalie) {
@@ -158,7 +144,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
           <DataError what="this player" error={player.error} />
         </div>
         <Link href="/roster" className="btn btn-secondary mt-6">
-          Back to roster
+          Back to players
         </Link>
       </div>
     );
@@ -232,12 +218,6 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
         { key: "ppp", label: "PPP", title: "Power-play points", value: (g) => g.powerPlayPoints ?? 0 },
         { key: "toi", label: "TOI", title: "Time on ice", value: (g) => g.toi ?? "—" },
       ];
-  // Spoiler-free: wrap the stat cells of games from the last day and a half.
-  const spoilerCols: Col<GameLogEntry>[] = logCols.map((c) => ({
-    ...c,
-    value: (g: GameLogEntry) => (isRecent(g.gameDate) ? <Spoiler label="game stats">{c.value(g)}</Spoiler> : c.value(g)),
-  }));
-  const recentGame = games.length > 0 && isRecent(games[0].gameDate);
 
   const seasonCols: Col<SeasonTotal>[] = cols as unknown as Col<SeasonTotal>[];
   const seasonFirst: Col<SeasonTotal>[] = [
@@ -275,9 +255,9 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
           <Module title={season ? `${seasonShort(season)} regular season` : "This season"} meta={player.meta}>
             {seasonStats ? (
-              <Spoiler label="season stats" as="div">
+              <div>
                 <StatTiles stats={seasonStats} cols={cols} />
-              </Spoiler>
+              </div>
             ) : (
               <p className="text-fg-muted">No NHL games this season yet.</p>
             )}
@@ -311,7 +291,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
           ) : trend.points.length < 2 ? (
             <p className="text-fg-muted">Not enough games yet for a trend.</p>
           ) : (
-            <MaybeSpoiler on={recentGame}>
+            <div>
               <p className="text-sm text-fg-muted">
                 {trend.summary}
                 {spansSeasons ? " · includes last season" : logSeason && logSeason !== season ? ` · ${seasonShort(logSeason)}` : ""}
@@ -327,7 +307,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
                 yFormat={goalie ? "savePct" : "int"}
                 ariaLabel={`${goalie ? "Save percentage" : "Points"} in each of the last ${trend.points.length} games. ${trend.summary}. Full numbers are in the game log table.`}
               />
-            </MaybeSpoiler>
+            </div>
           )}
         </Module>
 
@@ -337,7 +317,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
           ) : games.length === 0 ? (
             <p className="text-fg-muted">No games yet.</p>
           ) : (
-            <StatTable rows={games} cols={spoilerCols} first={logFirst} caption="Game log, most recent first" />
+            <StatTable rows={games} cols={logCols} first={logFirst} caption="Game log, most recent first" />
           )}
         </Module>
 
@@ -366,7 +346,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
         </Module>
 
         <p className="text-sm text-fg-muted">
-          Posts about this player arrive with the blog in Phase 8. <LastUpdated at={player.meta.fetchedAt} stale={player.meta.stale} />
+          <LastUpdated at={player.meta.fetchedAt} stale={player.meta.stale} />
         </p>
       </div>
     </div>

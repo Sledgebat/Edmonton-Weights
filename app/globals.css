@@ -27,8 +27,8 @@
   --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Any element carrying an era + mode repaints itself (html, and style-guide previews). */
-[data-era][data-mode] {
+/* Any element carrying a mode repaints itself (html, and style-guide previews). */
+[data-mode] {
   background-color: var(--surface);
   color: var(--text);
 }
@@ -40,7 +40,6 @@ html {
 
 body {
   background-color: var(--surface);
-  background-image: var(--page-pattern);
   color: var(--text);
   font-family: var(--font-sans);
 }
@@ -101,20 +100,6 @@ a {
       var(--stripe-inner) 2px 6px,
       var(--stripe-outer) 6px 8px
     );
-  }
-
-  /* Faked metallic silver: headers and badges only, never body text. */
-  .metal {
-    background-image: var(--metal);
-    color: #041e42;
-  }
-
-  /* Gear era: the wordmark accent gets the faked metallic finish (large display type only). */
-  [data-era="gear"] .wordmark-accent {
-    background-image: var(--metal);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
 
   /* Primary button: accent fill with contrast-checked text. */
@@ -188,14 +173,5 @@ a {
   }
   [data-mode="dark"] .logo-dark {
     display: block;
-  }
-
-  /* Spoiler-free mode: anything marked .spoiler is hidden until tapped. */
-  [data-spoilers="on"] .spoiler:not([data-revealed]) {
-    filter: blur(7px);
-    user-select: none;
-    cursor: pointer;
-    border-radius: 4px;
-    background: color-mix(in srgb, var(--text) 8%, transparent);
   }
 }
