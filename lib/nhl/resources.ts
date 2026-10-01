@@ -135,8 +135,14 @@ export const RESOURCES: Resource[] = [
     },
   },
   {
+    label: "Team stats (past season)",
+    pattern: /^\/club-stats\/[A-Z]{3}\/\d{8}\/[23]$/,
+    schema: ClubStats,
+    ttl: () => 1 * DAY,
+  },
+  {
     label: "Team summary",
-    pattern: /^\/stats\/rest\/en\/team\/summary(\?|$)/,
+    pattern: /^\/stats\/rest\/en\/team\/summary/,
     schema: TeamSummary,
     ttl: () => 1 * HOUR,
   },

@@ -36,6 +36,8 @@ export const nhl = {
   boxscore: (gameId: number) => getResource(endpoints.gameBoxscore(gameId), Boxscore),
   roster: (team = TEAM) => getResource(endpoints.rosterCurrent(team), Roster),
   clubStats: (team = TEAM) => getResource(endpoints.clubStatsNow(team), ClubStats),
+  clubStatsSeason: (season: number, gameType: GameType = 2, team = TEAM) =>
+    getResource(endpoints.clubStatsSeason(season, gameType, team), ClubStats),
   player: (playerId: number) => getResource(endpoints.playerLanding(playerId), PlayerLanding),
   gameLog: (playerId: number, season: number, gameType: GameType = 2) =>
     getResource(endpoints.playerGameLog(playerId, season, gameType), PlayerGameLog),

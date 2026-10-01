@@ -20,6 +20,8 @@
   --color-button: var(--button-bg);
   --color-button-fg: var(--button-text);
   --color-win: var(--win);
+  --color-us: var(--chart-us);
+  --color-them: var(--chart-them);
   --color-loss: var(--loss);
 
   --font-display: "Saira Extra Condensed", "Arial Narrow", sans-serif;
@@ -162,6 +164,42 @@ a {
   .trend-chart .trend-cursor,
   .trend-chart .recharts-tooltip-cursor {
     stroke: var(--border-strong);
+  }
+
+  /* Share charts (Oilers vs opponent). */
+  .share-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--text-muted);
+  }
+  .share-chart .chart-grid line {
+    stroke: var(--border);
+  }
+  .share-chart .chart-ref line,
+  .share-chart line.chart-ref {
+    stroke: var(--border-strong);
+  }
+  .share-chart .chart-cursor,
+  .share-chart .recharts-tooltip-cursor {
+    stroke: var(--border-strong);
+  }
+  .share-chart path.line-us,
+  .share-chart .line-us .recharts-line-curve,
+  .share-chart .line-us path {
+    stroke: var(--chart-us);
+  }
+  .share-chart path.line-them,
+  .share-chart .line-them .recharts-line-curve,
+  .share-chart .line-them path {
+    stroke: var(--chart-them);
+  }
+  .share-chart .dot-us,
+  .share-chart .line-us .recharts-dot {
+    fill: var(--chart-us);
+    stroke: var(--surface-raised);
+  }
+  .share-chart .dot-them,
+  .share-chart .line-them .recharts-dot {
+    fill: var(--chart-them);
+    stroke: var(--surface-raised);
   }
 
   /* Team logos: show the variant that suits the current mode. */

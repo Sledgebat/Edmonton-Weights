@@ -187,6 +187,8 @@ async function main() {
   // 4. League team summary (power play, penalty kill, faceoffs) and NHL EDGE tracking data
   //    for the Oilers, their next opponent, two stars and the starting goalie.
   await capture("stats", "Team summary (all teams)", endpoints.teamSummary(currentSeason));
+  await capture("stats", "Team summary (last season)", endpoints.teamSummary(previousSeason(currentSeason)));
+  await capture("stats", "Club stats (last season)", endpoints.clubStatsSeason(previousSeason(currentSeason)));
   await capture("edge", "EDGE team: Oilers", endpoints.edgeTeam(TEAM_ID));
   if (next) {
     const oppId = next.homeTeam.abbrev === "EDM" ? next.awayTeam.id : next.homeTeam.id;

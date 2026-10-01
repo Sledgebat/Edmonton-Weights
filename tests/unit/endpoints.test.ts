@@ -19,7 +19,10 @@ describe("endpoint paths", () => {
 
   it("maps endpoints to fixture files", () => {
     expect(fixturePathFor("/standings/now")).toBe("v1/standings/now.json");
-    expect(fixturePathFor("/gamecenter/1/landing?x=1")).toBe("v1/gamecenter/1/landing.json");
+    expect(fixturePathFor("/gamecenter/1/landing")).toBe("v1/gamecenter/1/landing.json");
+    expect(fixturePathFor("/stats/rest/en/team/summary?cayenneExp=seasonId=20262027%20and%20gameTypeId=2")).toBe(
+      "v1/stats/rest/en/team/summary__cayenneExp=seasonId=20262027_and_gameTypeId=2.json",
+    );
     expect(() => fixturePathFor("/../etc/passwd")).toThrow();
   });
 });

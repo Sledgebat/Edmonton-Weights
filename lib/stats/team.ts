@@ -65,7 +65,7 @@ export const METRICS: Record<MetricKey, { label: string; higherIsBetter: boolean
   ffPct: { label: "Unblocked shot share (FF%)", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 shot attempts that weren't blocked." },
   sfPct: { label: "Shots on goal share", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 shots on goal." },
   xgfPct: { label: "Expected goals share (xGF%)", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 expected goals, which weights every shot by its chance of going in. The best single measure of who's controlling play." },
-  hdcfPct: { label: "High-danger chance share", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 chances from the area right in front of the net, plus rebounds and rush shots from the slot." },
+  hdcfPct: { label: "High-danger chance share", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 chances from the area right in front of the net, plus rebounds from the slot." },
   pdo: { label: "PDO (luck gauge)", higherIsBetter: true, format: "pdo", explain: "5-on-5 shooting % plus save %. Around 100 is normal; well above usually means hot shooting or goaltending that won't last." },
   xgf60: { label: "Expected goals for per 60", higherIsBetter: true, format: "rate", explain: "5-on-5 expected goals created per 60 minutes." },
   xga60: { label: "Expected goals against per 60", higherIsBetter: false, format: "rate", explain: "5-on-5 expected goals allowed per 60 minutes. Lower is better." },

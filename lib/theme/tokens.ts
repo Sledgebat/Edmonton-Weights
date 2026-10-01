@@ -42,6 +42,9 @@ export type Tokens = {
   /** Results. */
   win: string;
   loss: string;
+  /** Charts: Oilers vs opponent (validated for colour-blind separation on the surface). */
+  "chart-us": string;
+  "chart-them": string;
 };
 
 const dynastyLight: Tokens = {
@@ -66,6 +69,8 @@ const dynastyLight: Tokens = {
   "stripe-band": "#041E42",
   win: "#0F7A3D",
   loss: "#B42318",
+  "chart-us": "#D9480F",
+  "chart-them": "#2F6DB5",
 };
 
 const dynastyDark: Tokens = {
@@ -83,6 +88,8 @@ const dynastyDark: Tokens = {
   "button-text": "#021431",
   win: "#4ADE80",
   loss: "#FF8A80",
+  "chart-us": "#EE6326",
+  "chart-them": "#5E95D6",
 };
 
 export const THEMES: Record<Mode, Tokens> = { light: dynastyLight, dark: dynastyDark };
@@ -103,5 +110,7 @@ export const CONTRAST_PAIRS: { fg: keyof Tokens; bg: keyof Tokens; req: Requirem
   { fg: "loss", bg: "surface-raised", req: "text", use: "Loss label" },
   { fg: "border-strong", bg: "surface", req: "ui", use: "Input and toggle borders" },
   { fg: "border-strong", bg: "surface-raised", req: "ui", use: "Input borders on cards" },
+  { fg: "chart-us", bg: "surface-raised", req: "ui", use: "Chart: Oilers marks" },
+  { fg: "chart-them", bg: "surface-raised", req: "ui", use: "Chart: opponent marks" },
 ];
 

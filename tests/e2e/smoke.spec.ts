@@ -118,3 +118,13 @@ test("advanced stats engine: league table API and data page", async ({ page, req
   await expect(page.getByRole("heading", { name: "Advanced stats engine" })).toBeVisible();
   await expect(page.locator("table").filter({ hasText: "xGF%" }).getByText("EDM")).toBeVisible();
 });
+
+test("home page shows all six sections", async ({ page }) => {
+  await page.goto("/");
+  for (const name of ["Next game", "Team stats at a glance", "Recent performance", "Leaders", "NHL EDGE tracking"]) {
+    await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("heading", { name: /^Oilers \d{4}-\d{2}$/ })).toBeVisible();
+  await expect(page.getByText("Tale of the tape")).toBeVisible();
+  await expect(page.getByText("Top skating speed").first()).toBeVisible();
+});

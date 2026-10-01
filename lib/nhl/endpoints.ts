@@ -40,6 +40,8 @@ export const endpoints = {
   playerGameLog: (playerId: number, season: number, gameType: GameType) =>
     `/player/${playerId}/game-log/${season}/${gameType}`,
   prospects: (team = TEAM) => `/prospects/${team}`,
+  /** Team stats for a past season: /club-stats/EDM/20252026/2 */
+  clubStatsSeason: (season: number, gameType: GameType = 2, team = TEAM) => `/club-stats/${team}/${season}/${gameType}`,
   /** League-wide team summary for a season (one row per team). */
   teamSummary: (season: number, gameType: GameType = 2) =>
     `/stats/rest/en/team/summary?cayenneExp=seasonId=${season}%20and%20gameTypeId=${gameType}`,
@@ -66,11 +68,12 @@ export const PLAYERS = {
  * `/standings/now` -> `fixtures/v1/standings/now.json`
  */
 export function fixturePathFor(path: string): string {
-  const clean = path.replace(/^\/+/, "").replace(/\?.*$/, "");
-  if (!clean || clean.includes("..")) throw new Error(`Bad endpoint path: ${path}`);
-  return `v1/${clean}.json`;
+  const [route, query] = path.replace(/^\/+/, "").split("?");
+  if (!route || route.includes("..")) throw new Error(`Bad endpoint path: ${path}`);
+  // Queries matter for some endpoints (the team summary's season), so they become part of the name.
+  const suffix = query ? `__${query.replace(/%20/g, "_").replace(/[^A-Za-z0-9=_.-]/g, "_")}` : "";
+  return `v1/${route}${suffix}.json`;
 }
-
 /** Season id helpers: 20262027 <-> "2026-27". */
 export function seasonLabel(season: number): string {
   const start = Math.floor(season / 10000);

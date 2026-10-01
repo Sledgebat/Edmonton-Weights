@@ -23,6 +23,8 @@
   --stripe-band: #041E42;
   --win: #0F7A3D;
   --loss: #B42318;
+  --chart-us: #D9480F;
+  --chart-them: #2F6DB5;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -48,6 +50,8 @@
     --stripe-band: #041E42;
     --win: #4ADE80;
     --loss: #FF8A80;
+    --chart-us: #EE6326;
+    --chart-them: #5E95D6;
     color-scheme: dark;
   }
 }
@@ -75,6 +79,8 @@
   --stripe-band: #041E42;
   --win: #0F7A3D;
   --loss: #B42318;
+  --chart-us: #D9480F;
+  --chart-them: #2F6DB5;
   color-scheme: light;
 }
 [data-mode="dark"] {
@@ -99,5 +105,7 @@
   --stripe-band: #041E42;
   --win: #4ADE80;
   --loss: #FF8A80;
+  --chart-us: #EE6326;
+  --chart-them: #5E95D6;
   color-scheme: dark;
 }

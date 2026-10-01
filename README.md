@@ -6,7 +6,7 @@ Independent fan site. Not affiliated with the Edmonton Oilers, Oilers Entertainm
 
 ## Status
 
-Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), steps 1–2 of 5 done.
+Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian folder), steps 1–3 of 5 done.
 
 1. **Trim (done):** the earlier fan-site prototype reduced to its foundation: the NHL data layer (validation,
    SQLite cache, fixtures and replay modes), schedule, standings, roster and player pages, and one theme
@@ -15,7 +15,10 @@ Building the stats site (plan: "Oilers Stats Site — Plan" in the Obsidian fold
 2. **Stats engine (done):** shot extraction from NHL play-by-play, our own expected-goals model (trained on
    2024-25 and 2025-26; held-out AUC 0.754, see `lib/stats/xg-report.md`), team and goalie advanced stats with
    league ranks, league-wide ingest by the worker, NHL EDGE and team-summary clients.
-3. Home page: snapshot, team stats with league ranks, recent performance, leaders, NHL EDGE.
+3. **Home page (done):** snapshot with points pace and playoff magic number, next game (tale of the tape, keys to
+   the game, both teams' recent form, rink heat maps, goalie matchup), team stats with league ranks and last-10
+   trends, recent games and season trend, leaders and last game, NHL EDGE tracking. Early in a season (under 5
+   Oilers games) team stats use last season, and the page says so.
 4. Game reports, players table, stats guide.
 5. Polish.
 
