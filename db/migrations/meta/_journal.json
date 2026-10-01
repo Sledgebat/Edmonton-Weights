@@ -15,6 +15,13 @@
       "when": 1790869040241,
       "tag": "0001_advanced_stats",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790875278362,
+      "tag": "0002_shooter_index",
+      "breakpoints": true
     }
   ]
 }

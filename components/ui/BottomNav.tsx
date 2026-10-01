@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, House, ListOrdered, Users, type LucideIcon } from "lucide-react";
+import { BookOpen, CalendarDays, House, ListOrdered, Users, type LucideIcon } from "lucide-react";
 import { NAV, isActive } from "@/lib/nav";
 
 const ICONS: Record<string, LucideIcon> = {
   "/": House,
   "/schedule": CalendarDays,
-  "/roster": Users,
+  "/players": Users,
   "/standings": ListOrdered,
+  "/stats-guide": BookOpen,
 };
 
 /** Phone and small-tablet navigation, pinned to the bottom of the screen. */
@@ -20,7 +21,7 @@ export function BottomNav() {
       aria-label="Main"
       className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-raised pb-[env(safe-area-inset-bottom)] md:hidden"
     >
-      <ul className="mx-auto grid h-16 max-w-xl grid-cols-4">
+      <ul className="mx-auto grid h-16 max-w-xl grid-cols-5">
         {NAV.map((item) => {
           const Icon = ICONS[item.href];
           const active = isActive(pathname, item.href);

@@ -351,3 +351,36 @@ export function shooterTable(teamId: number, season: number, gameType = 2): Shoo
     )
     .all(teamId, season, gameType) as ShooterRow[];
 }
+
+export type PlayerShootingSeason = { season: number; attempts: number; shots: number; goals: number; ixg: number; hdChances: number; rebounds: number; rush: number };
+export type PlayerGoalieSeason = { season: number; shotsFaced: number; goalsAllowed: number; xga: number; gsax: number; svPct: number; xSvPct: number; hdFaced: number; hdGoals: number };
+
+/** One player's shooting by season, regular season, all teams and situations. */
+export function playerShooting(playerId: number): PlayerShootingSeason[] {
+  return getDb()
+    .$client.prepare(
+      `SELECT season, COUNT(*) AS attempts, SUM(type IN ('shot-on-goal', 'goal')) AS shots, SUM(is_goal) AS goals,
+         SUM(xg) AS ixg, SUM(high_danger) AS hdChances, SUM(rebound) AS rebounds, SUM(rush) AS rush
+       FROM shots WHERE shooter_id = ? AND game_type = 2 GROUP BY season ORDER BY season DESC`,
+    )
+    .all(playerId) as PlayerShootingSeason[];
+}
+
+/** One goalie's results against expected, by season (unblocked shots faced). */
+export function goalieSeasons(goalieId: number): PlayerGoalieSeason[] {
+  const rows = getDb()
+    .$client.prepare(
+      `SELECT season, SUM(type IN ('shot-on-goal', 'goal')) AS shotsFaced, SUM(is_goal) AS goalsAllowed, SUM(xg) AS xga,
+         SUM(CASE WHEN type IN ('shot-on-goal', 'goal') THEN xg ELSE 0 END) AS xgOnTarget,
+         SUM(CASE WHEN high_danger = 1 AND type IN ('shot-on-goal', 'goal') THEN 1 ELSE 0 END) AS hdFaced,
+         SUM(CASE WHEN high_danger = 1 THEN is_goal ELSE 0 END) AS hdGoals
+       FROM shots WHERE goalie_id = ? AND game_type = 2 AND type != 'blocked-shot' GROUP BY season ORDER BY season DESC`,
+    )
+    .all(goalieId) as (Omit<PlayerGoalieSeason, "gsax" | "svPct" | "xSvPct"> & { xgOnTarget: number })[];
+  return rows.map(({ xgOnTarget, ...r }) => ({
+    ...r,
+    gsax: r.xga - r.goalsAllowed,
+    svPct: r.shotsFaced ? 1 - r.goalsAllowed / r.shotsFaced : 0,
+    xSvPct: r.shotsFaced ? 1 - xgOnTarget / r.shotsFaced : 0,
+  }));
+}

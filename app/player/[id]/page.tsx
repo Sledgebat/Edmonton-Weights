@@ -5,11 +5,13 @@ import { connection } from "next/server";
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart";
 import { Headshot } from "@/components/ui/Headshot";
 import { DataError, Module } from "@/components/data/Module";
+import { GoalieEdge, GoalieModel, SkaterEdge, SkaterModel } from "@/components/player/PlayerAdvanced";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
 import { load } from "@/lib/load";
 import { nhl, txt, type GameLogEntry, type PlayerLanding, type SeasonTotal, type StatLine } from "@/lib/nhl";
 import { previousSeason } from "@/lib/nhl/endpoints";
+import { goalieSeasons, playerShooting } from "@/lib/stats/team";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
 
 const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Right wing", D: "Defence", G: "Goalie" };
@@ -143,7 +145,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
         <div className="mt-6">
           <DataError what="this player" error={player.error} />
         </div>
-        <Link href="/roster" className="btn btn-secondary mt-6">
+        <Link href="/players" className="btn btn-secondary mt-6">
           Back to players
         </Link>
       </div>
@@ -169,6 +171,13 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
       logSeason = prev;
     }
   }
+  // NHL EDGE tracking and our own shot-model numbers.
+  const [skaterEdge, goalieEdge] = await Promise.all([
+    goalie ? Promise.resolve(null) : load(() => nhl.edgeSkater(playerId)),
+    goalie ? load(() => nhl.edgeGoalie(playerId)) : Promise.resolve(null),
+  ]);
+  const shooting = goalie ? [] : playerShooting(playerId);
+  const goalieAdv = goalie ? goalieSeasons(playerId) : [];
   const games = log?.ok ? [...log.data.gameLog].sort((a, b) => b.gameDate.localeCompare(a.gameDate)) : [];
 
   // The trend always covers the last 10 NHL games, reaching back into last season early on.
@@ -282,6 +291,14 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
             </dl>
           </Module>
         </div>
+
+        {(skaterEdge?.ok || goalieEdge?.ok || shooting.length > 0 || goalieAdv.length > 0) && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            {skaterEdge && <SkaterEdge edge={skaterEdge} />}
+            {goalieEdge && <GoalieEdge edge={goalieEdge} />}
+            {goalie ? <GoalieModel rows={goalieAdv} /> : <SkaterModel rows={shooting} />}
+          </div>
+        )}
 
         <Module title={goalie ? "Save percentage, last 10 games" : "Points, last 10 games"} meta={log?.ok ? log.meta : undefined}>
           {!log ? (

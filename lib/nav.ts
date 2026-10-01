@@ -4,8 +4,9 @@ export type NavItem = { href: string; label: string };
 export const NAV: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/schedule", label: "Games" },
-  { href: "/roster", label: "Players" },
+  { href: "/players", label: "Players" },
   { href: "/standings", label: "Standings" },
+  { href: "/stats-guide", label: "Guide" },
 ];
 
 /** Behind-the-scenes pages, linked from the footer only. */
@@ -17,7 +18,7 @@ export const FOOTER_EXTRAS: NavItem[] = [
 export function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
   // Player and game pages belong to Players and Games.
-  if (href === "/roster" && pathname.startsWith("/player/")) return true;
+  if (href === "/players" && (pathname.startsWith("/player/") || pathname === "/roster")) return true;
   if (href === "/schedule" && pathname.startsWith("/game/")) return true;
   return pathname === href || pathname.startsWith(href + "/");
 }

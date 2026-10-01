@@ -82,6 +82,7 @@ export const shots = sqliteTable(
     primaryKey({ columns: [t.gameId, t.eventId] }),
     index("shots_team_season").on(t.teamId, t.season),
     index("shots_goalie").on(t.goalieId, t.season),
+    index("shots_shooter").on(t.shooterId, t.season),
   ],
 );
 

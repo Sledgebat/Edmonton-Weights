@@ -5,6 +5,9 @@ const ROUTES = [
   "/schedule",
   "/standings",
   "/roster",
+  "/players",
+  "/stats-guide",
+  "/game/2026020015",
   "/styleguide",
   "/data",
   "/player/8478402",
@@ -127,4 +130,46 @@ test("home page shows all six sections", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /^Oilers \d{4}-\d{2}$/ })).toBeVisible();
   await expect(page.getByText("Tale of the tape")).toBeVisible();
   await expect(page.getByText("Top skating speed").first()).toBeVisible();
+});
+
+test("game report shows the analysis for a finished game", async ({ page }) => {
+  await page.goto("/game/2026020004");
+  await expect(page.getByText(/Canucks beat the Oilers 6–5 in overtime/)).toBeVisible();
+  for (const title of ["Team comparison", "Expected goals through the game", "Shot map", "By strength", "Goaltending", "Most dangerous shooters", "Three stars", "Scoring"]) {
+    await expect(page.getByRole("heading", { name: title })).toBeVisible();
+  }
+  await expect(page.locator('svg[aria-label^="Shot map"] circle title').first()).toBeAttached();
+  await expect(page.locator("svg[aria-label^='Shot map'] circle")).not.toHaveCount(0);
+});
+
+test("game report for an upcoming game explains when it fills in", async ({ page }) => {
+  await page.goto("/game/2026020015");
+  await expect(page.getByRole("heading", { name: "Report coming at puck drop" })).toBeVisible();
+});
+
+test("players table sorts by column", async ({ page }) => {
+  await page.goto("/players?season=this");
+  const table = page.locator("table").first();
+  await expect(table.locator("tbody tr").first()).toContainText("Evan Bouchard"); // most points
+  await table.getByRole("button", { name: "ixG", exact: true }).click();
+  await expect(table.locator("tbody tr").first()).toContainText("Vasily Podkolzin"); // most individual xG
+  await table.getByRole("button", { name: "ixG", exact: true }).click();
+  await expect(table.locator("thead th").nth(9)).toHaveAttribute("aria-sort", "ascending");
+  await expect(page.getByRole("link", { name: "Roster cards" })).toBeVisible();
+});
+
+test("player pages show NHL EDGE and model numbers", async ({ page }) => {
+  await page.goto("/player/8478402");
+  await expect(page.getByRole("heading", { name: /NHL EDGE tracking/ })).toBeVisible();
+  await expect(page.getByText("Top skating speed")).toBeVisible();
+  await page.goto("/player/8475883");
+  await expect(page.getByText("Save % on high-danger shots")).toBeVisible();
+});
+
+test("stats guide explains the model with holdout results", async ({ page }) => {
+  await page.goto("/stats-guide");
+  await expect(page.getByRole("heading", { name: "How well it works" })).toBeVisible();
+  await expect(page.getByText("0.754")).toBeVisible();
+  await expect(page.locator("#gsax")).toContainText("Goals saved above expected");
+  await expect(page.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Guide" })).toBeVisible();
 });

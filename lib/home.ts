@@ -175,7 +175,7 @@ function likelyGoalie(teamId: number): number | null {
   return row?.g ?? null;
 }
 
-function gamesCount(teamId: number, season: number) {
+export function gamesCount(teamId: number, season: number) {
   return (
     getDb()
       .$client.prepare(`SELECT COUNT(*) n FROM stats_games WHERE season = ? AND game_type = 2 AND (home_id = ? OR away_id = ?)`)

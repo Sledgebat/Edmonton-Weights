@@ -21,7 +21,7 @@ export function Module({
   const oldest = metas.length ? metas.reduce((a, b) => (a.fetchedAt <= b.fetchedAt ? a : b)) : undefined;
   const stale = metas.some((m) => m.stale);
   return (
-    <section className={`card flex flex-col p-4 sm:p-5 ${className}`}>
+    <section className={`card flex min-w-0 flex-col p-4 sm:p-5 ${className}`}>
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="display text-2xl leading-none">{title}</h2>
         {action}

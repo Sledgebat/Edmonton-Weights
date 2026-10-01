@@ -1,0 +1,1 @@
+CREATE INDEX `shots_shooter` ON `shots` (`shooter_id`,`season`);
