@@ -182,3 +182,17 @@ test("stats guide explains the model with holdout results", async ({ page }) => 
   await expect(page.locator("#gsax")).toContainText("Goals saved above expected");
   await expect(page.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "Guide" })).toBeVisible();
 });
+
+test("EDGE tiles open a ranked list of every Oilers skater", async ({ page }) => {
+  await page.goto("/");
+  const edge = page.locator("section[aria-labelledby=edge]");
+  const tile = edge.getByRole("button", { name: /Top skating speed/ });
+  await expect(tile).toHaveAttribute("aria-expanded", "false");
+  await tile.click();
+  await expect(tile).toHaveAttribute("aria-expanded", "true");
+  const list = edge.getByRole("heading", { name: "Top skating speed", level: 3 });
+  await expect(list).toBeVisible();
+  await expect(edge.locator("ol li a[href^='/player/']").first()).toBeVisible();
+  await tile.click();
+  await expect(list).toBeHidden();
+});

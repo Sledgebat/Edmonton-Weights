@@ -4,6 +4,8 @@ import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
+import { RankPill } from "@/components/ui/RankPill";
+import { EdgeTiles, type EdgeTileData } from "@/components/home/EdgeTiles";
 import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -24,23 +26,6 @@ export function SectionHeading({ id, title, note }: { id: string; title: string;
       </h2>
       {note && <p className="text-xs text-fg-muted">{note}</p>}
     </div>
-  );
-}
-
-function RankPill({ rank, of }: { rank: number | null; of: number }) {
-  if (rank === null || !of) return null;
-  const top = rank <= Math.ceil(of / 4);
-  const bottom = rank > of - Math.ceil(of / 4);
-  return (
-    <span
-      className={`numeral inline-flex shrink-0 items-center whitespace-nowrap rounded px-1.5 text-xs leading-5 ${
-        top ? "bg-header text-header-fg" : bottom ? "border border-line-strong text-fg-muted" : "bg-sunken text-fg"
-      }`}
-      title={`${ordinal(rank)} of ${of} teams`}
-    >
-      {ordinal(rank)}
-      <span className="ml-1 font-normal opacity-75">/ {of}</span>
-    </span>
   );
 }
 
@@ -294,7 +279,7 @@ export function NextGame({ d }: { d: HomeData }) {
             </h3>
             <p className="mb-3 text-xs text-fg-muted">
               {seasonLabel(d.season)} · shares are 5-on-5 · pace = 5-on-5 shot attempts per 60 by both teams, 1st = fastest · speed bursts = times any player
-              tops 20 mph, per game (NHL EDGE; rank on season totals)
+              tops 20 mph, per game (NHL EDGE, ranked per game by us)
             </p>
             {d.tape && <TaleOfTheTape rows={d.tape} oppAbbrev={v.opp.abbrev} />}
           </section>
@@ -622,67 +607,90 @@ export function Leaders({ d }: { d: HomeData }) {
 export function EdgeSection({ d }: { d: HomeData }) {
   if (!d.edge.ok) return <DataError what="NHL EDGE tracking data" error={d.edge.error} />;
   const e = d.edge.data;
-  const who = (o: unknown) => {
-    const p = (o as { player?: { firstName?: { default: string }; lastName?: { default: string } } } | undefined)?.player;
-    return p ? `${p.firstName?.default ?? ""} ${p.lastName?.default ?? ""}`.trim() : null;
-  };
   const avg = (a: unknown, unit: string, digits = 1) => {
     const v = typeof a === "number" ? a : ((a as { imperial?: number; value?: number } | undefined)?.imperial ?? (a as { value?: number } | undefined)?.value);
     return typeof v === "number" ? `League avg ${v.toFixed(digits)}${unit}` : null;
   };
   const z = e.zoneTimeDetails;
-  const tiles: { label: string; value: string; rank?: number | null; note?: string | null }[] = [
+  const roster = d.rosterEdge;
+  const overlayName = (o: unknown) => {
+    const p = (o as { overlay?: { player?: { firstName?: { default: string }; lastName?: { default: string } } } } | undefined)?.overlay?.player;
+    return p ? `${p.firstName?.default ?? ""} ${p.lastName?.default ?? ""}`.trim() : null;
+  };
+  const listOf = (title: string, unit: string, digits: number, pick: (r: (typeof roster)[number]) => number | null): EdgeTileData["list"] => ({
+    title,
+    unit,
+    digits,
+    rows: roster.flatMap((r) => {
+      const value = pick(r);
+      return value === null ? [] : [{ id: r.id, name: r.name, pos: r.pos, value }];
+    }),
+  });
+  const b20 = d.bursts.over20.get("EDM");
+  const b22 = d.bursts.over22.get("EDM");
+  const perGame = (v?: number | null) => (typeof v === "number" ? v.toFixed(1) : "—");
+  const fastest = roster.length ? [...roster].filter((r) => r.speedMax !== null).sort((a, b) => b.speedMax! - a.speedMax!)[0] : null;
+  const hardest = roster.length ? [...roster].filter((r) => r.topShot !== null).sort((a, b) => b.topShot! - a.topShot!)[0] : null;
+
+  const tiles: EdgeTileData[] = [
     {
+      key: "speed",
       label: "Top skating speed",
       value: e.skatingSpeed?.speedMax?.imperial ? `${e.skatingSpeed.speedMax.imperial.toFixed(1)} mph` : "—",
-      rank: e.skatingSpeed?.speedMax?.rank,
-      note: [who((e.skatingSpeed?.speedMax as { overlay?: unknown })?.overlay), avg(e.skatingSpeed?.speedMax?.leagueAvg, " mph")].filter(Boolean).join(" · "),
-    },
-    { label: "Speed bursts over 22 mph", value: String(e.skatingSpeed?.burstsOver22?.value ?? "—"), rank: e.skatingSpeed?.burstsOver22?.rank },
-    {
-      label: "Speed bursts over 20 mph",
-      value: String(e.skatingSpeed?.burstsOver20?.value ?? "—"),
-      rank: e.skatingSpeed?.burstsOver20?.rank,
-      note: avg(e.skatingSpeed?.burstsOver20?.leagueAvg, "", 0),
+      rank: e.skatingSpeed?.speedMax?.rank ?? null,
+      of: 32,
+      note: [fastest?.name ?? overlayName(e.skatingSpeed?.speedMax), avg(e.skatingSpeed?.speedMax?.leagueAvg, " mph")].filter(Boolean).join(" · "),
+      list: listOf("Top skating speed", "mph", 1, (r) => r.speedMax),
     },
     {
+      key: "b22",
+      label: "Speed bursts over 22 mph, per game",
+      value: perGame(b22?.value),
+      rank: b22?.rank ?? null,
+      of: b22?.of ?? 0,
+    },
+    {
+      key: "b20",
+      label: "Speed bursts over 20 mph, per game",
+      value: perGame(b20?.value),
+      rank: b20?.rank ?? null,
+      of: b20?.of ?? 0,
+      list: listOf("Speed bursts over 20 mph, this season", "", 0, (r) => r.bursts20),
+    },
+    {
+      key: "distance",
       label: "Distance skated",
       value: e.distanceSkated?.total?.imperial ? `${e.distanceSkated.total.imperial.toFixed(1)} mi` : "—",
-      rank: e.distanceSkated?.total?.rank,
+      rank: e.distanceSkated?.total?.rank ?? null,
+      of: 32,
       note: avg(e.distanceSkated?.total?.leagueAvg, " mi"),
     },
     {
+      key: "shot",
       label: "Hardest shot",
       value: e.shotSpeed?.topShotSpeed?.imperial ? `${e.shotSpeed.topShotSpeed.imperial.toFixed(1)} mph` : "—",
-      rank: e.shotSpeed?.topShotSpeed?.rank,
-      note: [who((e.shotSpeed?.topShotSpeed as { overlay?: unknown })?.overlay), avg(e.shotSpeed?.topShotSpeed?.leagueAvg, " mph")].filter(Boolean).join(" · "),
+      rank: e.shotSpeed?.topShotSpeed?.rank ?? null,
+      of: 32,
+      note: [hardest?.name ?? overlayName(e.shotSpeed?.topShotSpeed), avg(e.shotSpeed?.topShotSpeed?.leagueAvg, " mph")].filter(Boolean).join(" · "),
+      list: listOf("Hardest shot", "mph", 1, (r) => r.topShot),
     },
-    { label: "Shots over 90 mph", value: String(e.shotSpeed?.shotAttemptsOver90?.value ?? "—"), rank: e.shotSpeed?.shotAttemptsOver90?.rank },
+    { key: "s90", label: "Shots over 90 mph", value: String(e.shotSpeed?.shotAttemptsOver90?.value ?? "—"), rank: e.shotSpeed?.shotAttemptsOver90?.rank ?? null, of: 32 },
     {
+      key: "oz",
       label: "Offensive-zone time",
       value: z?.offensiveZonePctg !== undefined ? `${(z.offensiveZonePctg * 100).toFixed(1)}%` : "—",
-      rank: z?.offensiveZoneRank,
+      rank: (z as { offensiveZoneRank?: number } | undefined)?.offensiveZoneRank ?? null,
+      of: 32,
       note: z?.offensiveZoneLeagueAvg !== undefined ? `League avg ${(z.offensiveZoneLeagueAvg * 100).toFixed(1)}%` : null,
     },
     {
+      key: "dz",
       label: "Defensive-zone time",
       value: z?.defensiveZonePctg !== undefined ? `${(z.defensiveZonePctg * 100).toFixed(1)}%` : "—",
-      rank: z?.defensiveZoneRank,
+      rank: (z as { defensiveZoneRank?: number } | undefined)?.defensiveZoneRank ?? null,
+      of: 32,
       note: "Lower is better; rank 1 = least time defending",
     },
   ];
-  return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {tiles.map((t) => (
-        <div key={t.label} className="card p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>
-          <div className="mt-1 flex items-baseline justify-between gap-2">
-            <p className="numeral text-2xl leading-none sm:text-3xl">{t.value}</p>
-            <RankPill rank={t.rank ?? null} of={32} />
-          </div>
-          {t.note && <p className="mt-2 text-xs text-fg-muted">{t.note}</p>}
-        </div>
-      ))}
-    </div>
-  );
+  return <EdgeTiles tiles={tiles} />;
 }

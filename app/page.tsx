@@ -53,7 +53,7 @@ export default async function Home() {
       </section>
 
       <section aria-labelledby="edge">
-        <SectionHeading id="edge" title="NHL EDGE tracking" note="Puck and player tracking, this season · rank among 32 teams" />
+        <SectionHeading id="edge" title="NHL EDGE tracking" note="Puck and player tracking, this season · league rank · tap a tile marked “See every player” for the whole roster" />
         <EdgeSection d={d} />
         {d.edge.ok && <LastUpdated at={d.edge.meta.fetchedAt} stale={d.edge.meta.stale} className="mt-2 block text-right" />}
       </section>

@@ -3,6 +3,8 @@
  * one failing source (say NHL EDGE) never blanks the page.
  */
 import { getDb } from "@/db";
+import { burstTable, rosterEdge, type BurstTable, type SkaterEdgeRow } from "@/lib/edge";
+import { rankOf } from "@/lib/rank";
 import { load, type Loaded } from "@/lib/load";
 import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
 import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type StandingsRow, type TeamSummaryRow } from "@/lib/nhl";
@@ -88,10 +90,7 @@ function basicRows(season: number, gameIds?: number[]): BasicRow[] {
   }));
 }
 
-/** Rank `value` among `values` (1 = best). */
-export function rankOf(value: number, values: number[], higherIsBetter: boolean): number {
-  return values.filter((v) => (higherIsBetter ? v > value + 1e-9 : v < value - 1e-9)).length + 1;
-}
+export { rankOf } from "@/lib/rank";
 
 function trendOf(season: number, recent: number, higherIsBetter: boolean, threshold: number): Trend {
   const diff = recent - season;
@@ -149,6 +148,10 @@ export type HomeData = {
   /** The most recent finished game, analysed from its play-by-play. */
   lastReport: GameReport | null;
   edge: Loaded<EdgeTeam>;
+  /** Speed bursts per game, ranked by us across the league. */
+  bursts: BurstTable;
+  /** Every Oilers skater's EDGE numbers this season. */
+  rosterEdge: SkaterEdgeRow[];
   updated: { stats: number | null };
   sources: { summary: Loaded<{ data: TeamSummaryRow[] }>; clubStats: Loaded<ClubStats> };
 };
@@ -283,7 +286,11 @@ export async function homeData(): Promise<HomeData> {
   // Everything uses this season only: the roster turns over too much for last season to mean much.
   const season = currentSeason;
   const seasonNote = sampleNote(gamesCount(TEAM_ID, season));
-  const summary = await load(() => nhl.teamSummary(season));
+  const [summary, bursts, skaterEdge] = await Promise.all([
+    load(() => nhl.teamSummary(season)),
+    burstTable(standings.ok ? standings.data.standings : [], season),
+    rosterEdge(season),
+  ]);
 
   const games = schedule.ok ? schedule.data.games : [];
   const next = liveGame(games) ?? nextGame(games) ?? null;
@@ -463,11 +470,18 @@ export async function homeData(): Promise<HomeData> {
       sumRow("powerPlayPct", "Power play"),
       sumRow("penaltyKillPct", "Penalty kill"),
       paceRow(),
-      edgeRow(
-        "Speed bursts per game",
-        (e, gp) => ({ v: gp && typeof e.skatingSpeed?.burstsOver20?.value === "number" ? e.skatingSpeed.burstsOver20.value / gp : null, rank: e.skatingSpeed?.burstsOver20?.rank }),
-        (x) => x.toFixed(1),
-      ),
+      (() => {
+        const a = bursts.over20.get(TEAM);
+        const b = bursts.over20.get(v.opp.abbrev);
+        const f = (x?: number | null) => (typeof x === "number" ? x.toFixed(1) : "—");
+        return {
+          key: "bursts",
+          label: "Speed bursts per game",
+          us: { value: f(a?.value), rank: a?.rank ?? null },
+          them: { value: f(b?.value), rank: b?.rank ?? null },
+          of: a?.of ?? b?.of ?? 0,
+        };
+      })(),
       edgeRow(
         "Offensive-zone time",
         (e) => ({ v: typeof e.zoneTimeDetails?.offensiveZonePctg === "number" ? e.zoneTimeDetails.offensiveZonePctg * 100 : null, rank: (e.zoneTimeDetails as { offensiveZoneRank?: number } | undefined)?.offensiveZoneRank }),
@@ -555,6 +569,8 @@ export async function homeData(): Promise<HomeData> {
     leaders,
     lastReport,
     edge,
+    bursts,
+    rosterEdge: skaterEdge,
     updated: { stats: statsUpdated },
     sources: { summary, clubStats },
   };

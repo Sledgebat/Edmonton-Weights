@@ -23,6 +23,7 @@ import {
   previousSeason,
   seasonsSince,
 } from "../lib/nhl/endpoints";
+import { teamIds } from "../lib/edge";
 
 const FIXTURES_DIR = path.resolve(process.cwd(), "fixtures");
 const DELAY_MS = 400; // be polite: roughly 2 requests a second
@@ -197,8 +198,18 @@ async function main() {
     const oppAbbrev = next.homeTeam.abbrev === "EDM" ? next.awayTeam.abbrev : next.homeTeam.abbrev;
     await capture("core", "Roster: next opponent", endpoints.rosterCurrent(oppAbbrev));
   }
-  await capture("edge", "EDGE skater: McDavid", endpoints.edgeSkater(PLAYERS.mcdavid));
-  await capture("edge", "EDGE skater: Draisaitl", endpoints.edgeSkater(PLAYERS.draisaitl));
+  // Every Oilers skater (the home page lists the whole roster by speed and shot speed).
+  for (const group of ["forwards", "defensemen"] as const) {
+    for (const p of roster?.[group] ?? []) {
+      await capture("edge", `EDGE skater: ${p.lastName?.default ?? p.id}`, endpoints.edgeSkater(p.id));
+    }
+  }
+  // Every team, so speed bursts per game can be ranked league-wide. Team ids come from stored
+  // games; run `npm run stats:backfill` first on a fresh checkout.
+  for (const [abbrev, id] of teamIds()) {
+    if (id === TEAM_ID) continue;
+    await capture("edge", `EDGE team: ${abbrev}`, endpoints.edgeTeam(id));
+  }
   if (goalieId) await capture("edge", "EDGE goalie", endpoints.edgeGoalie(goalieId));
 
   // 5. On This Day history: 3 sample seasons by default, every season with --history.
