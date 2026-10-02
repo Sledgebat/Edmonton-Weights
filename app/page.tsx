@@ -1,11 +1,11 @@
-import { ClutchBox, EdgeSection, LastGame, Leaders, NextGame, RecentPerformance, SectionHeading, Snapshot, StatTiles } from "@/components/home/Sections";
+import { ClutchBox, EdgeSection, ShootingBox, LastGame, Leaders, NextGame, RecentPerformance, SectionHeading, Snapshot, StatTiles } from "@/components/home/Sections";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { homeData } from "@/lib/home";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 
 /**
  * Home: how the Oilers are doing, and why, on one page.
- *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 recent performance (with top game scores) · 4 team stats · 5 leaders (and Clutch Score) · 6 NHL EDGE
+ *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 recent performance (with top game scores) · 4 team stats · 5 leaders (and Clutch Score, shooting vs career) · 6 NHL EDGE
  */
 export default async function Home() {
   const d = await homeData();
@@ -48,6 +48,7 @@ export default async function Home() {
         <SectionHeading id="leaders" title="Leaders" />
         <Leaders d={d} />
         <ClutchBox d={d} />
+        <ShootingBox d={d} />
         {d.sources.clubStats.ok && <LastUpdated at={d.sources.clubStats.meta.fetchedAt} stale={d.sources.clubStats.meta.stale} className="mt-2 block text-right" />}
       </section>
 

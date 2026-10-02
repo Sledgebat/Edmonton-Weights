@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Radio, Tv, Zap } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Crosshair, Minus, Radio, Tv, Zap } from "lucide-react";
 import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { RatingBadge } from "@/components/data/RatingBadge";
@@ -11,6 +11,7 @@ import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { SMALL_SAMPLE_GAMES, type GoalieCard, type HeatMap, type HomeData, type TapeRow, type Tile } from "@/lib/home";
+import type { Shooter } from "@/lib/shooting";
 import { formatOdds, oddsTone } from "@/lib/stats/odds";
 import { txt } from "@/lib/nhl";
 import { seasonLabel } from "@/lib/nhl/endpoints";
@@ -825,6 +826,76 @@ export function ClutchBox({ d }: { d: HomeData }) {
           See the league&apos;s clutch leaders ({c.leaguePlayers} players) <ArrowRight size={14} aria-hidden />
         </Link>
       )}
+    </section>
+  );
+}
+
+/** One shooter in the hot/cold lists: goals above or below his career rate, and the two percentages. */
+function ShooterLine({ s }: { s: Shooter }) {
+  const v = s.vsCareer ?? 0;
+  return (
+    <li className="flex items-baseline justify-between gap-3">
+      <div className="min-w-0">
+        <Link href={`/shooting?player=${s.id}`} className="truncate font-semibold hover:underline">
+          {s.name}
+        </Link>
+        <p className="text-xs text-fg-muted">
+          {s.pct === null ? "—" : `${s.pct.toFixed(1)}%`} this season · {s.careerPct?.toFixed(1)}% career
+        </p>
+      </div>
+      <span className={`numeral whitespace-nowrap text-xl ${v > 0 ? "text-win" : "text-loss"}`} title="Goals above or below what his career shooting % would give on the same shots">
+        {v > 0 ? "+" : ""}
+        {v.toFixed(1)}
+      </span>
+    </li>
+  );
+}
+
+/** Shooting vs career: the three running hottest and coldest, set apart in Oilers blue. */
+export function ShootingBox({ d }: { d: HomeData }) {
+  const { hot, cold, note } = d.shooting;
+  return (
+    <section className="shooting-card mt-4 p-4" aria-labelledby="lead-shooting">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 id="lead-shooting" className="display inline-flex items-center gap-1.5 text-2xl">
+          <Crosshair size={20} aria-hidden />
+          Shooting vs career
+        </h3>
+        <p className="text-xs text-fg-muted">
+          {seasonLabel(d.season)} shooting % against each player&apos;s NHL career · goals above or below his career rate ·{" "}
+          <Link href="/stats-guide#shooting" className="underline">
+            What&apos;s this?
+          </Link>
+        </p>
+      </div>
+      {hot.length + cold.length === 0 ? (
+        <p className="mt-3 text-sm text-fg-muted">Shows up once the Oilers have taken some shots this season.</p>
+      ) : (
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-lg bg-raised/70 px-3 py-2">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Running hot</p>
+            <ol className="space-y-2 text-sm">
+              {hot.map((s) => (
+                <ShooterLine key={s.id} s={s} />
+              ))}
+              {hot.length === 0 && <li className="text-fg-muted">Nobody above his career rate yet.</li>}
+            </ol>
+          </div>
+          <div className="rounded-lg bg-raised/70 px-3 py-2">
+            <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Due</p>
+            <ol className="space-y-2 text-sm">
+              {cold.map((s) => (
+                <ShooterLine key={s.id} s={s} />
+              ))}
+              {cold.length === 0 && <li className="text-fg-muted">Nobody below his career rate yet.</li>}
+            </ol>
+          </div>
+        </div>
+      )}
+      {note && <p className="mt-2 text-xs text-fg-muted">{note}</p>}
+      <Link href="/shooting" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold hover:underline">
+        Every Oilers shooter, with career charts <ArrowRight size={14} aria-hidden />
+      </Link>
     </section>
   );
 }

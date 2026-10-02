@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { currentModel } from "@/lib/stats/xg";
+import { MIN_CAREER_SHOTS } from "@/lib/shooting";
 import { GAME_SCORE } from "@/lib/stats/shifts";
 import { RATING_ANCHORS, ratingModel } from "@/lib/stats/ratings";
 import { CLUTCH } from "@/lib/stats/clutch";
@@ -149,6 +150,7 @@ export default function StatsGuidePage() {
             ["#terms", "The stats"],
             ["#ratings", "Player ratings"],
             ["#clutch", "Clutch Score"],
+            ["#shooting", "Shooting vs career"],
             ["#model", "Our xG model"],
             ["#sources", "Data and updates"],
             ["#caveats", "Caveats"],
@@ -180,6 +182,8 @@ export default function StatsGuidePage() {
       <Ratings />
 
       <Clutch />
+
+      <Shooting />
 
       <section aria-labelledby="model" className="space-y-4">
         <h2 id="model" className="display text-3xl sm:text-4xl">
@@ -372,6 +376,40 @@ function Ratings() {
 }
 
 /** How Clutch Score works. */
+/** How "Shooting vs career" works. */
+function Shooting() {
+  return (
+    <section aria-labelledby="shooting" className="scroll-mt-24 space-y-4">
+      <h2 id="shooting" className="display text-3xl sm:text-4xl">
+        Shooting vs career
+      </h2>
+      <div className="shooting-card space-y-3 p-4 text-sm sm:p-5">
+        <p>
+          Shooting percentage (goals ÷ shots on goal) bounces around a lot over weeks or even a whole season, then drifts back toward a player&apos;s
+          usual rate. Comparing this season with his <strong>NHL career before this season</strong> shows who&apos;s scoring more often than usual
+          (running hot) and who&apos;s scoring less (due for some puck luck).
+        </p>
+        <p>
+          We rank players by <strong>goals vs career rate</strong>: this season&apos;s goals minus what his career shooting % would give on the same
+          number of shots. A player with 6 goals on 40 shots and a 10% career rate is <strong>+2.0</strong> (he&apos;d usually have 4). Counting goals
+          rather than comparing percentages weighs how much a player shoots, so one goal on three shots doesn&apos;t top the list.
+        </p>
+        <p>
+          Players need at least {MIN_CAREER_SHOTS} career NHL shots to have a career rate. On the{" "}
+          <Link href="/shooting" className="underline">
+            full list
+          </Link>
+          , pick a player to chart every NHL season: green dots are seasons above his career average, red below.
+        </p>
+        <p className="text-fg-muted">
+          &ldquo;Due&rdquo; isn&apos;t a promise: shot quality matters too (a player taking worse shots will score less often), and real skill can change
+          with age or role. Expected goals (ixG on the Players page) is the better guide to shot quality.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function Clutch() {
   const pct = (x: number) => `${Math.round(x * 100)}%`;
   const weights: [string, string][] = [

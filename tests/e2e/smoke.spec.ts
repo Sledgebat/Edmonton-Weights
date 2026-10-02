@@ -16,6 +16,7 @@ const ROUTES = [
   "/team/EDM",
   "/team/VAN",
   "/clutch",
+  "/shooting",
 ];
 const MODES = ["light", "dark"] as const;
 // Tests run offline: stand in for NHL logos and headshots with a blank image.
@@ -102,6 +103,22 @@ test("Team stats view lists every team, sorts by any stat and marks the Oilers",
   expect(ga).toEqual([...ga].sort((a, b) => a - b));
   await table.locator("tbody tr").first().getByRole("link").click();
   await expect(page).toHaveURL(/\/team\/[A-Z]{3}\/?$/);
+});
+
+test("shooting vs career: home box links to the full list, and picking a player charts his career", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Shooting vs career" })).toBeVisible();
+  await page.getByRole("link", { name: /Every Oilers shooter/ }).click();
+  await expect(page).toHaveURL(/\/shooting\/?$/);
+  const rows = page.locator("table tbody tr");
+  await expect(rows).not.toHaveCount(0);
+  const second = rows.nth(1).getByRole("button");
+  const name = (await second.textContent())!.trim();
+  await second.click();
+  await expect(second).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("heading", { level: 2, name })).toBeVisible();
+  await expect(page).toHaveURL(/player=\d{7}/);
+  await expect(page.locator(".career-chart circle").first()).toBeAttached();
 });
 
 test.describe("pages", () => {

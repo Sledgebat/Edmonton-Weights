@@ -151,6 +151,13 @@ a {
     border-radius: 10px;
   }
 
+  /* Shooting vs career: set apart in Oilers blue, next to the orange Clutch Score. */
+  .shooting-card {
+    background: color-mix(in srgb, var(--chart-them) 10%, var(--surface-raised));
+    border: 2px solid var(--chart-them);
+    border-radius: 10px;
+  }
+
   /* Charts: Recharts draws SVG attributes, so colours come from theme tokens via CSS. */
   .trend-chart .recharts-cartesian-axis-tick-value {
     fill: var(--text-muted);
@@ -170,6 +177,42 @@ a {
   }
   .trend-chart .trend-cursor,
   .trend-chart .recharts-tooltip-cursor {
+    stroke: var(--border-strong);
+  }
+
+  /* Career shooting chart: dots above the career average green, below red. */
+  .career-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--text-muted);
+  }
+  .career-chart .chart-grid line {
+    stroke: var(--border);
+  }
+  .career-chart .recharts-line-curve {
+    stroke: var(--chart-them);
+  }
+  .career-chart .chart-ref line,
+  .career-chart line.chart-ref {
+    stroke: var(--text-muted);
+  }
+  .career-chart .recharts-reference-line-label {
+    fill: var(--text-muted);
+  }
+  .career-chart .dot-above {
+    fill: var(--win);
+    stroke: var(--surface-raised);
+  }
+  .career-chart .dot-below {
+    fill: var(--loss);
+    stroke: var(--surface-raised);
+  }
+  .career-chart .dot-even {
+    fill: var(--text-muted);
+    stroke: var(--surface-raised);
+  }
+  .career-chart .dot-now {
+    stroke: var(--text);
+  }
+  .career-chart .recharts-tooltip-cursor {
     stroke: var(--border-strong);
   }
 

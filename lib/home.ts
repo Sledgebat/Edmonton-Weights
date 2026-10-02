@@ -14,6 +14,7 @@ import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
 import { analyzeGame, type GameReport } from "@/lib/stats/game";
 import { clutchSummary, clutchTable, hasGoalData } from "@/lib/stats/clutch";
+import { hotAndCold, shootingData, type Shooter } from "@/lib/shooting";
 import { gameRatings, ratingLeaders, topGameScores } from "@/lib/stats/onice";
 import {
   METRICS,
@@ -159,6 +160,8 @@ export type HomeData = {
   };
   /** The Oilers' top three in Clutch Score, with their league rank (`ready` is false until goals are stored). */
   clutch: { ready: boolean; leaguePlayers: number; rows: { id: number; name: string; score: number; rank: number; summary: string }[] };
+  /** The three Oilers furthest above and below their career shooting %. */
+  shooting: { hot: Shooter[]; cold: Shooter[]; note: string | null };
   /** The most recent finished game, analysed from its play-by-play. */
   lastReport: GameReport | null;
   /** The best three Oilers ratings in that game (empty until its shift charts are stored). */
@@ -707,6 +710,10 @@ export async function homeData(): Promise<HomeData> {
     trend: rollingShare(trendGames, "xgf5", "xga5", 5),
     leaders,
     clutch,
+    shooting: await (async () => {
+      const sh = await shootingData();
+      return { ...hotAndCold(sh.shooters), note: sh.note };
+    })(),
     lastReport,
     lastRatings,
     edge,

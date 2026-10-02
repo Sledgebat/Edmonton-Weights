@@ -22,6 +22,17 @@ const TYPES = {
   ".woff": "font/woff",
 };
 
+/** Stream a file; if it vanished (the site is mid-rebuild), say so instead of crashing. */
+function send(res, file, status, type) {
+  const stream = createReadStream(file);
+  stream.on("open", () => res.writeHead(status, { "Content-Type": type }));
+  stream.on("error", () => {
+    if (!res.headersSent) res.writeHead(503, { "Content-Type": TYPES[".txt"] });
+    res.end("The site is being rebuilt. Refresh in a few seconds.");
+  });
+  stream.pipe(res);
+}
+
 createServer((req, res) => {
   const url = decodeURIComponent((req.url ?? "/").split("?")[0]);
   let file = path.join(root, url);
@@ -29,7 +40,13 @@ createServer((req, res) => {
     res.writeHead(403).end();
     return;
   }
-  if (existsSync(file) && statSync(file).isDirectory()) {
+  let isDir = false;
+  try {
+    isDir = existsSync(file) && statSync(file).isDirectory();
+  } catch {
+    /* removed mid-rebuild: treated as missing below */
+  }
+  if (isDir) {
     if (!url.endsWith("/")) {
       res.writeHead(301, { Location: url + "/" + (req.url?.includes("?") ? "?" + req.url.split("?")[1] : "") }).end();
       return;
@@ -37,10 +54,8 @@ createServer((req, res) => {
     file = path.join(file, "index.html");
   }
   if (!existsSync(file)) {
-    res.writeHead(404, { "Content-Type": TYPES[".html"] });
-    createReadStream(path.join(root, "404.html")).pipe(res);
+    send(res, path.join(root, "404.html"), 404, TYPES[".html"]);
     return;
   }
-  res.writeHead(200, { "Content-Type": TYPES[path.extname(file)] ?? "application/octet-stream" });
-  createReadStream(file).pipe(res);
+  send(res, file, 200, TYPES[path.extname(file)] ?? "application/octet-stream");
 }).listen(port, () => console.log(`Serving ${root} at http://localhost:${port}`));
