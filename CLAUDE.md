@@ -27,7 +27,8 @@ Independent fan site; the footer disclaimer must stay on every page.
   `components/ui/ViewTabs.tsx`: all panels are built into the page and switched in the browser.
 - **Player pages** exist only for current and recent Oilers (`lib/site.ts`); other players link to
   NHL.com via `playerHref`. Game pages exist for every Oilers game this season. Team scouting
-  pages (`/team/EDM` etc., `lib/team.ts`) exist for every team in the standings.
+  pages (`/team/EDM` etc., `lib/team.ts`) exist for every team in the standings. The Players
+  page has Stats / Lines / Roster tabs; `/roster` still works on its own.
 - **NHL client** (`lib/nhl/client.ts`): validates every response with Zod, caches in SQLite,
   limits parallel requests politely, and bypasses Next's patched `fetch` (needed for static export).
 - GitHub pauses scheduled workflows after 60 days without commits; the workflow makes an empty
@@ -64,13 +65,22 @@ Independent fan site; the footer disclaimer must stay on every page.
   `xg-model.json`, report in `xg-report.md`). Held-out AUC 0.754. Retrain each summer with
   `npm run xg:train` then `npm run stats:rescore` (optional; nothing breaks if skipped).
 - Rates are per 60; ranks: 1 = best. GSAx = xGA − GA.
+- **Shift data** (`lib/stats/shifts.ts`): NHL shift charts matched to the play-by-play at ingest.
+  Only results are stored (`player_games`: TOI, 5-on-5 on-ice CF/GF/xGF, Game Score per player
+  per game; `unit_games`: lines/pairs with ≥ 30 s together in a game), never raw shifts.
+  `npm run update` adds them for new games and catches up any missing (capped at 25 min a run).
+- **Ratings out of 10** (`lib/stats/ratings.ts`): Game Score ranked against the two previous
+  seasons, cut-offs in `rating-model.json`. Re-run `npm run ratings:calibrate` each summer
+  (after the season rolls over), with `npm run shifts:backfill` first if a season is missing.
 
 ## Commands
 
 | Command | What |
 | --- | --- |
 | `npm run dev` | Local site with live NHL data at http://localhost:3000 |
-| `npm run update` | Add new games to the local database |
+| `npm run update` | Add new games (and their shift charts) to the local database |
+| `npm run shifts:backfill` | One-time: shift charts for every stored season |
+| `npm run ratings:calibrate` | Each summer: set the rating cut-offs for the new season |
 | `npm run build && npm run preview` | Build and view exactly what gets published |
 | `npm run fixtures:capture` | Save NHL responses for offline mode (`NHL_MODE=fixtures`) |
 | `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:e2e` | Checks |

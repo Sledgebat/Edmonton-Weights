@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DataError, Module } from "@/components/data/Module";
 import { XgTimeline, type XgGoal, type XgRow } from "@/components/game/XgTimeline";
+import { SortableTable, type Column, type TableRow } from "@/components/players/SortableTable";
 import { FullRink, type RinkShot } from "@/components/rink/FullRink";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
@@ -12,6 +13,7 @@ import type { GameLanding } from "@/lib/nhl/schemas";
 import { formatGameDate, formatGameTime, savePct } from "@/lib/oilers";
 import { builtGameIds, builtPlayerIds, playerHref } from "@/lib/site";
 import { analyzeGame, type GameReport, type Side, type TeamTotals } from "@/lib/stats/game";
+import { gameRatings, gameUnits, regularUnits, type RatedGame, type Unit } from "@/lib/stats/onice";
 
 export const dynamicParams = false;
 
@@ -71,6 +73,13 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
   const live = g.gameState === "LIVE" || g.gameState === "CRIT";
   const pbp = started ? await load(() => nhl.playByPlay(gameId)) : null;
   const report = pbp?.ok ? analyzeGame(pbp.data, g) : null;
+  // Ratings and lines come from the shift charts, stored once the game is final.
+  const ratings = report ? gameRatings(gameId) : [];
+  const roster = new Map((pbp?.ok ? pbp.data.rosterSpots : []).map((r) => [r.playerId, r]));
+  const names = (id: number, short = false) => {
+    const r = roster.get(id);
+    return r ? (short ? txt(r.lastName) : `${txt(r.firstName)} ${txt(r.lastName)}`) : `#${id}`;
+  };
   const href = (pid: number) => playerHref(pid, built);
   // "Us" is the Oilers when they play; otherwise the home team.
   const usSide: Side = g.awayTeam.abbrev === TEAM ? "away" : "home";
@@ -131,12 +140,17 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
             <Goalies report={report} href={href} />
           </div>
 
+          {ratings.length ? (
+            <PlayerRatings ratings={ratings} report={report} names={names} href={href} />
+          ) : (
+            <TopShooters report={report} href={href} pending={!live && g.gameType !== 1} />
+          )}
+
+          {ratings.length > 0 && <LinesTonight gameId={gameId} report={report} usSide={usSide} themSide={themSide} names={names} />}
+
           <div className="grid gap-6 lg:grid-cols-2">
-            <TopShooters report={report} href={href} />
-            <div className="space-y-6">
-              <ThreeStars g={g} href={href} />
-              <Scoring g={g} />
-            </div>
+            <ThreeStars g={g} href={href} />
+            <Scoring g={g} />
           </div>
         </>
       )}
@@ -381,10 +395,125 @@ function Goalies({ report, href }: { report: GameReport; href: (id: number) => s
   );
 }
 
-function TopShooters({ report, href }: { report: GameReport; href: (id: number) => string }) {
+const RATING_COLUMNS: Column[] = [
+  { key: "rating", label: "Rating", title: "Player rating out of 10, from Game Score compared with every NHL game of the last two seasons", format: "rating" },
+  { key: "gs", label: "GS", title: "Game Score: the raw single-game score the rating comes from", format: "dec2" },
+  { key: "g", label: "G", title: "Goals", format: "int" },
+  { key: "a", label: "A", title: "Assists", format: "int" },
+  { key: "sog", label: "SOG", title: "Shots on goal", format: "int" },
+  { key: "toi", label: "TOI", title: "Time on ice", format: "toi" },
+  { key: "cf", label: "Shot share", title: "On-ice shot share at 5 on 5: the team's share of shot attempts while he was on the ice (CF%)", format: "pct1" },
+];
+
+/** Both teams' players with their rating out of 10; the top three of the night are highlighted. */
+function PlayerRatings({
+  ratings,
+  report,
+  names,
+  href,
+}: {
+  ratings: RatedGame[];
+  report: GameReport;
+  names: (id: number) => string;
+  href: (id: number) => string;
+}) {
+  const abbrev = (teamId: number) => (teamId === report.home.id ? report.home.abbrev : report.away.abbrev);
+  const top = new Set(ratings.slice(0, 3).map((r) => r.playerId));
+  const rows: TableRow[] = ratings.map((r) => ({
+    id: r.playerId,
+    name: names(r.playerId),
+    href: href(r.playerId),
+    pos: r.pos,
+    team: abbrev(r.teamId),
+    highlight: top.has(r.playerId) ? 1 : 0,
+    rating: r.rating,
+    gs: r.gameScore,
+    g: r.goals,
+    a: r.a1 + r.a2,
+    sog: r.pos === "G" ? null : r.sog,
+    toi: r.toi,
+    cf: r.pos === "G" || r.cf + r.ca === 0 ? null : (100 * r.cf) / (r.cf + r.ca),
+  }));
+  return (
+    <Module title="Player ratings">
+      <p className="mb-3 text-xs text-fg-muted">
+        Out of 10, from each player&apos;s Game Score (goals, assists, shots, blocks, penalties, faceoffs and 5-on-5 shot and goal differential while on the
+        ice) compared with every NHL game of the last two seasons. 6 is above average, 7 very good, 8 excellent. Goalies are rated on goals saved above
+        expected. Top three of the night highlighted.{" "}
+        <Link href="/stats-guide#ratings" className="underline">
+          How ratings work
+        </Link>
+      </p>
+      <SortableTable columns={RATING_COLUMNS} rows={rows} initialSort="rating" caption="Player ratings for both teams" minWidth="36rem" />
+    </Module>
+  );
+}
+
+const mmss5 = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+function UnitList({ title, units, names }: { title: string; units: Unit[]; names: (id: number, short?: boolean) => string }) {
+  if (!units.length) return null;
+  return (
+    <div>
+      <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{title}</p>
+      <ul className="space-y-1.5 text-sm">
+        {units.map((u) => (
+          <li key={u.players.join("-")} className="flex items-baseline justify-between gap-3">
+            <span className="min-w-0">{u.players.map((id) => names(id, true)).join(" – ")}</span>
+            <span className="numeral whitespace-nowrap text-xs text-fg-muted" title="5-on-5 time together · shot attempts for–against · expected goals for–against">
+              {mmss5(u.toi5)} · {u.cf}–{u.ca} · xG {u.xgf.toFixed(1)}–{u.xga.toFixed(1)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** The forward lines and defence pairs each team actually used, from who was on the ice together. */
+function LinesTonight({
+  gameId,
+  report,
+  usSide,
+  themSide,
+  names,
+}: {
+  gameId: number;
+  report: GameReport;
+  usSide: Side;
+  themSide: Side;
+  names: (id: number, short?: boolean) => string;
+}) {
+  return (
+    <Module title="Lines used tonight">
+      <p className="mb-3 text-xs text-fg-muted">
+        Each team&apos;s most-used forward lines and defence pairs at 5 on 5, from the NHL&apos;s shift charts · time together · shot attempts for–against
+        · expected goals for–against
+      </p>
+      <div className="grid gap-6 md:grid-cols-2">
+        {[usSide, themSide].map((side) => {
+          const team = report[side];
+          const { lines, pairs } = regularUnits(gameUnits(gameId, team.id));
+          return (
+            <div key={side} className="space-y-3">
+              <p className="display text-xl">{team.name}</p>
+              <UnitList title="Forward lines" units={lines} names={names} />
+              <UnitList title="Defence pairs" units={pairs} names={names} />
+            </div>
+          );
+        })}
+      </div>
+    </Module>
+  );
+}
+
+function TopShooters({ report, href, pending }: { report: GameReport; href: (id: number) => string; pending: boolean }) {
   const top = report.players.slice(0, 10);
   return (
     <Module title="Most dangerous shooters">
+      {pending && (
+        <p className="mb-2 text-xs text-fg-muted">Player ratings and lines appear here once the NHL publishes the game&apos;s shift charts, usually by the next site update.</p>
+      )}
       <div className="-mx-1 overflow-x-auto">
         <table className="w-full min-w-[26rem] text-sm">
           <caption className="sr-only">Players ranked by individual expected goals</caption>

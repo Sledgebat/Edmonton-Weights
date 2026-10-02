@@ -151,7 +151,7 @@ describe("ingest", () => {
     expect(ingestGame(pbp).shots).toBe(116);
     ingestGame(pbp);
     expect(ingestedIds().has(pbp.id)).toBe(true);
-    expect(statsCounts()).toEqual({ games: [{ season: 20262027, n: 1 }], shots: 116 });
+    expect(statsCounts()).toEqual({ games: [{ season: 20262027, n: 1 }], shots: 116, shiftGames: 0 });
   });
 });
 

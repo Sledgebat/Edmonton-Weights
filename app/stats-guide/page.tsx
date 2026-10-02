@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { currentModel } from "@/lib/stats/xg";
+import { GAME_SCORE } from "@/lib/stats/shifts";
+import { RATING_ANCHORS, ratingModel } from "@/lib/stats/ratings";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
@@ -88,6 +90,26 @@ const TERMS: { id: string; term: string; short: string; body: React.ReactNode }[
     body: <>Off-the-rush chances catch a defence before it&apos;s set up.</>,
   },
   {
+    id: "on-ice",
+    term: "On-ice and relative (On-ice xGF%, Rel xGF%)",
+    short: "How the team does with a player on the ice, and how that compares with him on the bench.",
+    body: (
+      <>
+        From the NHL&apos;s shift charts we know who was on the ice for every 5-on-5 shot. <strong>On-ice xGF%</strong> is the Oilers&apos; share of expected goals while he&apos;s out there. <strong>Relative</strong> (Rel) subtracts the team&apos;s share in the same games while he&apos;s off the ice: +3 means the Oilers control 3 points more of the play with him on. Relative numbers help separate a player from his team, but linemates and the minutes a coach gives him still shape them.
+      </>
+    ),
+  },
+  {
+    id: "lines",
+    term: "Lines and pairs",
+    short: "The same three forwards, or two defencemen, on the ice together at 5 on 5.",
+    body: (
+      <>
+        Built from who was actually on the ice, second by second, not from the posted lineup. &ldquo;Current lines&rdquo; are the groups that played the most together in the latest game. Season tables show every combination with at least 20 minutes together, since a few shifts tell you little.
+      </>
+    ),
+  },
+  {
     id: "edge",
     term: "NHL EDGE",
     short: "The NHL's puck- and player-tracking numbers.",
@@ -108,6 +130,7 @@ export default function StatsGuidePage() {
         <nav aria-label="On this page" className="mt-4 flex flex-wrap gap-2 text-sm">
           {[
             ["#terms", "The stats"],
+            ["#ratings", "Player ratings"],
             ["#model", "Our xG model"],
             ["#sources", "Data and updates"],
             ["#caveats", "Caveats"],
@@ -135,6 +158,8 @@ export default function StatsGuidePage() {
           ))}
         </dl>
       </section>
+
+      <Ratings />
 
       <section aria-labelledby="model" className="space-y-4">
         <h2 id="model" className="display text-3xl sm:text-4xl">
@@ -189,7 +214,7 @@ export default function StatsGuidePage() {
         </h2>
         <div className="card space-y-2 p-4 text-sm sm:p-5">
           <p>
-            Everything comes from the NHL&apos;s public data: the schedule, standings, rosters, box scores and play-by-play (with shot locations), the NHL stats site (power play, penalty kill, faceoffs) and NHL EDGE tracking. Our server stores every finished game&apos;s shots and calculates the advanced stats itself.
+            Everything comes from the NHL&apos;s public data: the schedule, standings, rosters, box scores and play-by-play (with shot locations), shift charts (who was on the ice), the NHL stats site (power play, penalty kill, faceoffs) and NHL EDGE tracking. Our server stores every finished game&apos;s shots and calculates the advanced stats itself.
           </p>
           <ul className="list-disc space-y-1 pl-5">
             <li>The whole site is rebuilt three times a day: late evening after most games, overnight after West Coast games, and in the morning. During a game, the game page is a snapshot from the last update.</li>
@@ -223,11 +248,106 @@ export default function StatsGuidePage() {
             <strong>Shot locations</strong> are recorded by off-ice scorers and vary a little from rink to rink. Our model doesn&apos;t know about screens, passes before the shot or shooter skill.
           </li>
           <li>
+            <strong>Ratings and lines</strong> need the NHL&apos;s shift charts, which are usually published within an hour of the final horn. If they&apos;re late, the game report shows shooters instead and fills in at the next update.
+          </li>
+          <li>
             <strong>Single games are noisy.</strong> A game report&apos;s xG tells you who had the better chances that night, not who&apos;s the better team.
           </li>
         </ul>
       </section>
     </div>
+  );
+}
+
+const RATING_BANDS: [string, string, string][] = [
+  ["9.0–10", "Exceptional", "top 1.5% of games"],
+  ["8.0–8.9", "Excellent", "top 5%"],
+  ["7.0–7.9", "Very good", "top 18%"],
+  ["6.0–6.9", "Good", "above average"],
+  ["5.0–5.9", "Average", "the middle"],
+  ["below 5", "Rough game", "bottom 22%"],
+];
+
+/** How Game Score and the rating out of 10 work, with this season's cut-offs. */
+function Ratings() {
+  const w = GAME_SCORE;
+  const weights: [string, string][] = [
+    ["Goal", `+${w.goal}`],
+    ["Primary assist", `+${w.a1}`],
+    ["Secondary assist", `+${w.a2}`],
+    ["Shot on goal", `+${w.sog}`],
+    ["Blocked shot", `+${w.blk}`],
+    ["Penalty drawn / taken", `+${w.penalty} / −${w.penalty}`],
+    ["Faceoff won / lost", `+${w.faceoff} / −${w.faceoff}`],
+    ["5-on-5 shot attempt for / against while on the ice", `+${w.corsi} / −${w.corsi}`],
+    ["5-on-5 goal for / against while on the ice", `+${w.onIceGoal} / −${w.onIceGoal}`],
+  ];
+  const m = ratingModel;
+  const cut = (i: number) => m.skater.cutoffs[i];
+  return (
+    <section aria-labelledby="ratings" className="scroll-mt-24 space-y-4">
+      <h2 id="ratings" className="display text-3xl sm:text-4xl">
+        Player ratings
+      </h2>
+      <div className="card space-y-3 p-4 text-sm sm:p-5">
+        <p>
+          Every player gets a <strong>rating out of 10</strong> for every game, like a soccer app. It starts from <strong>Game Score</strong>, a single-game
+          measure created by hockey analyst Dom Luszczyszyn in 2016, which adds up what a player did that night:
+        </p>
+        <table className="w-full max-w-md text-sm">
+          <caption className="sr-only">Game Score weights</caption>
+          <tbody>
+            {weights.map(([k, v]) => (
+              <tr key={k} className="border-t border-line">
+                <th scope="row" className="py-1 pr-3 text-left font-normal">
+                  {k}
+                </th>
+                <td className="numeral py-1 text-right">{v}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>
+          Goalies are scored on goals saved above expected (from our model) times 0.75, the same weight as a goal: stop one more goal than an average goalie
+          would, and that&apos;s worth what scoring one is.
+        </p>
+        <p>
+          A raw Game Score is hard to read (is 1.4 good?), so we rank each one against every NHL game from the previous two seasons
+          {m.skater.games ? ` (${m.skater.games.toLocaleString("en-CA")} skater games and ${m.goalie.games.toLocaleString("en-CA")} goalie games)` : ""}, and
+          turn that into a rating. Goalies are only compared with goalies. The cut-offs are set once before the season, so a 7.5 means the same thing in
+          October as in April.
+        </p>
+        <table className="w-full max-w-md text-sm">
+          <caption className="sr-only">What each rating means</caption>
+          <thead>
+            <tr className="text-[11px] uppercase tracking-wider text-fg-muted">
+              <th className="py-1 text-left font-semibold">Rating</th>
+              <th className="py-1 text-left font-semibold">Meaning</th>
+              <th className="py-1 text-left font-semibold">Share of games</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RATING_BANDS.map(([r, label, share]) => (
+              <tr key={r} className="border-t border-line">
+                <td className="numeral py-1">{r}</td>
+                <td className="py-1">{label}</td>
+                <td className="py-1 text-fg-muted">{share}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {m.skater.cutoffs.length === RATING_ANCHORS.length && (
+          <p className="text-fg-muted">
+            For skaters this season, an average game (5.0–5.9) is a Game Score between {cut(1).toFixed(2)} and {cut(2).toFixed(2)}; a 7.0 takes{" "}
+            {cut(3).toFixed(2)}; an 8.0 takes {cut(4).toFixed(2)}; a 9.0 takes {cut(5).toFixed(2)}.
+          </p>
+        )}
+        <p className="text-fg-muted">
+          Game Score rewards what shows up in the event data, so it favours scorers and shooters, and a quiet, solid defensive game can rate as average.
+          Treat one rating as a summary of one night, and look at several games before drawing conclusions.
+        </p>
+      </div>
+    </section>
   );
 }
 

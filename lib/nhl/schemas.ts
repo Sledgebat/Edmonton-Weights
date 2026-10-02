@@ -602,6 +602,23 @@ export type TeamSummaryRow = z.infer<typeof TeamSummaryRow>;
 export const TeamSummary = z.object({ data: z.array(TeamSummaryRow), total: z.number().int().optional() });
 export type TeamSummary = z.infer<typeof TeamSummary>;
 
+// ---------------------------------------------------------------- shift charts (stats REST API)
+
+/** One shift: a player on the ice from startTime to endTime (mm:ss into the period). typeCode 517 = shift. */
+export const Shift = z.object({
+  gameId: z.number().int(),
+  playerId: z.number().int().nullable().optional(),
+  teamId: z.number().int().nullable().optional(),
+  period: z.number().int(),
+  startTime: z.string().nullable().optional(),
+  endTime: z.string().nullable().optional(),
+  typeCode: z.number().int().nullable().optional(),
+});
+export type Shift = z.infer<typeof Shift>;
+
+export const ShiftCharts = z.object({ data: z.array(Shift), total: z.number().int().optional() });
+export type ShiftCharts = z.infer<typeof ShiftCharts>;
+
 // ---------------------------------------------------------------- NHL EDGE (tracking)
 
 /**

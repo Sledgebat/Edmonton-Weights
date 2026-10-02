@@ -142,9 +142,12 @@ test("home page shows every section, with the pre-game breakdown folded away", a
 test("game report shows the analysis for a finished game", async ({ page }) => {
   await page.goto("/game/2026020004");
   await expect(page.getByText(/Canucks beat the Oilers 6–5 in overtime/)).toBeVisible();
-  for (const title of ["Team comparison", "Expected goals through the game", "Shot map", "By strength", "Goaltending", "Most dangerous shooters", "Three stars", "Scoring"]) {
+  for (const title of ["Team comparison", "Expected goals through the game", "Shot map", "By strength", "Goaltending", "Player ratings", "Lines used tonight", "Three stars", "Scoring"]) {
     await expect(page.getByRole("heading", { name: title })).toBeVisible();
   }
+  // Bouchard's hat trick is the best rating of the night.
+  const ratings = page.locator("section", { has: page.getByRole("heading", { name: "Player ratings" }) });
+  await expect(ratings.locator("tbody tr").first()).toContainText("Evan Bouchard");
   await expect(page.locator('svg[aria-label^="Shot map"] circle title').first()).toBeAttached();
   await expect(page.locator("svg[aria-label^='Shot map'] circle")).not.toHaveCount(0);
 });
@@ -162,13 +165,26 @@ test("players table sorts by column", async ({ page }) => {
   await expect(table.locator("tbody tr").first()).toContainText("Vasily Podkolzin"); // most individual xG
   await table.getByRole("button", { name: "ixG", exact: true }).click();
   await expect(table.locator("thead th").nth(9)).toHaveAttribute("aria-sort", "ascending");
-  await expect(page.getByRole("link", { name: "Roster cards" })).toBeVisible();
+});
+
+test("players page has Lines and Roster tabs", async ({ page }) => {
+  await page.goto("/players");
+  await page.getByRole("button", { name: "Lines", exact: true }).click();
+  await expect(page).toHaveURL(/\?tab=lines/);
+  await expect(page.getByRole("heading", { name: "Current lines" })).toBeVisible();
+  const current = page.locator("section", { has: page.getByRole("heading", { name: "Current lines" }) });
+  await expect(current.getByRole("link", { name: "McDavid" })).toBeVisible();
+  await page.getByRole("button", { name: "Roster", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Defence" })).toBeVisible();
 });
 
 test("player pages show NHL EDGE and model numbers", async ({ page }) => {
   await page.goto("/player/8478402");
   await expect(page.getByRole("heading", { name: /NHL EDGE tracking/ })).toBeVisible();
   await expect(page.getByText("Top skating speed")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "On-ice impact" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Most common linemates" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Rating, last 10 games" })).toBeVisible();
   await page.goto("/player/8475883");
   await expect(page.getByText("Save % on high-danger shots")).toBeVisible();
 });

@@ -3,12 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TrendChart, type TrendPoint } from "@/components/charts/TrendChart";
 import { DataError, Module } from "@/components/data/Module";
+import { RatingBadge } from "@/components/data/RatingBadge";
+import { Linemates, OnIceImpact } from "@/components/player/OnIce";
 import { GoalieEdge, GoalieModel, SkaterEdge, SkaterModel } from "@/components/player/PlayerAdvanced";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { Rivets } from "@/components/ui/Rivets";
 import { load } from "@/lib/load";
 import { nhl, txt, type GameLogEntry, type PlayerLanding, type SeasonTotal, type StatLine } from "@/lib/nhl";
-import { builtPlayerIds } from "@/lib/site";
+import { playerName } from "@/lib/home";
+import { builtPlayerIds, playerHref } from "@/lib/site";
+import { linemates, onIceTable, ratingLog } from "@/lib/stats/onice";
 import { goalieSeasons, playerShooting } from "@/lib/stats/team";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
 
@@ -179,6 +183,18 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
   const shooting = goalie ? [] : playerShooting(playerId);
   const goalieAdv = goalie ? goalieSeasons(playerId) : [];
 
+  // From the shift charts: ratings, on-ice impact, linemates (this season).
+  const ratings = season ? ratingLog(playerId, season) : [];
+  const ratingByGame = new Map(ratings.map((r) => [r.gameId, r]));
+  const recentRatings = ratings.slice(-10);
+  const avgRating = ratings.length ? ratings.reduce((s, r) => s + r.rating, 0) / ratings.length : null;
+  const onIce = !goalie && season ? (onIceTable(season, { playerId })[0] ?? null) : null;
+  const built = await builtPlayerIds();
+  const mates =
+    !goalie && season
+      ? await Promise.all(linemates(playerId, season).map(async (m) => ({ ...m, name: await playerName(m.playerId), href: playerHref(m.playerId, built) })))
+      : [];
+
   const bio: [string, string][] = [
     ["Position", POSITION[p.position] ?? p.position],
     ...(p.birthDate
@@ -193,12 +209,23 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
       : ([["Draft", "Undrafted"]] as [string, string][])),
   ];
 
+  const ratingCell = (gameId: number) => {
+    const r = ratingByGame.get(gameId);
+    return r ? (
+      <Link href={`/game/${gameId}`} title={`Game Score ${r.gameScore.toFixed(2)}`}>
+        <RatingBadge rating={r.rating} />
+      </Link>
+    ) : (
+      "—"
+    );
+  };
   const logFirst: Col<GameLogEntry>[] = [
     { key: "date", label: "Date", title: "Date", value: (g) => formatGameDate(g.gameDate + "T18:00:00Z", { month: "short", day: "numeric" }) },
     { key: "opp", label: "Opp", title: "Opponent", value: (g) => `${g.homeRoadFlag === "H" ? "vs" : "@"} ${g.opponentAbbrev}` },
   ];
   const logCols: Col<GameLogEntry>[] = goalie
     ? [
+        { key: "rating", label: "Rating", title: "Rating out of 10", value: (g) => ratingCell(g.gameId) },
         { key: "dec", label: "Dec", title: "Decision", value: (g) => DECISION[g.decision ?? ""] ?? "—" },
         { key: "sa", label: "SA", title: "Shots against", value: (g) => g.shotsAgainst ?? 0 },
         { key: "ga", label: "GA", title: "Goals against", value: (g) => g.goalsAgainst ?? 0 },
@@ -206,6 +233,7 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
         { key: "toi", label: "TOI", title: "Time on ice", value: (g) => g.toi ?? "—" },
       ]
     : [
+        { key: "rating", label: "Rating", title: "Rating out of 10", value: (g) => ratingCell(g.gameId) },
         { key: "g", label: "G", title: "Goals", value: (g) => g.goals ?? 0 },
         { key: "a", label: "A", title: "Assists", value: (g) => g.assists ?? 0 },
         { key: "p", label: "P", title: "Points", value: (g) => g.points ?? 0, strong: true },
@@ -285,6 +313,40 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
             {goalie ? <GoalieModel rows={goalieAdv} /> : <SkaterModel rows={shooting} />}
           </div>
         )}
+
+        {!goalie && (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <OnIceImpact o={onIce} avgRating={avgRating} season={season ? seasonShort(season) : ""} />
+            <Linemates rows={mates} defence={p.position === "D"} />
+          </div>
+        )}
+
+        <Module title="Rating, last 10 games">
+          {recentRatings.length < 2 ? (
+            <p className="text-fg-muted">The rating trend appears after two games with shift data this season.</p>
+          ) : (
+            <div>
+              <p className="text-sm text-fg-muted">
+                Average {(recentRatings.reduce((s, r) => s + r.rating, 0) / recentRatings.length).toFixed(1)} over the last {recentRatings.length} · out of 10, 6 =
+                above average, 7 = very good, 8 = excellent ·{" "}
+                <Link href="/stats-guide#ratings" className="underline">
+                  How ratings work
+                </Link>
+              </p>
+              <TrendChart
+                data={recentRatings.map((r) => ({
+                  label: formatGameDate(r.date + "T18:00:00Z", { month: "short", day: "numeric" }),
+                  opponent: `${r.isHome ? "vs" : "@"} ${r.opponent}`,
+                  value: r.rating,
+                  detail: `Rating ${r.rating.toFixed(1)} · Game Score ${r.gameScore.toFixed(2)}`,
+                }))}
+                yDomain={[2, 10]}
+                yTicks={[2, 4, 6, 8, 10]}
+                ariaLabel={`Rating out of 10 in each of the last ${recentRatings.length} games. Full numbers are in the game log table.`}
+              />
+            </div>
+          )}
+        </Module>
 
         <Module title={goalie ? "Save percentage, last 10 games" : "Points, last 10 games"} meta={log?.ok ? log.meta : undefined}>
           {!log ? (

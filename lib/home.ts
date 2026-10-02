@@ -12,6 +12,7 @@ import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type Standi
 import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
 import { analyzeGame, type GameReport } from "@/lib/stats/game";
+import { gameRatings } from "@/lib/stats/onice";
 import {
   METRICS,
   goalieTable,
@@ -148,6 +149,8 @@ export type HomeData = {
   };
   /** The most recent finished game, analysed from its play-by-play. */
   lastReport: GameReport | null;
+  /** The best three Oilers ratings in that game (empty until its shift charts are stored). */
+  lastRatings: { id: number; name: string; pos: string; rating: number; gameScore: number }[];
   edge: Loaded<EdgeTeam>;
   /** Speed bursts per game, ranked by us across the league. */
   bursts: BurstTable;
@@ -586,9 +589,20 @@ export async function homeData(): Promise<HomeData> {
 
   // ------------------------------------------------ last game
   let lastReport: GameReport | null = null;
+  let lastRatings: HomeData["lastRatings"] = [];
   if (last) {
     const [pbp, landing] = await Promise.all([load(() => nhl.playByPlay(last.id)), load(() => nhl.gameLanding(last.id))]);
-    if (pbp.ok) lastReport = analyzeGame(pbp.data, landing.ok ? landing.data : null);
+    if (pbp.ok) {
+      lastReport = analyzeGame(pbp.data, landing.ok ? landing.data : null);
+      const spots = new Map(pbp.data.rosterSpots.map((r) => [r.playerId, r]));
+      lastRatings = gameRatings(last.id)
+        .filter((r) => r.teamId === TEAM_ID)
+        .slice(0, 3)
+        .map((r) => {
+          const p = spots.get(r.playerId);
+          return { id: r.playerId, name: p ? `${txt(p.firstName)} ${txt(p.lastName)}` : `Player ${r.playerId}`, pos: r.pos, rating: r.rating, gameScore: r.gameScore };
+        });
+    }
   }
 
   const statsUpdated = (getDb().$client.prepare(`SELECT MAX(ingested_at) t FROM stats_games`).get() as { t: number | null }).t;
@@ -615,6 +629,7 @@ export async function homeData(): Promise<HomeData> {
     trend: rollingShare(trendGames, "xgf5", "xga5", 5),
     leaders,
     lastReport,
+    lastRatings,
     edge,
     bursts,
     rosterEdge: skaterEdge,

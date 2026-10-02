@@ -19,6 +19,7 @@ import {
   Prospects,
   Roster,
   Scoreboard,
+  ShiftCharts,
   Standings,
 } from "./schemas";
 
@@ -145,6 +146,12 @@ export const RESOURCES: Resource[] = [
     pattern: /^\/stats\/rest\/en\/team\/summary/,
     schema: TeamSummary,
     ttl: () => 1 * HOUR,
+  },
+  {
+    label: "Shift charts",
+    pattern: /^\/stats\/rest\/en\/shiftcharts/,
+    schema: ShiftCharts,
+    ttl: () => 1 * DAY,
   },
   {
     label: "NHL EDGE team",

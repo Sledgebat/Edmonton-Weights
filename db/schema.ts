@@ -97,3 +97,76 @@ export const strengthTime = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.gameId, t.teamId, t.strength] })],
 );
+
+// ---------------------------------------------------------------- shift data (on-ice stats, lines, Game Score)
+
+/**
+ * Whether a game's shift charts have been processed: 1 = stored, 0 = the NHL had none yet.
+ * Games without a row haven't been tried.
+ */
+export const shiftStatus = sqliteTable("shift_status", {
+  gameId: integer("game_id").primaryKey(),
+  status: integer("status").notNull(),
+  checkedAt: integer("checked_at").notNull(),
+});
+
+/** One row per player per game: ice time, 5-on-5 on-ice numbers, Game Score inputs. */
+export const playerGames = sqliteTable(
+  "player_games",
+  {
+    gameId: integer("game_id").notNull(),
+    playerId: integer("player_id").notNull(),
+    teamId: integer("team_id").notNull(),
+    season: integer("season").notNull(),
+    gameType: integer("game_type").notNull(),
+    /** F, D or G. */
+    pos: text("pos").notNull(),
+    toi: integer("toi").notNull(),
+    toi5: integer("toi5").notNull(),
+    cf: integer("cf").notNull(),
+    ca: integer("ca").notNull(),
+    gf: integer("gf").notNull(),
+    ga: integer("ga").notNull(),
+    xgf: real("xgf").notNull(),
+    xga: real("xga").notNull(),
+    goals: integer("goals").notNull(),
+    a1: integer("a1").notNull(),
+    a2: integer("a2").notNull(),
+    sog: integer("sog").notNull(),
+    blk: integer("blk").notNull(),
+    pd: integer("pd").notNull(),
+    pt: integer("pt").notNull(),
+    fow: integer("fow").notNull(),
+    fol: integer("fol").notNull(),
+    gsax: real("gsax"),
+    gameScore: real("game_score").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.gameId, t.playerId] }),
+    index("player_games_player").on(t.playerId, t.season),
+    index("player_games_season").on(t.season, t.gameType),
+  ],
+);
+
+/** Forward lines (3) and defence pairs (2) with their 5-on-5 time and on-ice numbers, per game. */
+export const unitGames = sqliteTable(
+  "unit_games",
+  {
+    gameId: integer("game_id").notNull(),
+    teamId: integer("team_id").notNull(),
+    season: integer("season").notNull(),
+    gameType: integer("game_type").notNull(),
+    /** F (line) or D (pair). */
+    kind: text("kind").notNull(),
+    /** Player ids, ascending, joined with "-". */
+    players: text("players").notNull(),
+    toi5: integer("toi5").notNull(),
+    cf: integer("cf").notNull(),
+    ca: integer("ca").notNull(),
+    gf: integer("gf").notNull(),
+    ga: integer("ga").notNull(),
+    xgf: real("xgf").notNull(),
+    xga: real("xga").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.gameId, t.teamId, t.players] }), index("unit_games_team").on(t.teamId, t.season)],
+);

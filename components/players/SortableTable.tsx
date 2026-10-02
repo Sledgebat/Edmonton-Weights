@@ -3,8 +3,9 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { RatingBadge } from "@/components/data/RatingBadge";
 
-export type Format = "int" | "signed" | "pct1" | "dec2" | "signed2" | "sv" | "toi" | "text";
+export type Format = "int" | "signed" | "pct1" | "dec2" | "signed1" | "signed2" | "sv" | "toi" | "text" | "rating";
 
 export type Column = {
   key: string;
@@ -18,7 +19,11 @@ export type Column = {
   tone?: boolean;
 };
 
-export type TableRow = Record<string, string | number | null> & { id: number; name: string };
+/**
+ * One row. Optional fields: `href` (where the name links; default the player page, null = no
+ * link), `team` (shown after the name), `pos`, and `highlight` (1 = a standout row).
+ */
+export type TableRow = Record<string, string | number | null> & { id: number | string; name: string };
 
 function fmt(v: string | number | null, f: Format): string {
   if (v === null || v === undefined) return "—";
@@ -30,10 +35,14 @@ function fmt(v: string | number | null, f: Format): string {
       return v.toFixed(1);
     case "dec2":
       return v.toFixed(2);
+    case "signed1":
+      return `${v > 0 ? "+" : ""}${v.toFixed(1)}`;
     case "signed2":
       return `${v > 0 ? "+" : ""}${v.toFixed(2)}`;
     case "sv":
       return v.toFixed(3).replace(/^0/, "");
+    case "rating":
+      return v.toFixed(1);
     case "toi":
       return `${Math.floor(v / 60)}:${String(Math.round(v % 60)).padStart(2, "0")}`;
     default:
@@ -42,7 +51,21 @@ function fmt(v: string | number | null, f: Format): string {
 }
 
 /** A stats table whose columns sort on click. Names link to player pages. */
-export function SortableTable({ columns, rows, initialSort, caption }: { columns: Column[]; rows: TableRow[]; initialSort: string; caption: string }) {
+export function SortableTable({
+  columns,
+  rows,
+  initialSort,
+  caption,
+  nameLabel = "Player",
+  minWidth = "40rem",
+}: {
+  columns: Column[];
+  rows: TableRow[];
+  initialSort: string;
+  caption: string;
+  nameLabel?: string;
+  minWidth?: string;
+}) {
   const [sort, setSort] = useState<{ key: string; desc: boolean }>({ key: initialSort, desc: true });
 
   const sorted = useMemo(() => {
@@ -64,13 +87,13 @@ export function SortableTable({ columns, rows, initialSort, caption }: { columns
 
   return (
     <div className="-mx-1 overflow-x-auto">
-      <table className="w-full min-w-[40rem] text-sm">
+      <table className="w-full text-sm" style={{ minWidth }}>
         <caption className="sr-only">{caption}. Select a column heading to sort.</caption>
         <thead>
           <tr className="text-[11px] uppercase tracking-wider text-fg-muted">
             <th scope="col" className="sticky left-0 bg-raised px-1 py-1 text-left">
-              <SortButton active={sort.key === "name"} desc={sort.desc} onClick={() => toggle({ key: "name", label: "Player", format: "text", descFirst: false })}>
-                Player
+              <SortButton active={sort.key === "name"} desc={sort.desc} onClick={() => toggle({ key: "name", label: nameLabel, format: "text", descFirst: false })}>
+                {nameLabel}
               </SortButton>
             </th>
             {columns.map((c) => (
@@ -84,19 +107,27 @@ export function SortableTable({ columns, rows, initialSort, caption }: { columns
         </thead>
         <tbody>
           {sorted.map((r) => (
-            <tr key={r.id} className="border-t border-line">
-              <th scope="row" className="sticky left-0 whitespace-nowrap bg-raised px-1 py-1.5 text-left font-semibold">
-                <Link href={`/player/${r.id}`} className="hover:underline">
-                  {r.name}
-                </Link>
+            <tr key={r.id} className={`border-t border-line ${r.highlight ? "bg-sunken" : ""}`}>
+              <th
+                scope="row"
+                className={`sticky left-0 whitespace-nowrap px-1 py-1.5 text-left font-semibold ${r.highlight ? "bg-sunken shadow-[inset_3px_0_0_var(--brand-accent)]" : "bg-raised"}`}
+              >
+                {r.href === null ? (
+                  r.name
+                ) : (
+                  <Link href={typeof r.href === "string" ? r.href : `/player/${r.id}`} className="hover:underline">
+                    {r.name}
+                  </Link>
+                )}
                 {typeof r.pos === "string" && <span className="ml-1.5 text-xs font-normal text-fg-muted">{r.pos}</span>}
+                {typeof r.team === "string" && <span className="ml-1.5 text-xs font-normal text-fg-muted">{r.team}</span>}
               </th>
               {columns.map((c) => {
                 const v = r[c.key];
                 const tone = c.tone && typeof v === "number" && Math.abs(v) >= 0.005 ? (v > 0 ? "text-win" : "text-loss") : "";
                 return (
                   <td key={c.key} className={`numeral whitespace-nowrap px-1 text-right ${tone} ${sort.key === c.key ? "font-semibold" : ""}`}>
-                    {fmt(v, c.format)}
+                    {c.format === "rating" && typeof v === "number" ? <RatingBadge rating={v} /> : fmt(v, c.format)}
                   </td>
                 );
               })}

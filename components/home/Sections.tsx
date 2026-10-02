@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Radio, Tv } from "lucide-react";
 import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
+import { RatingBadge } from "@/components/data/RatingBadge";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
 import { RankPill } from "@/components/ui/RankPill";
@@ -423,6 +424,21 @@ export function LastGame({ d }: { d: HomeData }) {
               </div>
             ))}
           </dl>
+        )}
+        {d.lastRatings.length > 0 && (
+          <div className="mt-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted">Top Oilers ratings</p>
+            <ol className="mt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-sm">
+              {d.lastRatings.map((p) => (
+                <li key={p.id} className="flex items-center gap-2">
+                  <RatingBadge rating={p.rating} />
+                  <Link href={`/player/${p.id}`} className="font-semibold hover:underline">
+                    {p.name}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
         )}
         {!r && <p className="text-sm text-fg-muted">The game breakdown isn&apos;t available right now.</p>}
       </div>

@@ -45,6 +45,8 @@ export const endpoints = {
   /** League-wide team summary for a season (one row per team). */
   teamSummary: (season: number, gameType: GameType = 2) =>
     `/stats/rest/en/team/summary?cayenneExp=seasonId=${season}%20and%20gameTypeId=${gameType}`,
+  /** Every shift in a game: who was on the ice, and when. */
+  shiftCharts: (gameId: number) => `/stats/rest/en/shiftcharts?cayenneExp=gameId=${gameId}`,
   /** NHL EDGE tracking: season-to-date summaries with league ranks. */
   edgeTeam: (teamId = TEAM_ID) => `/edge/team-detail/${teamId}/now`,
   edgeSkater: (playerId: number) => `/edge/skater-detail/${playerId}/now`,

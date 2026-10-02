@@ -151,6 +151,7 @@ async function main() {
     await capture("game", "Game landing (final)", endpoints.gameLanding(lastFinished.id));
     await capture("game", "Play-by-play (final)", endpoints.gamePlayByPlay(lastFinished.id));
     await capture("game", "Boxscore (final)", endpoints.gameBoxscore(lastFinished.id));
+    await capture("game", "Shift charts (final)", endpoints.shiftCharts(lastFinished.id));
   } else {
     console.log("! No finished Oilers game found to capture");
   }

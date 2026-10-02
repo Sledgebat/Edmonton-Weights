@@ -47,6 +47,10 @@ export function StatsEngineStatus({ season }: { season: number }) {
                 <span>Shot attempts</span>
                 <span className="numeral">{counts.shots.toLocaleString()}</span>
               </li>
+              <li className="flex justify-between text-fg-muted">
+                <span>Games with shift charts (ratings, lines)</span>
+                <span className="numeral">{counts.shiftGames.toLocaleString()}</span>
+              </li>
             </ul>
           )}
         </div>

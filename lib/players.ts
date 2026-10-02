@@ -6,6 +6,7 @@ import { gamesCount, sampleNote } from "@/lib/home";
 import { load, type Loaded } from "@/lib/load";
 import { nhl, txt, type ClubStats } from "@/lib/nhl";
 import { previousSeason, TEAM_ID } from "@/lib/nhl/endpoints";
+import { onIceTable } from "@/lib/stats/onice";
 import { goalieTable, shooterTable } from "@/lib/stats/team";
 
 export type SkaterRow = {
@@ -23,6 +24,9 @@ export type SkaterRow = {
   ixg: number | null;
   hd: number | null;
   gax: number | null;
+  /** 5-on-5 expected-goals share with him on the ice, and on minus off (percentage points). */
+  oixgf: number | null;
+  relxgf: number | null;
 };
 
 export type GoalieRow = {
@@ -71,6 +75,7 @@ export async function playersData(requested?: string): Promise<PlayersData> {
       .map((g) => [g.goalieId, g]),
   );
   const hasAdvanced = gamesCount(TEAM_ID, season) > 0;
+  const onIce = new Map(onIceTable(season, { teamId: TEAM_ID }).map((o) => [o.playerId, o]));
 
   const skaters: SkaterRow[] = stats.ok
     ? stats.data.skaters.map((s) => {
@@ -91,6 +96,8 @@ export async function playersData(requested?: string): Promise<PlayersData> {
           ixg,
           hd: hasAdvanced ? (adv?.hdChances ?? 0) : null,
           gax: ixg === null ? null : s.goals - ixg,
+          oixgf: onIce.get(s.playerId)?.xgfPct ?? null,
+          relxgf: onIce.get(s.playerId)?.relXgfPct ?? null,
         };
       })
     : [];

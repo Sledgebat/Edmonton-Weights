@@ -17,6 +17,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:generate": "drizzle-kit generate",
     "stats:backfill": "tsx scripts/stats-backfill.ts",
+    "shifts:backfill": "tsx scripts/shifts-backfill.ts",
+    "ratings:calibrate": "tsx scripts/ratings-calibrate.ts",
     "xg:train": "tsx scripts/xg-train.ts",
     "stats:fixtures": "tsx scripts/stats-fixtures.ts",
     "stats:rescore": "tsx scripts/stats-rescore.ts",
