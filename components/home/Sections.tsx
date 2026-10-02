@@ -532,7 +532,7 @@ function TopRecent({ rows }: { rows: HomeData["topRecent"] }) {
         <ol className="mt-3 space-y-2.5">
           {rows.map((r) => (
             <li key={`${r.gameId}-${r.id}`} className="flex items-center gap-3 text-sm">
-              <RatingBadge rating={r.rating} simple />
+              <RatingBadge rating={r.rating} />
               <div className="min-w-0 flex-1">
                 <p className="truncate">
                   <Link href={`/player/${r.id}`} className="font-semibold hover:underline">
