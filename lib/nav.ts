@@ -20,5 +20,7 @@ export function isActive(pathname: string, href: string): boolean {
   // Player and game pages belong to Players and Games.
   if (href === "/players" && (pathname.startsWith("/player/") || pathname === "/roster")) return true;
   if (href === "/schedule" && pathname.startsWith("/game/")) return true;
+  // Team scouting pages are reached from Standings.
+  if (href === "/standings" && pathname.startsWith("/team/")) return true;
   return pathname === href || pathname.startsWith(href + "/");
 }

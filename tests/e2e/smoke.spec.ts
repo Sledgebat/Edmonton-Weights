@@ -13,6 +13,8 @@ const ROUTES = [
   "/player/8478402",
   "/player/8475883",
   "/game/2026020004",
+  "/team/EDM",
+  "/team/VAN",
 ];
 const MODES = ["light", "dark"] as const;
 // Tests run offline: stand in for NHL logos and headshots with a blank image.
@@ -71,6 +73,13 @@ test("site is fully static: views switch in the browser and the address remember
 });
 
 test.describe("pages", () => {
+  test("standings team names open that team's scouting page", async ({ page }) => {
+    await page.goto("/standings");
+    await page.locator('tr[aria-current="true"] a').first().click();
+    await expect(page).toHaveURL(/\/team\/EDM\/?$/);
+    await expect(page.getByText("Oilers at a glance").first()).toBeVisible();
+  });
+
   test("standings highlight the Oilers and draw the wild card line", async ({ page }) => {
     await page.goto("/standings?view=wildcard");
     const oilers = page.locator('tr[aria-current="true"]');

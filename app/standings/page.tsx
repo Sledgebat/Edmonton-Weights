@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { ViewTabs } from "@/components/ui/ViewTabs";
@@ -92,11 +93,11 @@ function StandingsTable({
                 >
                   <td className={`px-2 py-2 text-right text-fg-muted ${edm ? "shadow-[inset_4px_0_0_var(--brand-accent)]" : ""}`}>{rank(r, i)}</td>
                   <th scope="row" className={`sticky left-0 px-2 py-2 text-left font-normal ${edm ? "bg-sunken font-semibold" : "bg-raised"}`}>
-                    <span className="flex items-center gap-2 whitespace-nowrap">
+                    <Link href={`/team/${teamOf(r)}`} className="flex items-center gap-2 whitespace-nowrap hover:underline" title={`${txt(r.teamName)}: team scouting page`}>
                       <TeamLogo abbrev={teamOf(r)} logo={r.teamLogo} size={24} />
                       <span className="sm:hidden">{teamOf(r)}</span>
                       <span className="hidden sm:inline">{txt(r.teamCommonName)}</span>
-                    </span>
+                    </Link>
                   </th>
                   <td className="px-2 py-2 text-right">{r.gamesPlayed}</td>
                   <td className="hidden px-2 py-2 text-right sm:table-cell">{r.wins}</td>
@@ -175,7 +176,7 @@ function StandingsView({ view, rows }: { view: View; rows: StandingsRow[] }) {
           </section>
         );
       })}
-      <p className="text-xs text-fg-muted">Ties are broken by the NHL&apos;s own ordering.</p>
+      <p className="text-xs text-fg-muted">Ties are broken by the NHL&apos;s own ordering. Tap a team for its scouting page.</p>
     </div>
   );
 }

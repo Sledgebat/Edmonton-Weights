@@ -52,7 +52,7 @@ export type Tile = {
   explain: string;
 };
 
-type BasicRow = { teamId: number; gp: number; gfPg: number; gaPg: number; sfPg: number; saPg: number };
+export type BasicRow = { teamId: number; gp: number; gfPg: number; gaPg: number; sfPg: number; saPg: number };
 
 /** Goals and shots per game for every team (all situations), from stored games. */
 function basicRows(season: number, gameIds?: number[]): BasicRow[] {
@@ -217,7 +217,7 @@ function leagueHeat(season: number) {
  * 5 ft square shows how many more expected goals per game it sees there than an average team.
  * Squares at or below average stay blank, so the map highlights what's unusual about the team.
  */
-function heatMap(teamId: number, season: number, side: "for" | "against"): HeatMap {
+export function heatMap(teamId: number, season: number, side: "for" | "against"): HeatMap {
   const col = side === "for" ? "team_id" : "opp_team_id";
   const games = gamesCount(teamId, season);
   const league = leagueHeat(season);
@@ -239,7 +239,7 @@ function heatMap(teamId: number, season: number, side: "for" | "against"): HeatM
 }
 
 /** Every goalie on a team's roster with this season's numbers; falls back to goalies who've played if the roster can't load. */
-async function teamGoalies(abbrev: string, teamId: number, season: number): Promise<GoalieCard[]> {
+export async function teamGoalies(abbrev: string, teamId: number, season: number): Promise<GoalieCard[]> {
   const db = getDb().$client;
   const stats = new Map(goalieTable(season).filter((g) => g.teamId === teamId).map((g) => [g.goalieId, g]));
   const gpOf = (id: number) =>
@@ -266,61 +266,75 @@ export function gamesCount(teamId: number, season: number) {
 }
 
 /** The last `n` regular-season games of this season. */
-function lastN(teamId: number, season: number, n: number): TeamGame[] {
+export function lastN(teamId: number, season: number, n: number): TeamGame[] {
   return teamGames(teamId, season).slice(-n);
 }
 
-async function playerName(id: number, clubStats?: ClubStats): Promise<string> {
+export async function playerName(id: number, clubStats?: ClubStats): Promise<string> {
   const s = clubStats?.skaters.find((p) => p.playerId === id) ?? clubStats?.goalies.find((p) => p.playerId === id);
   if (s) return `${txt(s.firstName)} ${txt(s.lastName)}`;
   const p = await load(() => nhl.player(id));
   return p.ok ? `${txt(p.data.firstName)} ${txt(p.data.lastName)}` : `Player ${id}`;
 }
 
-export async function homeData(): Promise<HomeData> {
-  const [schedule, standings, clubStats, edge] = await Promise.all([
-    load(nhl.schedule),
-    load(nhl.standings),
-    load(nhl.clubStats),
-    load(() => nhl.edgeTeam(TEAM_ID)),
-  ]);
-  const currentSeason = schedule.ok ? schedule.data.currentSeason : 20262027;
-  // Everything uses this season only: the roster turns over too much for last season to mean much.
-  const season = currentSeason;
-  const seasonNote = sampleNote(gamesCount(TEAM_ID, season));
-  const [summary, bursts, skaterEdge] = await Promise.all([
-    load(() => nhl.teamSummary(season)),
-    burstTable(standings.ok ? standings.data.standings : [], season),
-    rosterEdge(season),
-  ]);
+/** League-wide numbers that every team's ranks are measured against, for one season. */
+export type LeagueContext = {
+  table: RankedTeam[];
+  tableById: Map<number, RankedTeam>;
+  basics: BasicRow[];
+  basicsById: Map<number, BasicRow>;
+  goalies: ReturnType<typeof goalieTable>;
+  /** Goals saved above expected, summed over each team's goalies. */
+  teamGsax: Map<number, number>;
+  summary: Loaded<{ data: TeamSummaryRow[] }>;
+  summaryRows: TeamSummaryRow[];
+  summaryById: Map<number, TeamSummaryRow>;
+};
 
-  const games = schedule.ok ? schedule.data.games : [];
-  const next = liveGame(games) ?? nextGame(games) ?? null;
-  const last = lastGame(games) ?? null;
-  const rows = standings.ok ? standings.data.standings : [];
-  const edm = rows.find((r) => teamOf(r) === TEAM) ?? null;
+const contextCache = new Map<number, { at: number; value: Promise<LeagueContext> }>();
 
-  // League tables for the analysis season.
-  const table = leagueTable(season);
-  const tableById = new Map(table.map((t) => [t.teamId, t]));
-  const basics = basicRows(season);
-  const basicsById = new Map(basics.map((b) => [b.teamId, b]));
-  const goalies = goalieTable(season);
-  const teamGsax = new Map<number, number>();
-  for (const g of goalies) teamGsax.set(g.teamId, (teamGsax.get(g.teamId) ?? 0) + g.gsax);
-  const summaryRows = summary.ok ? summary.data.data : [];
-  const summaryById = new Map(summaryRows.map((r) => [r.teamId, r]));
+/** Built once and shared for a few minutes, so 32 team pages don't redo the league-wide maths. */
+export function leagueContext(season: number): Promise<LeagueContext> {
+  const hit = contextCache.get(season);
+  if (hit && Date.now() - hit.at < 5 * 60_000) return hit.value;
+  const value = (async () => {
+    const summary = await load(() => nhl.teamSummary(season));
+    const table = leagueTable(season);
+    const basics = basicRows(season);
+    const goalies = goalieTable(season);
+    const teamGsax = new Map<number, number>();
+    for (const g of goalies) teamGsax.set(g.teamId, (teamGsax.get(g.teamId) ?? 0) + g.gsax);
+    const summaryRows = summary.ok ? summary.data.data : [];
+    return {
+      table,
+      tableById: new Map(table.map((t) => [t.teamId, t])),
+      basics,
+      basicsById: new Map(basics.map((b) => [b.teamId, b])),
+      goalies,
+      teamGsax,
+      summary,
+      summaryRows,
+      summaryById: new Map(summaryRows.map((r) => [r.teamId, r])),
+    };
+  })();
+  contextCache.set(season, { at: Date.now(), value });
+  return value;
+}
+
+/** A team's basic and advanced stat tiles, with league ranks and last-10 trends. */
+export function statTiles(teamId: number, season: number, lg: LeagueContext): { basicTiles: Tile[]; advancedTiles: Tile[] } {
+  const { table, basics, summaryRows, teamGsax } = lg;
 
   // Last 10 games for trends.
-  const recentGames = teamGames(TEAM_ID, season).slice(-10);
+  const recentGames = teamGames(teamId, season).slice(-10);
   const recentIds = recentGames.map((g) => g.gameId);
-  const recentAdv = teamRows({ season, gameIds: recentIds }).find((r) => r.teamId === TEAM_ID);
+  const recentAdv = teamRows({ season, gameIds: recentIds }).find((r) => r.teamId === teamId);
   const recentMetrics = recentAdv ? metricsOf(recentAdv) : null;
-  const recentBasic = basicRows(season, recentIds).find((r) => r.teamId === TEAM_ID);
+  const recentBasic = basicRows(season, recentIds).find((r) => r.teamId === teamId);
 
-  const us = tableById.get(TEAM_ID);
-  const usBasic = basicsById.get(TEAM_ID);
-  const usSummary = summaryById.get(TEAM_ID);
+  const us = lg.tableById.get(teamId);
+  const usBasic = lg.basicsById.get(teamId);
+  const usSummary = lg.summaryById.get(teamId);
 
   const basicTile = (key: keyof Omit<BasicRow, "teamId" | "gp">, label: string, higher: boolean, explain: string): Tile => {
     const v = usBasic?.[key];
@@ -368,7 +382,7 @@ export async function homeData(): Promise<HomeData> {
   };
 
   const gsaxValues = table.map((t) => teamGsax.get(t.teamId) ?? 0);
-  const usGsax = teamGsax.get(TEAM_ID);
+  const usGsax = teamGsax.get(teamId);
 
   const basicTiles: Tile[] = [
     basicTile("gfPg", "Goals for per game", true, "Average goals scored per game, all situations."),
@@ -395,6 +409,37 @@ export async function homeData(): Promise<HomeData> {
       explain: "Goals the team's goalies stopped beyond what an average goalie would, given the shots they faced. Above zero is good.",
     },
   ];
+  return { basicTiles, advancedTiles };
+}
+
+export async function homeData(): Promise<HomeData> {
+  const [schedule, standings, clubStats, edge] = await Promise.all([
+    load(nhl.schedule),
+    load(nhl.standings),
+    load(nhl.clubStats),
+    load(() => nhl.edgeTeam(TEAM_ID)),
+  ]);
+  const currentSeason = schedule.ok ? schedule.data.currentSeason : 20262027;
+  // Everything uses this season only: the roster turns over too much for last season to mean much.
+  const season = currentSeason;
+  const seasonNote = sampleNote(gamesCount(TEAM_ID, season));
+  const [lg, bursts, skaterEdge] = await Promise.all([
+    leagueContext(season),
+    burstTable(standings.ok ? standings.data.standings : [], season),
+    rosterEdge(season),
+  ]);
+  const { table, tableById, basics, basicsById, goalies, summary, summaryRows, summaryById } = lg;
+
+  const games = schedule.ok ? schedule.data.games : [];
+  const next = liveGame(games) ?? nextGame(games) ?? null;
+  const last = lastGame(games) ?? null;
+  const rows = standings.ok ? standings.data.standings : [];
+  const edm = rows.find((r) => teamOf(r) === TEAM) ?? null;
+
+  const us = tableById.get(TEAM_ID);
+  const usBasic = basicsById.get(TEAM_ID);
+  const usSummary = summaryById.get(TEAM_ID);
+  const { basicTiles, advancedTiles } = statTiles(TEAM_ID, season, lg);
 
   // ------------------------------------------------ next game
   let tape: TapeRow[] | null = null;

@@ -163,7 +163,7 @@ function TaleOfTheTape({ rows, oppAbbrev }: { rows: TapeRow[]; oppAbbrev: string
   );
 }
 
-function Heat({ title, map, max, side }: { title: string; map: HeatMap; max: number; side: "us" | "them" }) {
+export function Heat({ title, map, max, side }: { title: string; map: HeatMap; max: number; side: "us" | "them" }) {
   const pct = Math.round(map.vsLeague * 100);
   const vs = pct === 0 ? "league average overall" : `${Math.abs(pct)}% ${pct > 0 ? "more" : "less"} than average overall`;
   return (
@@ -177,7 +177,7 @@ function Heat({ title, map, max, side }: { title: string; map: HeatMap; max: num
   );
 }
 
-function GoalieList({ goalies, team }: { goalies: GoalieCard[]; team: string }) {
+export function GoalieList({ goalies, team }: { goalies: GoalieCard[]; team: string }) {
   return (
     <div className="rounded-lg border border-line p-3">
       <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{team}</p>
@@ -270,6 +270,9 @@ export function NextGame({ d }: { d: HomeData }) {
           <TeamKey name="Oilers" side="us" />
           <TeamKey name={oppShort} side="them" />
           {d.seasonNote && <span className="text-xs text-fg-muted">{d.seasonNote}</span>}
+          <Link href={`/team/${d.opponent.abbrev}`} className="ml-auto inline-flex items-center gap-1 text-sm font-semibold text-accent-ink hover:underline">
+            Scout the {oppShort} <ArrowRight size={16} aria-hidden />
+          </Link>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
@@ -448,7 +451,7 @@ function TileCard({ t }: { t: Tile }) {
   );
 }
 
-export function StatTiles({ d }: { d: HomeData }) {
+export function StatTiles({ d }: { d: Pick<HomeData, "advancedTiles" | "basicTiles"> }) {
   return (
     <div className="space-y-5">
       <div>
@@ -473,35 +476,56 @@ export function StatTiles({ d }: { d: HomeData }) {
 
 // ------------------------------------------------------------------ 4. recent performance
 
-export function RecentPerformance({ d }: { d: HomeData }) {
+export function RecentPerformance({
+  d,
+  team = "Oilers",
+  side = "us",
+  hasGamePage = () => true,
+}: {
+  d: Pick<HomeData, "recent" | "trend" | "season">;
+  team?: string;
+  side?: "us" | "them";
+  /** Game reports exist only for Oilers games; other cards aren't links. */
+  hasGamePage?: (g: TeamGame) => boolean;
+}) {
   return (
     <div className="space-y-4">
+      {d.recent.length === 0 && <p className="text-sm text-fg-muted">No games played yet this season.</p>}
       <ol className="flex snap-x gap-2 overflow-x-auto pb-2" aria-label="Last 10 games, oldest first">
         {d.recent.map((g) => {
           const o = outcomeOf(g);
           const cf = share(g.cf5, g.ca5);
+          const body = (
+            <>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
+                {shortDate(g.date)} · {g.isHome ? "vs" : "@"} {g.opponent}
+              </p>
+              <p className="mt-1 flex items-center gap-2">
+                <span className="numeral text-2xl">
+                  {g.gf}–{g.ga}
+                </span>
+                <ResultBadge outcome={o} />
+              </p>
+              <p className="mt-1 text-xs">
+                <span className="text-fg-muted">xG</span>{" "}
+                <span className="numeral">
+                  {g.xgf.toFixed(1)}–{g.xga.toFixed(1)}
+                </span>
+              </p>
+              <p className="text-xs">
+                <span className="text-fg-muted">Shot share</span> <span className="numeral">{cf.toFixed(0)}%</span>
+              </p>
+            </>
+          );
           return (
             <li key={g.gameId} className="snap-start">
-              <Link href={`/game/${g.gameId}`} className="card block w-36 shrink-0 p-3 transition hover:border-line-strong">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
-                  {shortDate(g.date)} · {g.isHome ? "vs" : "@"} {g.opponent}
-                </p>
-                <p className="mt-1 flex items-center gap-2">
-                  <span className="numeral text-2xl">
-                    {g.gf}–{g.ga}
-                  </span>
-                  <ResultBadge outcome={o} />
-                </p>
-                <p className="mt-1 text-xs">
-                  <span className="text-fg-muted">xG</span>{" "}
-                  <span className="numeral">
-                    {g.xgf.toFixed(1)}–{g.xga.toFixed(1)}
-                  </span>
-                </p>
-                <p className="text-xs">
-                  <span className="text-fg-muted">Shot share</span> <span className="numeral">{cf.toFixed(0)}%</span>
-                </p>
-              </Link>
+              {hasGamePage(g) ? (
+                <Link href={`/game/${g.gameId}`} className="card block w-36 shrink-0 p-3 transition hover:border-line-strong">
+                  {body}
+                </Link>
+              ) : (
+                <div className="card block w-36 shrink-0 p-3">{body}</div>
+              )}
             </li>
           );
         })}
@@ -513,8 +537,8 @@ export function RecentPerformance({ d }: { d: HomeData }) {
         <p className="text-xs text-fg-muted">5-on-5 expected-goals share, rolling 5 games, {seasonLabel(d.season)} · above 50% = controlling play</p>
         {d.trend.length >= 3 ? (
           <ShareChart
-          ariaLabel={`Oilers 5-on-5 expected-goals share, rolling five games, ${seasonLabel(d.season)}`}
-          series={[{ key: "us", name: "Oilers", points: d.trend.map((t) => ({ label: shortDate(t.date), detail: "5-game average", value: t.value })) }]}
+          ariaLabel={`${team} 5-on-5 expected-goals share, rolling five games, ${seasonLabel(d.season)}`}
+          series={[{ key: side, name: team, points: d.trend.map((t) => ({ label: shortDate(t.date), detail: "5-game average", value: t.value })) }]}
         />
         ) : (
           <p className="mt-3 text-sm text-fg-muted">The trend line appears after three games.</p>

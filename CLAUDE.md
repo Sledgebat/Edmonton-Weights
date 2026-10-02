@@ -26,7 +26,8 @@ Independent fan site; the footer disclaimer must stay on every page.
 - **Views that used to use the URL** (standings view, schedule filter, Players season) are
   `components/ui/ViewTabs.tsx`: all panels are built into the page and switched in the browser.
 - **Player pages** exist only for current and recent Oilers (`lib/site.ts`); other players link to
-  NHL.com via `playerHref`. Game pages exist for every Oilers game this season.
+  NHL.com via `playerHref`. Game pages exist for every Oilers game this season. Team scouting
+  pages (`/team/EDM` etc., `lib/team.ts`) exist for every team in the standings.
 - **NHL client** (`lib/nhl/client.ts`): validates every response with Zod, caches in SQLite,
   limits parallel requests politely, and bypasses Next's patched `fetch` (needed for static export).
 - GitHub pauses scheduled workflows after 60 days without commits; the workflow makes an empty
@@ -85,6 +86,9 @@ build. If Playwright's browser is missing: `npx playwright install chromium`.
    Actions tab for a green check.
 
 ## Known follow-ups
+
+- **Next features plan:** `docs/next-features.md` (team pages, shift data → lines / on-ice impact /
+  player ratings, playoff odds). Build in that order, stopping for Josh's review after each step.
 
 - Playoffs: games are stored, but pages are built around the regular season. Review before April.
 - Step 5 polish from the plan (accessibility pass, mobile check) is not finished.
