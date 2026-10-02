@@ -393,6 +393,30 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
     };
   };
 
+  // Team save %: every goalie's shots on goal faced and goals allowed, added up per team.
+  const saves = new Map<number, { shots: number; goals: number }>();
+  for (const g of lg.goalies) {
+    const t = saves.get(g.teamId) ?? { shots: 0, goals: 0 };
+    t.shots += g.shotsFaced;
+    t.goals += g.goalsAllowed;
+    saves.set(g.teamId, t);
+  }
+  const svPct = (t?: { shots: number; goals: number }) => (t && t.shots ? 1 - t.goals / t.shots : undefined);
+  const saveTile = (): Tile => {
+    const v = svPct(saves.get(teamId));
+    const all = [...saves.values()].map(svPct).filter((x): x is number => x !== undefined);
+    return {
+      key: "svPct",
+      label: "Save percentage",
+      value: v === undefined ? "—" : v.toFixed(3).replace(/^0/, ""),
+      rank: v === undefined ? null : rankOf(v, all, true),
+      of: all.length,
+      trend: null,
+      recent: null,
+      explain: "Share of shots on goal the team's goalies stopped, all situations. Empty-net goals don't count against it.",
+    };
+  };
+
   const gsaxValues = table.map((t) => teamGsax.get(t.teamId) ?? 0);
   const usGsax = teamGsax.get(teamId);
 
@@ -404,6 +428,7 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
     summaryTile("powerPlayPct", "Power play", "Share of power plays that produce a goal."),
     summaryTile("penaltyKillPct", "Penalty kill", "Share of opponent power plays killed without a goal."),
     summaryTile("faceoffWinPct", "Faceoffs", "Share of faceoffs won."),
+    saveTile(),
   ];
   const advancedTiles: Tile[] = [
     advTile("xgfPct"),
