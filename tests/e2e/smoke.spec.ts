@@ -89,6 +89,20 @@ test("playoff odds: home snapshot, team page and the Playoff race view, green ab
   await expect(page.getByText("Playoff odds", { exact: true })).toBeVisible();
 });
 
+test("Team stats view lists every team, sorts by any stat and marks the Oilers", async ({ page }) => {
+  await page.goto("/standings?view=stats");
+  const table = page.getByRole("table", { name: /Team stats for every NHL team/ });
+  await expect(table.locator("tbody tr")).toHaveCount(32);
+  await expect(table.locator("tbody th.shadow-\\[inset_4px_0_0_var\\(--chart-us\\)\\]")).toHaveCount(1);
+  await expect(table.locator("tbody th.shadow-\\[inset_4px_0_0_var\\(--chart-us\\)\\]")).toContainText("Oilers");
+  // Lower is better for goals against, so the first click puts the stingiest team on top.
+  await table.getByRole("button", { name: "GA/G", exact: true }).click();
+  const ga = (await table.locator("tbody tr td:nth-child(10)").allTextContents()).filter((t) => t !== "—").map(Number);
+  expect(ga).toEqual([...ga].sort((a, b) => a - b));
+  await table.locator("tbody tr").first().getByRole("link").click();
+  await expect(page).toHaveURL(/\/team\/[A-Z]{3}\/?$/);
+});
+
 test.describe("pages", () => {
   test("standings team names open that team's scouting page", async ({ page }) => {
     await page.goto("/standings");

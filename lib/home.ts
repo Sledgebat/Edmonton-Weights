@@ -298,6 +298,8 @@ export type LeagueContext = {
   goalies: ReturnType<typeof goalieTable>;
   /** Goals saved above expected, summed over each team's goalies. */
   teamGsax: Map<number, number>;
+  /** Save % on shots on goal (all situations; empty-net goals not counted), per team. */
+  teamSvPct: Map<number, number>;
   summary: Loaded<{ data: TeamSummaryRow[] }>;
   summaryRows: TeamSummaryRow[];
   summaryById: Map<number, TeamSummaryRow>;
@@ -316,6 +318,15 @@ export function leagueContext(season: number): Promise<LeagueContext> {
     const goalies = goalieTable(season);
     const teamGsax = new Map<number, number>();
     for (const g of goalies) teamGsax.set(g.teamId, (teamGsax.get(g.teamId) ?? 0) + g.gsax);
+    // Every goalie's shots on goal faced and goals allowed, added up per team.
+    const saves = new Map<number, { shots: number; goals: number }>();
+    for (const g of goalies) {
+      const t = saves.get(g.teamId) ?? { shots: 0, goals: 0 };
+      t.shots += g.shotsFaced;
+      t.goals += g.goalsAllowed;
+      saves.set(g.teamId, t);
+    }
+    const teamSvPct = new Map([...saves].filter(([, t]) => t.shots > 0).map(([id, t]) => [id, 1 - t.goals / t.shots]));
     const summaryRows = summary.ok ? summary.data.data : [];
     return {
       table,
@@ -324,6 +335,7 @@ export function leagueContext(season: number): Promise<LeagueContext> {
       basicsById: new Map(basics.map((b) => [b.teamId, b])),
       goalies,
       teamGsax,
+      teamSvPct,
       summary,
       summaryRows,
       summaryById: new Map(summaryRows.map((r) => [r.teamId, r])),
@@ -393,18 +405,9 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
     };
   };
 
-  // Team save %: every goalie's shots on goal faced and goals allowed, added up per team.
-  const saves = new Map<number, { shots: number; goals: number }>();
-  for (const g of lg.goalies) {
-    const t = saves.get(g.teamId) ?? { shots: 0, goals: 0 };
-    t.shots += g.shotsFaced;
-    t.goals += g.goalsAllowed;
-    saves.set(g.teamId, t);
-  }
-  const svPct = (t?: { shots: number; goals: number }) => (t && t.shots ? 1 - t.goals / t.shots : undefined);
   const saveTile = (): Tile => {
-    const v = svPct(saves.get(teamId));
-    const all = [...saves.values()].map(svPct).filter((x): x is number => x !== undefined);
+    const v = lg.teamSvPct.get(teamId);
+    const all = [...lg.teamSvPct.values()];
     return {
       key: "svPct",
       label: "Save percentage",

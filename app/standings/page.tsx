@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
+import { SortableTable, type TableRow } from "@/components/players/SortableTable";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { ViewTabs } from "@/components/ui/ViewTabs";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -9,15 +10,17 @@ import { load } from "@/lib/load";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
 import { conferenceTable, divisionTable, formatGameDate, pointPct, signed, streakLabel, teamOf, wildCardTable } from "@/lib/oilers";
 import { formatOdds, latestOdds, oddsHistory, oddsTone } from "@/lib/stats/odds";
+import { TEAM_STAT_COLUMNS, teamStatRows } from "@/lib/teamstats";
 
 export const metadata: Metadata = { title: "Standings" };
 
-type View = "wildcard" | "division" | "conference" | "race";
+type View = "wildcard" | "division" | "conference" | "race" | "stats";
 const VIEWS: { key: View; label: string }[] = [
   { key: "division", label: "Division" },
   { key: "wildcard", label: "Wild card" },
   { key: "conference", label: "Conference" },
   { key: "race", label: "Playoff race" },
+  { key: "stats", label: "Team stats" },
 ];
 
 const CONFERENCES = [
@@ -298,8 +301,27 @@ function PlayoffRace({ rows }: { rows: StandingsRow[] }) {
   );
 }
 
+/** Every team's stats from "Team stats at a glance", sortable by any column, Oilers marked. */
+function TeamStats({ rows }: { rows: TableRow[] }) {
+  return (
+    <div className="mt-6 space-y-3">
+      <p className="max-w-3xl text-sm text-fg-muted">
+        This season, all 32 teams. Select a column heading to sort; select it again to flip the order. Shares (xGF%, CF%, HDCF%) and PDO are 5 on 5;
+        everything else is all situations. The Oilers have an orange bar.{" "}
+        <Link href="/stats-guide" className="underline">
+          What these mean
+        </Link>
+      </p>
+      <div className="card p-3 sm:p-4">
+        <SortableTable columns={TEAM_STAT_COLUMNS} rows={rows} initialSort="xgf" caption="Team stats for every NHL team this season" nameLabel="Team" minWidth="58rem" />
+      </div>
+    </div>
+  );
+}
+
 export default async function StandingsPage() {
   const standings = await load(nhl.standings);
+  const statRows = standings.ok && standings.data.standings.length ? await teamStatRows(standings.data.standings, standings.data.standings[0].seasonId) : [];
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -318,7 +340,13 @@ export default async function StandingsPage() {
             panels={Object.fromEntries(
               VIEWS.map((v) => [
                 v.key,
-                v.key === "race" ? <PlayoffRace key={v.key} rows={standings.data.standings} /> : <StandingsView key={v.key} view={v.key} rows={standings.data.standings} />,
+                v.key === "race" ? (
+                  <PlayoffRace key={v.key} rows={standings.data.standings} />
+                ) : v.key === "stats" ? (
+                  <TeamStats key={v.key} rows={statRows} />
+                ) : (
+                  <StandingsView key={v.key} view={v.key} rows={standings.data.standings} />
+                ),
               ]),
             )}
           />
