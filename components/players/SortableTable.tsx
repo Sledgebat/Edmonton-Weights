@@ -21,7 +21,8 @@ export type Column = {
 
 /**
  * One row. Optional fields: `href` (where the name links; default the player page, null = no
- * link), `team` (shown after the name), `pos`, and `highlight` (1 = a standout row).
+ * link), `team` (shown after the name), `pos`, `highlight` (1 = a standout row, shaded with a
+ * star) and `ours` (1 = an Oilers player: orange bar and team label).
  */
 export type TableRow = Record<string, string | number | null> & { id: number | string; name: string };
 
@@ -58,6 +59,7 @@ export function SortableTable({
   caption,
   nameLabel = "Player",
   minWidth = "40rem",
+  teamFilter,
 }: {
   columns: Column[];
   rows: TableRow[];
@@ -65,11 +67,14 @@ export function SortableTable({
   caption: string;
   nameLabel?: string;
   minWidth?: string;
+  /** Buttons that show only the rows whose `team` matches (plus "Both teams"). */
+  teamFilter?: { label: string; options: { key: string; label: string }[] };
 }) {
   const [sort, setSort] = useState<{ key: string; desc: boolean }>({ key: initialSort, desc: true });
+  const [team, setTeam] = useState<string>("all");
 
   const sorted = useMemo(() => {
-    const out = [...rows];
+    const out = team === "all" ? [...rows] : rows.filter((r) => r.team === team);
     out.sort((a, b) => {
       const x = a[sort.key];
       const y = b[sort.key];
@@ -80,13 +85,30 @@ export function SortableTable({
       return sort.desc ? -c : c;
     });
     return out;
-  }, [rows, sort]);
+  }, [rows, sort, team]);
 
   const toggle = (c: Column) =>
     setSort((s) => (s.key === c.key ? { key: c.key, desc: !s.desc } : { key: c.key, desc: c.descFirst ?? c.format !== "text" }));
 
+  const filter = teamFilter && (
+    <div role="group" aria-label={teamFilter.label} className="mb-3 flex flex-wrap gap-1">
+      {[{ key: "all", label: "Both teams" }, ...teamFilter.options].map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          aria-pressed={team === o.key}
+          onClick={() => setTeam(o.key)}
+          className={`rounded-full border px-3 py-1 text-xs font-semibold ${team === o.key ? "border-button bg-button text-button-fg" : "border-line-strong hover:bg-sunken"}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div className="-mx-1 overflow-x-auto">
+      {filter}
       <table className="w-full text-sm" style={{ minWidth }}>
         <caption className="sr-only">{caption}. Select a column heading to sort.</caption>
         <thead>
@@ -110,8 +132,13 @@ export function SortableTable({
             <tr key={r.id} className={`border-t border-line ${r.highlight ? "bg-sunken" : ""}`}>
               <th
                 scope="row"
-                className={`sticky left-0 whitespace-nowrap px-1 py-1.5 text-left font-semibold ${r.highlight ? "bg-sunken shadow-[inset_3px_0_0_var(--brand-accent)]" : "bg-raised"}`}
+                className={`sticky left-0 whitespace-nowrap px-1 py-1.5 text-left font-semibold ${r.highlight ? "bg-sunken" : "bg-raised"} ${r.ours ? "pl-2.5 shadow-[inset_4px_0_0_var(--chart-us)]" : ""}`}
               >
+                {r.highlight ? (
+                  <span className="mr-1 text-accent-ink" title="Top three of the night">
+                    ★<span className="sr-only">Top three of the night: </span>
+                  </span>
+                ) : null}
                 {r.href === null ? (
                   r.name
                 ) : (
@@ -120,7 +147,9 @@ export function SortableTable({
                   </Link>
                 )}
                 {typeof r.pos === "string" && <span className="ml-1.5 text-xs font-normal text-fg-muted">{r.pos}</span>}
-                {typeof r.team === "string" && <span className="ml-1.5 text-xs font-normal text-fg-muted">{r.team}</span>}
+                {typeof r.team === "string" && (
+                  <span className={`ml-1.5 text-xs ${r.ours ? "font-semibold text-accent-ink" : "font-normal text-fg-muted"}`}>{r.team}</span>
+                )}
               </th>
               {columns.map((c) => {
                 const v = r[c.key];

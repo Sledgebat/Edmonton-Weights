@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DataError, Module } from "@/components/data/Module";
 import { XgTimeline, type XgGoal, type XgRow } from "@/components/game/XgTimeline";
+import { RatingBadge } from "@/components/data/RatingBadge";
 import { SortableTable, type Column, type TableRow } from "@/components/players/SortableTable";
 import { FullRink, type RinkShot } from "@/components/rink/FullRink";
 import { TeamLogo } from "@/components/ui/TeamLogo";
@@ -419,6 +420,12 @@ function PlayerRatings({
 }) {
   const abbrev = (teamId: number) => (teamId === report.home.id ? report.home.abbrev : report.away.abbrev);
   const top = new Set(ratings.slice(0, 3).map((r) => r.playerId));
+  // Oilers first in the filter and the averages; "ours" marks their rows.
+  const sides = [report.home, report.away].sort((a, b) => Number(b.abbrev === TEAM) - Number(a.abbrev === TEAM));
+  const average = (teamId: number) => {
+    const mine = ratings.filter((r) => r.teamId === teamId);
+    return mine.length ? mine.reduce((s, r) => s + r.rating, 0) / mine.length : null;
+  };
   const rows: TableRow[] = ratings.map((r) => ({
     id: r.playerId,
     name: names(r.playerId),
@@ -426,6 +433,7 @@ function PlayerRatings({
     pos: r.pos,
     team: abbrev(r.teamId),
     highlight: top.has(r.playerId) ? 1 : 0,
+    ours: abbrev(r.teamId) === TEAM ? 1 : 0,
     rating: r.rating,
     gs: r.gameScore,
     g: r.goals,
@@ -439,12 +447,31 @@ function PlayerRatings({
       <p className="mb-3 text-xs text-fg-muted">
         Out of 10, from each player&apos;s Game Score (goals, assists, shots, blocks, penalties, faceoffs and 5-on-5 shot and goal differential while on the
         ice) compared with every NHL game of the last two seasons. 6 is above average, 7 very good, 8 excellent. Goalies are rated on goals saved above
-        expected. Top three of the night highlighted.{" "}
+        expected. ★ = top three of the night; Oilers have an orange bar.{" "}
         <Link href="/stats-guide#ratings" className="underline">
           How ratings work
         </Link>
       </p>
-      <SortableTable columns={RATING_COLUMNS} rows={rows} initialSort="rating" caption="Player ratings for both teams" minWidth="36rem" />
+      <p className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+        <span className="text-xs font-semibold uppercase tracking-wider text-fg-muted">Average rating</span>
+        {sides.map((t) => {
+          const avg = average(t.id);
+          return avg === null ? null : (
+            <span key={t.id} className="inline-flex items-center gap-2">
+              <span className={t.abbrev === TEAM ? "font-semibold text-accent-ink" : ""}>{t.name}</span>
+              <RatingBadge rating={Math.round(avg * 10) / 10} />
+            </span>
+          );
+        })}
+      </p>
+      <SortableTable
+        columns={RATING_COLUMNS}
+        rows={rows}
+        initialSort="rating"
+        caption="Player ratings for both teams"
+        minWidth="36rem"
+        teamFilter={{ label: "Show players from", options: sides.map((t) => ({ key: t.abbrev, label: t.name })) }}
+      />
     </Module>
   );
 }

@@ -172,6 +172,13 @@ test("game report shows the analysis for a finished game", async ({ page }) => {
   // Bouchard's hat trick is the best rating of the night.
   const ratings = page.locator("section", { has: page.getByRole("heading", { name: "Player ratings" }) });
   await expect(ratings.locator("tbody tr").first()).toContainText("Evan Bouchard");
+  // Oilers rows are marked, and the filter shows one team at a time.
+  const all = await ratings.locator("tbody tr").count();
+  await ratings.getByRole("button", { name: "Oilers", exact: true }).click();
+  const ours = await ratings.locator("tbody tr").count();
+  expect(ours).toBeGreaterThan(10);
+  expect(ours).toBeLessThan(all);
+  for (const row of await ratings.locator("tbody tr").all()) await expect(row).toContainText("EDM");
   await expect(page.locator('svg[aria-label^="Shot map"] circle title').first()).toBeAttached();
   await expect(page.locator("svg[aria-label^='Shot map'] circle")).not.toHaveCount(0);
 });
