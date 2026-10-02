@@ -69,7 +69,7 @@ export function Snapshot({ d }: { d: HomeData }) {
         {items.map(([k, v, tone]) => (
           <div key={k} className="card px-4 py-3">
             <dt className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
-            <dd className={`numeral mt-0.5 text-2xl leading-tight sm:text-3xl ${tone ?? ""}`}>{v}</dd>
+            <dd className={`numeral mt-0.5 ${k === "Streak" ? "text-4xl leading-none sm:text-5xl" : "text-2xl leading-tight sm:text-3xl"} ${tone ?? ""}`}>{v}</dd>
           </div>
         ))}
       </dl>
