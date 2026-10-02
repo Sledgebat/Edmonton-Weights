@@ -14,7 +14,7 @@ const COLUMNS: Column[] = [
   { key: "assists", label: "A", title: "Clutch assists", format: "int" },
   { key: "ot", label: "OTW", title: "Overtime winners", format: "int" },
   { key: "tying", label: "TIE", title: "Tying goals in the last 10 minutes of the third", format: "int" },
-  { key: "goAhead", label: "GA", title: "Go-ahead goals from a tie in the last 10 minutes of the third", format: "int" },
+  { key: "goAhead", label: "GAG", title: "Go-ahead goals from a tie in the last 10 minutes of the third", format: "int" },
   { key: "insurance", label: "INS", title: "Insurance goals: from up one to up two in the last 10 minutes of the third", format: "int" },
 ];
 
