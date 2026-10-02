@@ -398,7 +398,6 @@ function Goalies({ report, href }: { report: GameReport; href: (id: number) => s
 
 const RATING_COLUMNS: Column[] = [
   { key: "rating", label: "Rating", title: "Player rating out of 10, from Game Score compared with every NHL game of the last two seasons", format: "rating" },
-  { key: "gs", label: "GS", title: "Game Score: the raw single-game score the rating comes from", format: "dec2" },
   { key: "g", label: "G", title: "Goals", format: "int" },
   { key: "a", label: "A", title: "Assists", format: "int" },
   { key: "sog", label: "SOG", title: "Shots on goal", format: "int" },
@@ -435,7 +434,6 @@ function PlayerRatings({
     highlight: top.has(r.playerId) ? 1 : 0,
     ours: abbrev(r.teamId) === TEAM ? 1 : 0,
     rating: r.rating,
-    gs: r.gameScore,
     g: r.goals,
     a: r.a1 + r.a2,
     sog: r.pos === "G" ? null : r.sog,
