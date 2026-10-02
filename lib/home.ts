@@ -13,7 +13,7 @@ import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type Standi
 import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
 import { analyzeGame, type GameReport } from "@/lib/stats/game";
-import { gameRatings, gameScoreLeaders, topGameScores } from "@/lib/stats/onice";
+import { gameRatings, ratingLeaders, topGameScores } from "@/lib/stats/onice";
 import {
   METRICS,
   goalieTable,
@@ -151,8 +151,8 @@ export type HomeData = {
     points: { id: number; name: string; points: number; goals: number; assists: number; gp: number }[];
     goals: { id: number; name: string; goals: number; shots: number; gp: number }[];
     assists: { id: number; name: string; assists: number; points: number; gp: number }[];
-    /** Total Game Score this season (skaters), with the average rating. */
-    gameScore: { id: number; name: string; total: number; avgRating: number; gp: number }[];
+    /** Best average rating this season (skaters who've played at least `minGames`). */
+    rating: { minGames: number; rows: { id: number; name: string; avgRating: number; gp: number }[] };
     ixg: { id: number; name: string; ixg: number; goals: number; hd: number }[];
     goalies: { id: number; name: string; gp: number; svPct: number; gsax: number | null }[];
   };
@@ -591,9 +591,10 @@ export async function homeData(): Promise<HomeData> {
           .slice(0, 5)
           .map((p) => ({ id: p.playerId, name: `${txt(p.firstName)} ${txt(p.lastName)}`, assists: p.assists, points: p.points, gp: p.gamesPlayed }))
       : [],
-    gameScore: await Promise.all(
-      gameScoreLeaders(TEAM_ID, season).map(async (g) => ({ id: g.playerId, name: await playerName(g.playerId, cs), total: g.total, avgRating: g.avgRating, gp: g.gp })),
-    ),
+    rating: await (async () => {
+      const r = ratingLeaders(TEAM_ID, season);
+      return { minGames: r.minGames, rows: await Promise.all(r.rows.map(async (g) => ({ id: g.playerId, name: await playerName(g.playerId, cs), avgRating: g.avgRating, gp: g.gp }))) };
+    })(),
     ixg: await Promise.all(
       shooterTable(TEAM_ID, season)
         .slice(0, 5)

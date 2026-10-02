@@ -286,26 +286,35 @@ export function topGameScores(teamId: number, season: number, games = 5, n = 5):
   });
 }
 
-export type GameScoreLeader = { playerId: number; gp: number; total: number; avgRating: number };
+export type RatingLeader = { playerId: number; gp: number; avgRating: number };
 
-/** A team's skaters by total Game Score this season (regular season), highest first. */
-export function gameScoreLeaders(teamId: number, season: number, n = 5): GameScoreLeader[] {
+/**
+ * A team's skaters by average rating this season (regular season), best first. Only players
+ * who've played at least half the team's games (with shift data) qualify, so one big night
+ * doesn't top the list.
+ */
+export function ratingLeaders(teamId: number, season: number, n = 5): { minGames: number; rows: RatingLeader[] } {
   const rows = getDb()
     .$client.prepare(
-      `SELECT player_id playerId, pos, game_score gs FROM player_games
+      `SELECT game_id gameId, player_id playerId, pos, game_score gs FROM player_games
        WHERE team_id = ? AND season = ? AND game_type = 2 AND pos != 'G'`,
     )
-    .all(teamId, season) as { playerId: number; pos: string; gs: number }[];
-  const by = new Map<number, { gp: number; total: number; ratings: number }>();
+    .all(teamId, season) as { gameId: number; playerId: number; pos: string; gs: number }[];
+  const teamGames = new Set(rows.map((r) => r.gameId)).size;
+  const minGames = Math.max(1, Math.ceil(teamGames / 2));
+  const by = new Map<number, { gp: number; ratings: number }>();
   for (const r of rows) {
-    const m = by.get(r.playerId) ?? { gp: 0, total: 0, ratings: 0 };
+    const m = by.get(r.playerId) ?? { gp: 0, ratings: 0 };
     m.gp++;
-    m.total += r.gs;
     m.ratings += ratingOf(r.gs, r.pos);
     by.set(r.playerId, m);
   }
-  return [...by.entries()]
-    .map(([playerId, m]) => ({ playerId, gp: m.gp, total: m.total, avgRating: m.ratings / m.gp }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, n);
+  return {
+    minGames,
+    rows: [...by.entries()]
+      .filter(([, m]) => m.gp >= minGames)
+      .map(([playerId, m]) => ({ playerId, gp: m.gp, avgRating: m.ratings / m.gp }))
+      .sort((a, b) => b.avgRating - a.avgRating || b.gp - a.gp)
+      .slice(0, n),
+  };
 }

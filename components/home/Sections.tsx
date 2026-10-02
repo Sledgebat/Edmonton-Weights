@@ -530,7 +530,7 @@ function TopRecent({ rows }: { rows: HomeData["topRecent"] }) {
         <ol className="mt-3 space-y-2.5">
           {rows.map((r) => (
             <li key={`${r.gameId}-${r.id}`} className="flex items-center gap-3 text-sm">
-              <RatingBadge rating={r.rating} />
+              <RatingBadge rating={r.rating} simple />
               <div className="min-w-0 flex-1">
                 <p className="truncate">
                   <Link href={`/player/${r.id}`} className="font-semibold hover:underline">
@@ -639,7 +639,7 @@ function LeaderBox({
   id: string;
   title: string;
   note: React.ReactNode;
-  rows: { id: number; name: string; value: React.ReactNode; detail: string }[];
+  rows: { id: number; name: string; value: React.ReactNode; detail: string; tone?: string }[];
   empty: string;
 }) {
   return (
@@ -656,7 +656,7 @@ function LeaderBox({
               {p.name}
             </Link>
             <span className="numeral whitespace-nowrap">
-              {p.value} <span className="text-xs font-normal text-fg-muted">{p.detail}</span>
+              <span className={p.tone}>{p.value}</span> <span className="text-xs font-normal text-fg-muted">{p.detail}</span>
             </span>
           </li>
         ))}
@@ -715,13 +715,19 @@ export function Leaders({ d }: { d: HomeData }) {
         title="Game Score"
         note={
           <>
-            {seasonLabel(d.season)} · season total, skaters · average rating out of 10 ·{" "}
+            {seasonLabel(d.season)} · average rating out of 10, skaters with {L.rating.minGames}+ games ·{" "}
             <Link href="/stats-guide#ratings" className="underline">
               What&apos;s this?
             </Link>
           </>
         }
-        rows={L.gameScore.map((p) => ({ id: p.id, name: p.name, value: p.total.toFixed(1), detail: `(avg ${p.avgRating.toFixed(1)} · ${p.gp} GP)` }))}
+        rows={L.rating.rows.map((p) => ({
+          id: p.id,
+          name: p.name,
+          value: p.avgRating.toFixed(1),
+          tone: p.avgRating.toFixed(1) === "5.0" ? "" : p.avgRating > 5 ? "text-win" : "text-loss",
+          detail: `(${p.gp} GP)`,
+        }))}
         empty="Appears once games have shift data."
       />
 
