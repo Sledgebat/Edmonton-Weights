@@ -5,7 +5,7 @@ import { seasonLabel } from "@/lib/nhl/endpoints";
 
 /**
  * Home: how the Oilers are doing, and why, on one page.
- *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 team stats · 4 recent performance · 5 leaders · 6 NHL EDGE
+ *   1 snapshot · 2 next game (pre-game breakdown folds open) · last game · 3 recent performance (with top game scores) · 4 team stats · 5 leaders · 6 NHL EDGE
  */
 export default async function Home() {
   const d = await homeData();
@@ -32,16 +32,16 @@ export default async function Home() {
         <LastGame d={d} />
       </section>
 
+      <section aria-labelledby="recent">
+        <SectionHeading id="recent" title="Recent performance" note="Last 10 games, oldest first" />
+        <RecentPerformance d={d} />
+      </section>
+
       <section aria-labelledby="tiles">
         <SectionHeading id="tiles" title="Team stats at a glance" note={`${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`} />
         {d.seasonNote && <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.seasonNote}</p>}
         <StatTiles d={d} />
         {d.updated.stats && <LastUpdated at={d.updated.stats} className="mt-2 block text-right" />}
-      </section>
-
-      <section aria-labelledby="recent">
-        <SectionHeading id="recent" title="Recent performance" note="Last 10 games, oldest first" />
-        <RecentPerformance d={d} />
       </section>
 
       <section aria-labelledby="leaders">

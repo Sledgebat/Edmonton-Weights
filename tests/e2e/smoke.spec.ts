@@ -139,9 +139,16 @@ test("data page shows the stats engine and the last update", async ({ page }) =>
 
 test("home page shows every section, with the pre-game breakdown folded away", async ({ page }) => {
   await page.goto("/");
-  for (const name of ["Next game", "Last game", "Team stats at a glance", "Recent performance", "Leaders", "NHL EDGE tracking"]) {
+  for (const name of ["Next game", "Last game", "Recent performance", "Team stats at a glance", "Leaders", "NHL EDGE tracking"]) {
     await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   }
+  // Recent performance comes before the team stats.
+  const order = await page.locator("h2").allTextContents();
+  expect(order.indexOf("Recent performance")).toBeLessThan(order.indexOf("Team stats at a glance"));
+  // Top game scores link to the game report; leaders include goals, assists and Game Score.
+  const top = page.locator("section", { has: page.getByRole("heading", { name: "Top game scores, last 5 games" }) });
+  await expect(top.locator('a[href*="/game/2026020004"]').first()).toBeVisible();
+  for (const name of ["Goals", "Assists", "Game Score"]) await expect(page.getByRole("heading", { name, exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: /^Oilers \d{4}-\d{2}$/ })).toBeVisible();
   // The breakdown starts closed and opens from the button beside "Game page".
   const toggle = page.getByRole("button", { name: /Pre-game breakdown/ });

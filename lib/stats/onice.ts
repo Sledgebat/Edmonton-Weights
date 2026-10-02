@@ -262,3 +262,50 @@ export function linemates(playerId: number, season: number, n = 5, gameType = 2)
 export function hasShiftData(season: number): boolean {
   return !!getDb().$client.prepare(`SELECT 1 FROM player_games WHERE season = ? LIMIT 1`).get(season);
 }
+
+// ------------------------------------------------------------------ Game Score leaders
+
+/** A team's best single-game performances over its last `games` games with shift data, best first. */
+export function topGameScores(teamId: number, season: number, games = 5, n = 5): RatingLogRow[] {
+  const rows = getDb()
+    .$client.prepare(
+      `WITH recent AS (
+         SELECT g.id FROM stats_games g JOIN shift_status s ON s.game_id = g.id AND s.status = 1
+         WHERE g.season = ? AND g.game_type = 2 AND (g.home_id = ? OR g.away_id = ?)
+         ORDER BY g.game_date DESC, g.id DESC LIMIT ?
+       )
+       SELECT ${PG_COLS.replace(/(^|, )(\w+)/g, "$1pg.$2")}, g.game_date date, g.home_id homeId, g.home_abbrev homeAbbrev, g.away_abbrev awayAbbrev
+       FROM player_games pg JOIN stats_games g ON g.id = pg.game_id
+       WHERE pg.game_id IN (SELECT id FROM recent) AND pg.team_id = ?
+       ORDER BY pg.game_score DESC LIMIT ?`,
+    )
+    .all(season, teamId, teamId, games, teamId, n) as (PlayerGameRow & { date: string; homeId: number; homeAbbrev: string; awayAbbrev: string })[];
+  return rows.map(({ homeId, homeAbbrev, awayAbbrev, ...r }) => {
+    const isHome = homeId === r.teamId;
+    return { ...rated(r), date: r.date, isHome, opponent: isHome ? awayAbbrev : homeAbbrev };
+  });
+}
+
+export type GameScoreLeader = { playerId: number; gp: number; total: number; avgRating: number };
+
+/** A team's skaters by total Game Score this season (regular season), highest first. */
+export function gameScoreLeaders(teamId: number, season: number, n = 5): GameScoreLeader[] {
+  const rows = getDb()
+    .$client.prepare(
+      `SELECT player_id playerId, pos, game_score gs FROM player_games
+       WHERE team_id = ? AND season = ? AND game_type = 2 AND pos != 'G'`,
+    )
+    .all(teamId, season) as { playerId: number; pos: string; gs: number }[];
+  const by = new Map<number, { gp: number; total: number; ratings: number }>();
+  for (const r of rows) {
+    const m = by.get(r.playerId) ?? { gp: 0, total: 0, ratings: 0 };
+    m.gp++;
+    m.total += r.gs;
+    m.ratings += ratingOf(r.gs, r.pos);
+    by.set(r.playerId, m);
+  }
+  return [...by.entries()]
+    .map(([playerId, m]) => ({ playerId, gp: m.gp, total: m.total, avgRating: m.ratings / m.gp }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, n);
+}

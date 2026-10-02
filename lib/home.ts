@@ -13,7 +13,7 @@ import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type Standi
 import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
 import { analyzeGame, type GameReport } from "@/lib/stats/game";
-import { gameRatings } from "@/lib/stats/onice";
+import { gameRatings, gameScoreLeaders, topGameScores } from "@/lib/stats/onice";
 import {
   METRICS,
   goalieTable,
@@ -144,9 +144,15 @@ export type HomeData = {
   heat: { usFor: HeatMap; themFor: HeatMap; usAgainst: HeatMap; themAgainst: HeatMap } | null;
   form: { us: TeamGame[]; them: TeamGame[] };
   recent: TeamGame[];
+  /** The best single-game Oilers performances of the last five games. */
+  topRecent: { id: number; name: string; gameId: number; date: string; opponent: string; isHome: boolean; rating: number; gameScore: number; line: string }[];
   trend: { gameId: number; date: string; value: number }[];
   leaders: {
     points: { id: number; name: string; points: number; goals: number; assists: number; gp: number }[];
+    goals: { id: number; name: string; goals: number; shots: number; gp: number }[];
+    assists: { id: number; name: string; assists: number; points: number; gp: number }[];
+    /** Total Game Score this season (skaters), with the average rating. */
+    gameScore: { id: number; name: string; total: number; avgRating: number; gp: number }[];
     ixg: { id: number; name: string; ixg: number; goals: number; hd: number }[];
     goalies: { id: number; name: string; gp: number; svPct: number; gsax: number | null }[];
   };
@@ -571,6 +577,23 @@ export async function homeData(): Promise<HomeData> {
           .slice(0, 5)
           .map((p) => ({ id: p.playerId, name: `${txt(p.firstName)} ${txt(p.lastName)}`, points: p.points, goals: p.goals, assists: p.assists, gp: p.gamesPlayed }))
       : [],
+    goals: cs
+      ? [...cs.skaters]
+          .filter((p) => p.goals > 0)
+          .sort((a, b) => b.goals - a.goals || a.gamesPlayed - b.gamesPlayed)
+          .slice(0, 5)
+          .map((p) => ({ id: p.playerId, name: `${txt(p.firstName)} ${txt(p.lastName)}`, goals: p.goals, shots: p.shots, gp: p.gamesPlayed }))
+      : [],
+    assists: cs
+      ? [...cs.skaters]
+          .filter((p) => p.assists > 0)
+          .sort((a, b) => b.assists - a.assists || b.points - a.points)
+          .slice(0, 5)
+          .map((p) => ({ id: p.playerId, name: `${txt(p.firstName)} ${txt(p.lastName)}`, assists: p.assists, points: p.points, gp: p.gamesPlayed }))
+      : [],
+    gameScore: await Promise.all(
+      gameScoreLeaders(TEAM_ID, season).map(async (g) => ({ id: g.playerId, name: await playerName(g.playerId, cs), total: g.total, avgRating: g.avgRating, gp: g.gp })),
+    ),
     ixg: await Promise.all(
       shooterTable(TEAM_ID, season)
         .slice(0, 5)
@@ -630,6 +653,16 @@ export async function homeData(): Promise<HomeData> {
     heat,
     form,
     recent,
+    topRecent: await Promise.all(
+      topGameScores(TEAM_ID, season).map(async (r) => {
+        const assists = r.a1 + r.a2;
+        const line =
+          r.pos === "G"
+            ? `${(r.gsax ?? 0) >= 0 ? "+" : ""}${(r.gsax ?? 0).toFixed(1)} goals saved above expected`
+            : [r.goals && `${r.goals} G`, assists && `${assists} A`, `${r.sog} SOG`].filter(Boolean).join(" · ");
+        return { id: r.playerId, name: await playerName(r.playerId, cs), gameId: r.gameId, date: r.date, opponent: r.opponent, isHome: r.isHome, rating: r.rating, gameScore: r.gameScore, line };
+      }),
+    ),
     trend: rollingShare(trendGames, "xgf5", "xga5", 5),
     leaders,
     lastReport,

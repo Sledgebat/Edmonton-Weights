@@ -511,13 +511,53 @@ export function StatTiles({ d }: { d: Pick<HomeData, "advancedTiles" | "basicTil
 
 // ------------------------------------------------------------------ 4. recent performance
 
+/** The best single-game ratings of the last five games, each linked to its game report. */
+function TopRecent({ rows }: { rows: HomeData["topRecent"] }) {
+  return (
+    <section className="card p-4 sm:p-5" aria-labelledby="top-recent">
+      <h3 id="top-recent" className="display text-2xl">
+        Top game scores, last 5 games
+      </h3>
+      <p className="text-xs text-fg-muted">
+        Best single-game ratings out of 10 · Game Score in brackets ·{" "}
+        <Link href="/stats-guide#ratings" className="underline">
+          How ratings work
+        </Link>
+      </p>
+      {rows.length === 0 ? (
+        <p className="mt-3 text-sm text-fg-muted">Ratings appear once games have shift data from the NHL.</p>
+      ) : (
+        <ol className="mt-3 space-y-2.5">
+          {rows.map((r) => (
+            <li key={`${r.gameId}-${r.id}`} className="flex items-center gap-3 text-sm">
+              <RatingBadge rating={r.rating} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate">
+                  <Link href={`/player/${r.id}`} className="font-semibold hover:underline">
+                    {r.name}
+                  </Link>{" "}
+                  <span className="numeral text-xs text-fg-muted">({r.gameScore.toFixed(2)})</span>
+                </p>
+                <p className="truncate text-xs text-fg-muted">{r.line}</p>
+              </div>
+              <Link href={`/game/${r.gameId}`} className="shrink-0 whitespace-nowrap text-xs font-semibold text-accent-ink hover:underline">
+                {shortDate(r.date)} {r.isHome ? "vs" : "@"} {r.opponent} <ArrowRight size={12} className="inline" aria-hidden />
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 export function RecentPerformance({
   d,
   team = "Oilers",
   side = "us",
   hasGamePage = () => true,
 }: {
-  d: Pick<HomeData, "recent" | "trend" | "season">;
+  d: Pick<HomeData, "recent" | "trend" | "season"> & Partial<Pick<HomeData, "topRecent">>;
   team?: string;
   side?: "us" | "them";
   /** Game reports exist only for Oilers games; other cards aren't links. */
@@ -565,25 +605,66 @@ export function RecentPerformance({
           );
         })}
       </ol>
-      <section className="card p-4 sm:p-5" aria-labelledby="season-trend">
-        <h3 id="season-trend" className="display text-2xl">
-          Season trend
-        </h3>
-        <p className="text-xs text-fg-muted">5-on-5 expected-goals share, rolling 5 games, {seasonLabel(d.season)} · above 50% = controlling play</p>
-        {d.trend.length >= 3 ? (
-          <ShareChart
-          ariaLabel={`${team} 5-on-5 expected-goals share, rolling five games, ${seasonLabel(d.season)}`}
-          series={[{ key: side, name: team, points: d.trend.map((t) => ({ label: shortDate(t.date), detail: "5-game average", value: t.value })) }]}
-        />
-        ) : (
-          <p className="mt-3 text-sm text-fg-muted">The trend line appears after three games.</p>
-        )}
-      </section>
+      <div className={d.topRecent ? "grid gap-4 lg:grid-cols-2" : ""}>
+        <section className="card p-4 sm:p-5" aria-labelledby="season-trend">
+          <h3 id="season-trend" className="display text-2xl">
+            Season trend
+          </h3>
+          <p className="text-xs text-fg-muted">5-on-5 expected-goals share, rolling 5 games, {seasonLabel(d.season)} · above 50% = controlling play</p>
+          {d.trend.length >= 3 ? (
+            <ShareChart
+              ariaLabel={`${team} 5-on-5 expected-goals share, rolling five games, ${seasonLabel(d.season)}`}
+              series={[{ key: side, name: team, points: d.trend.map((t) => ({ label: shortDate(t.date), detail: "5-game average", value: t.value })) }]}
+            />
+          ) : (
+            <p className="mt-3 text-sm text-fg-muted">The trend line appears after three games.</p>
+          )}
+        </section>
+        {d.topRecent && <TopRecent rows={d.topRecent} />}
+      </div>
     </div>
   );
 }
 
 // ------------------------------------------------------------------ 5. leaders
+
+/** A top-five list: rank, linked name, the main number, and a muted detail. */
+function LeaderBox({
+  id,
+  title,
+  note,
+  rows,
+  empty,
+}: {
+  id: string;
+  title: string;
+  note: React.ReactNode;
+  rows: { id: number; name: string; value: React.ReactNode; detail: string }[];
+  empty: string;
+}) {
+  return (
+    <section className="card p-4" aria-labelledby={id}>
+      <h3 id={id} className="display text-2xl">
+        {title}
+      </h3>
+      <p className="mb-2 text-xs text-fg-muted">{note}</p>
+      <ol className="space-y-1.5 text-sm">
+        {rows.map((p, i) => (
+          <li key={p.id} className="flex items-baseline justify-between gap-2">
+            <Link href={`/player/${p.id}`} className="truncate hover:underline">
+              <span className="numeral mr-2 text-accent-ink">{i + 1}</span>
+              {p.name}
+            </Link>
+            <span className="numeral whitespace-nowrap">
+              {p.value} <span className="text-xs font-normal text-fg-muted">{p.detail}</span>
+            </span>
+          </li>
+        ))}
+        {rows.length === 0 && <li className="text-fg-muted">{empty}</li>}
+      </ol>
+    </section>
+  );
+}
 
 export function Leaders({ d }: { d: HomeData }) {
   const L = d.leaders;
@@ -612,6 +693,37 @@ export function Leaders({ d }: { d: HomeData }) {
           {L.points.length === 0 && <li className="text-fg-muted">No games yet.</li>}
         </ol>
       </section>
+
+      <LeaderBox
+        id="lead-goals"
+        title="Goals"
+        note={`${seasonLabel(d.season)} · goals · shots on goal`}
+        rows={L.goals.map((p) => ({ id: p.id, name: p.name, value: p.goals, detail: `(${p.shots} SOG)` }))}
+        empty="No goals yet."
+      />
+
+      <LeaderBox
+        id="lead-a"
+        title="Assists"
+        note={`${seasonLabel(d.season)} · assists · points`}
+        rows={L.assists.map((p) => ({ id: p.id, name: p.name, value: p.assists, detail: `(${p.points} P)` }))}
+        empty="No assists yet."
+      />
+
+      <LeaderBox
+        id="lead-gs"
+        title="Game Score"
+        note={
+          <>
+            {seasonLabel(d.season)} · season total, skaters · average rating out of 10 ·{" "}
+            <Link href="/stats-guide#ratings" className="underline">
+              What&apos;s this?
+            </Link>
+          </>
+        }
+        rows={L.gameScore.map((p) => ({ id: p.id, name: p.name, value: p.total.toFixed(1), detail: `(avg ${p.avgRating.toFixed(1)} · ${p.gp} GP)` }))}
+        empty="Appears once games have shift data."
+      />
 
       <section className="card p-4" aria-labelledby="lead-xg">
         <h3 id="lead-xg" className="display text-2xl">
