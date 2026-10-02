@@ -4,8 +4,9 @@
  *   2. on a fresh database, also loads last season (used for the "last season" views)
  *   3. adds shift charts (who was on the ice) for any stored game of this season or last that
  *      doesn't have them yet; the one-time backfill is capped per run and carries on next run
- *   4. simulates the rest of the regular season for every team's playoff odds, and saves them
- *   5. packs the database into one file, ready to save for the next run
+ *   4. stores the goals (for Clutch Score) of any game of this season that doesn't have them yet
+ *   5. simulates the rest of the regular season for every team's playoff odds, and saves them
+ *   6. packs the database into one file, ready to save for the next run
  *
  *   npm run update
  */
@@ -13,7 +14,7 @@ import { databasePath, getDb } from "../db";
 import { fetchFresh } from "../lib/nhl/client";
 import { endpoints, previousSeason, seasonLabel } from "../lib/nhl/endpoints";
 import { ClubSchedule, Standings } from "../lib/nhl/schemas";
-import { ingestMissing, ingestShiftsMissing, listSeasonGames, listSeasonSchedule, statsCounts } from "../lib/stats/ingest";
+import { ingestGoalsMissing, ingestMissing, ingestShiftsMissing, listSeasonGames, listSeasonSchedule, statsCounts } from "../lib/stats/ingest";
 import { formatOdds, runPlayoffOdds } from "../lib/stats/odds";
 
 /** A full regular season is 1,312 games; below this we treat last season as not yet loaded. */
@@ -42,6 +43,13 @@ async function main() {
   const sh = await ingestShiftsMissing([current, prev]);
   console.log(`  ${sh.todo} needed · ${sh.stored} added · ${sh.unavailable} not published yet · ${sh.failed.length} failed${sh.remaining ? ` · ${sh.remaining} left for the next run` : ""}`);
   for (const f of sh.failed.slice(0, 5)) console.log(`    ${f.id}: ${f.error}`);
+
+  // New games store their goals as they're added; this catches up games stored before Clutch Score.
+  const gl = await ingestGoalsMissing([current]);
+  if (gl.todo) {
+    console.log(`Clutch Score goals: ${gl.todo} games needed · ${gl.stored} added · ${gl.failed.length} failed${gl.remaining ? ` · ${gl.remaining} left for the next run` : ""}`);
+    for (const f of gl.failed.slice(0, 5)) console.log(`    ${f.id}: ${f.error}`);
+  }
 
   // Playoff odds, from the standings and the rest of the schedule, while the regular season lasts.
   if (schedule.some((g) => g.gameType === 2 && g.gameState !== "FINAL" && g.gameState !== "OFF")) {

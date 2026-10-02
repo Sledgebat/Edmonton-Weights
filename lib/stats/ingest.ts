@@ -7,6 +7,7 @@ import { getDb, schema } from "@/db";
 import { fetchFresh } from "@/lib/nhl/client";
 import { endpoints, isFinished } from "@/lib/nhl/endpoints";
 import { ClubSchedule, PlayByPlay, ShiftCharts, Standings, txt, type ScheduleGame, type Shift } from "@/lib/nhl/schemas";
+import { extractGoals, rosterNames } from "./clutch";
 import { extractShots, strengthTime } from "./extract";
 import { onIceGame } from "./shifts";
 import { scoreShots } from "./xg";
@@ -92,7 +93,77 @@ export function ingestGame(pbp: PlayByPlay): { shots: number } {
       }
     }
   });
+  storeGoals(pbp);
   return { shots: attempts.length };
+}
+
+// ------------------------------------------------------------------ goals (Clutch Score)
+
+/** Store a finished game's goals (with the score before each) and its lineups' names. */
+export function storeGoals(pbp: PlayByPlay) {
+  const db = getDb();
+  const goals = extractGoals(pbp);
+  db.transaction((tx) => {
+    tx.delete(schema.goals).where(eq(schema.goals.gameId, pbp.id)).run();
+    if (goals.length) tx.insert(schema.goals).values(goals).run();
+    for (const n of rosterNames(pbp)) {
+      tx.insert(schema.playerNames)
+        .values(n)
+        .onConflictDoUpdate({
+          target: schema.playerNames.playerId,
+          set: { name: n.name, pos: n.pos, teamId: n.teamId, lastGameDate: n.lastGameDate },
+          // A game older than the one we last saw (a backfill) never undoes a trade.
+          setWhere: sql`${schema.playerNames.lastGameDate} <= ${n.lastGameDate}`,
+        })
+        .run();
+    }
+    tx.insert(schema.goalStatus)
+      .values({ gameId: pbp.id, checkedAt: Date.now() })
+      .onConflictDoUpdate({ target: schema.goalStatus.gameId, set: { checkedAt: Date.now() } })
+      .run();
+  });
+}
+
+/** Stored games in these seasons whose goals haven't been stored yet (games from before Clutch Score). */
+export function gamesNeedingGoals(seasons: number[]): number[] {
+  return (
+    getDb()
+      .$client.prepare(
+        `SELECT g.id FROM stats_games g LEFT JOIN goal_status s ON s.game_id = g.id
+         WHERE g.season IN (${seasons.map(Number).join(",") || "0"}) AND s.game_id IS NULL
+         ORDER BY g.game_date DESC, g.id DESC`,
+      )
+      .all() as { id: number }[]
+  ).map((r) => r.id);
+}
+
+/**
+ * Re-download the play-by-play for stored games that don't have their goals yet (a one-time
+ * catch-up). Stops after `budgetMs`; the next run carries on.
+ */
+export async function ingestGoalsMissing(
+  seasons: number[],
+  { concurrency = 3, delayMs = 200, budgetMs = 10 * 60_000 }: { concurrency?: number; delayMs?: number; budgetMs?: number } = {},
+) {
+  const todo = gamesNeedingGoals(seasons);
+  const stopAt = Date.now() + budgetMs;
+  let done = 0;
+  const failed: { id: number; error: string }[] = [];
+  let next = 0;
+  async function worker() {
+    while (next < todo.length && Date.now() < stopAt) {
+      const id = todo[next++];
+      try {
+        storeGoals(await fetchFresh(endpoints.gamePlayByPlay(id), PlayByPlay));
+      } catch (err) {
+        failed.push({ id, error: err instanceof Error ? err.message : String(err) });
+      }
+      done++;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, todo.length) }, worker));
+  return { todo: todo.length, stored: done - failed.length, failed, remaining: todo.length - done };
 }
 
 /** Every finished regular-season and playoff game in a season, from all 32 club schedules. */

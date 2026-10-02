@@ -15,6 +15,7 @@ const ROUTES = [
   "/game/2026020004",
   "/team/EDM",
   "/team/VAN",
+  "/clutch",
 ];
 const MODES = ["light", "dark"] as const;
 // Tests run offline: stand in for NHL logos and headshots with a blank image.

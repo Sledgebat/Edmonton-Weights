@@ -144,6 +144,13 @@ a {
     border-radius: 10px;
   }
 
+  /* Clutch Score: the one fun stat, set apart in Oilers orange. */
+  .clutch-card {
+    background: color-mix(in srgb, var(--chart-us) 9%, var(--surface-raised));
+    border: 2px solid var(--chart-us);
+    border-radius: 10px;
+  }
+
   /* Charts: Recharts draws SVG attributes, so colours come from theme tokens via CSS. */
   .trend-chart .recharts-cartesian-axis-tick-value {
     fill: var(--text-muted);

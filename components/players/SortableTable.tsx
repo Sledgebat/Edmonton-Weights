@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RatingBadge } from "@/components/data/RatingBadge";
@@ -60,6 +60,8 @@ export function SortableTable({
   nameLabel = "Player",
   minWidth = "40rem",
   teamFilter,
+  pageSizes,
+  rankLabel,
 }: {
   columns: Column[];
   rows: TableRow[];
@@ -69,9 +71,15 @@ export function SortableTable({
   minWidth?: string;
   /** Buttons that show only the rows whose `team` matches (plus "Both teams"). */
   teamFilter?: { label: string; options: { key: string; label: string }[] };
+  /** Split long tables into pages, e.g. [30, 50, 100, "all"]; the first is the default. */
+  pageSizes?: (number | "all")[];
+  /** Show each row's `rank` field in a first column with this heading (e.g. "#"). */
+  rankLabel?: string;
 }) {
   const [sort, setSort] = useState<{ key: string; desc: boolean }>({ key: initialSort, desc: true });
   const [team, setTeam] = useState<string>("all");
+  const [pageSize, setPageSize] = useState<number | "all">(pageSizes?.[0] ?? "all");
+  const [page, setPage] = useState(0);
 
   const sorted = useMemo(() => {
     const out = team === "all" ? [...rows] : rows.filter((r) => r.team === team);
@@ -87,8 +95,58 @@ export function SortableTable({
     return out;
   }, [rows, sort, team]);
 
-  const toggle = (c: Column) =>
+  const pages = pageSize === "all" ? 1 : Math.max(1, Math.ceil(sorted.length / pageSize));
+  const current = Math.min(page, pages - 1);
+  const shown = pageSize === "all" ? sorted : sorted.slice(current * pageSize, (current + 1) * pageSize);
+
+  const toggle = (c: Column) => {
+    setPage(0);
     setSort((s) => (s.key === c.key ? { key: c.key, desc: !s.desc } : { key: c.key, desc: c.descFirst ?? c.format !== "text" }));
+  };
+
+  const pill = (active: boolean) =>
+    `rounded-full border px-3 py-1 text-xs font-semibold ${active ? "border-button bg-button text-button-fg" : "border-line-strong hover:bg-sunken"}`;
+
+  const sizePicker = pageSizes && (
+    <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+      <div role="group" aria-label="Players per page" className="flex flex-wrap items-center gap-1">
+        <span className="mr-1 text-xs text-fg-muted">Per page</span>
+        {pageSizes.map((n) => (
+          <button
+            key={n}
+            type="button"
+            aria-pressed={pageSize === n}
+            onClick={() => {
+              setPageSize(n);
+              setPage(0);
+            }}
+            className={pill(pageSize === n)}
+          >
+            {n === "all" ? "All" : n}
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-fg-muted" aria-live="polite">
+        {sorted.length === 0
+          ? "No players"
+          : `Showing ${pageSize === "all" ? 1 : current * pageSize + 1}–${pageSize === "all" ? sorted.length : Math.min(sorted.length, (current + 1) * pageSize)} of ${sorted.length}`}
+      </p>
+    </div>
+  );
+
+  const pager = pageSizes && pages > 1 && (
+    <nav aria-label="Table pages" className="mt-3 flex items-center justify-center gap-2 text-sm">
+      <button type="button" onClick={() => setPage(current - 1)} disabled={current === 0} className={`${pill(false)} inline-flex items-center gap-0.5 disabled:opacity-40`}>
+        <ChevronLeft size={14} aria-hidden /> Previous
+      </button>
+      <span className="numeral px-2 text-fg-muted">
+        Page {current + 1} of {pages}
+      </span>
+      <button type="button" onClick={() => setPage(current + 1)} disabled={current >= pages - 1} className={`${pill(false)} inline-flex items-center gap-0.5 disabled:opacity-40`}>
+        Next <ChevronRight size={14} aria-hidden />
+      </button>
+    </nav>
+  );
 
   const filter = teamFilter && (
     <div role="group" aria-label={teamFilter.label} className="mb-3 flex flex-wrap gap-1">
@@ -98,7 +156,7 @@ export function SortableTable({
           type="button"
           aria-pressed={team === o.key}
           onClick={() => setTeam(o.key)}
-          className={`rounded-full border px-3 py-1 text-xs font-semibold ${team === o.key ? "border-button bg-button text-button-fg" : "border-line-strong hover:bg-sunken"}`}
+          className={pill(team === o.key)}
         >
           {o.label}
         </button>
@@ -109,10 +167,16 @@ export function SortableTable({
   return (
     <div className="-mx-1 overflow-x-auto">
       {filter}
+      {sizePicker}
       <table className="w-full text-sm" style={{ minWidth }}>
         <caption className="sr-only">{caption}. Select a column heading to sort.</caption>
         <thead>
           <tr className="text-[11px] uppercase tracking-wider text-fg-muted">
+            {rankLabel && (
+              <th scope="col" className="w-8 px-1 py-1 text-right">
+                {rankLabel}
+              </th>
+            )}
             <th scope="col" className="sticky left-0 bg-raised px-1 py-1 text-left">
               <SortButton active={sort.key === "name"} desc={sort.desc} onClick={() => toggle({ key: "name", label: nameLabel, format: "text", descFirst: false })}>
                 {nameLabel}
@@ -128,8 +192,9 @@ export function SortableTable({
           </tr>
         </thead>
         <tbody>
-          {sorted.map((r) => (
+          {shown.map((r) => (
             <tr key={r.id} className={`border-t border-line ${r.highlight ? "bg-sunken" : ""}`}>
+              {rankLabel && <td className="numeral px-1 text-right text-fg-muted">{r.rank ?? ""}</td>}
               <th
                 scope="row"
                 className={`sticky left-0 whitespace-nowrap px-1 py-1.5 text-left font-semibold ${r.highlight ? "bg-sunken" : "bg-raised"} ${r.ours ? "pl-2.5 shadow-[inset_4px_0_0_var(--chart-us)]" : ""}`}
@@ -164,6 +229,7 @@ export function SortableTable({
           ))}
         </tbody>
       </table>
+      {pager}
     </div>
   );
 }

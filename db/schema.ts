@@ -188,3 +188,53 @@ export const playoffOdds = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.runAt, t.team] }), index("playoff_odds_season").on(t.season, t.team)],
 );
+
+// ---------------------------------------------------------------- clutch goals
+
+/**
+ * Every goal (shootouts excluded) with the score just before it, who scored and assisted, and
+ * whether either net was empty. Clutch Score is worked out from these at build time
+ * (`lib/stats/clutch.ts`), so the weights can change without re-downloading anything.
+ */
+export const goals = sqliteTable(
+  "goals",
+  {
+    gameId: integer("game_id").notNull(),
+    eventId: integer("event_id").notNull(),
+    season: integer("season").notNull(),
+    gameType: integer("game_type").notNull(),
+    period: integer("period").notNull(),
+    /** REG or OT. */
+    periodType: text("period_type").notNull(),
+    /** Seconds since the start of this period. */
+    periodSeconds: integer("period_seconds").notNull(),
+    teamId: integer("team_id").notNull(),
+    oppTeamId: integer("opp_team_id").notNull(),
+    scorerId: integer("scorer_id"),
+    a1Id: integer("a1_id"),
+    a2Id: integer("a2_id"),
+    /** The score just before the goal, from the scoring team's side. */
+    ownBefore: integer("own_before").notNull(),
+    oppBefore: integer("opp_before").notNull(),
+    ownGoalieIn: integer("own_goalie_in", { mode: "boolean" }).notNull(),
+    oppGoalieIn: integer("opp_goalie_in", { mode: "boolean" }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.gameId, t.eventId] }), index("goals_season").on(t.season)],
+);
+
+/** Games whose goals have been stored (a 0-0 shootout game has none, so the rows alone can't tell). */
+export const goalStatus = sqliteTable("goal_status", {
+  gameId: integer("game_id").primaryKey(),
+  checkedAt: integer("checked_at").notNull(),
+});
+
+/** Every player seen in a stored game's lineup: name, position and most recent team. */
+export const playerNames = sqliteTable("player_names", {
+  playerId: integer("player_id").primaryKey(),
+  name: text("name").notNull(),
+  /** C, L, R, D or G, as the NHL lists it. */
+  pos: text("pos").notNull(),
+  teamId: integer("team_id").notNull(),
+  /** Date of the game this row was last updated from, so an older game never overwrites a trade. */
+  lastGameDate: text("last_game_date").notNull(),
+});

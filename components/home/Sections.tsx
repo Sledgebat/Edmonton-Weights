@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Radio, Tv } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Minus, Radio, Tv, Zap } from "lucide-react";
 import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { RatingBadge } from "@/components/data/RatingBadge";
@@ -778,6 +778,54 @@ export function Leaders({ d }: { d: HomeData }) {
         </ul>
       </section>
     </div>
+  );
+}
+
+/** Clutch Score: the Oilers' top three, set apart in orange, linking to the league list. */
+export function ClutchBox({ d }: { d: HomeData }) {
+  const c = d.clutch;
+  return (
+    <section className="clutch-card mt-4 p-4" aria-labelledby="lead-clutch">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 id="lead-clutch" className="display inline-flex items-center gap-1.5 text-2xl">
+          <Zap size={20} aria-hidden className="text-accent-ink" />
+          Clutch Score
+        </h3>
+        <p className="text-xs text-fg-muted">
+          {seasonLabel(d.season)} · late tying and go-ahead goals, OT winners ·{" "}
+          <Link href="/stats-guide#clutch" className="underline">
+            What&apos;s this?
+          </Link>
+        </p>
+      </div>
+      {c.rows.length > 0 ? (
+        <ol className="mt-3 grid gap-3 sm:grid-cols-3">
+          {c.rows.map((p, i) => (
+            <li key={p.id} className="rounded-lg bg-raised/70 px-3 py-2">
+              <div className="flex items-baseline justify-between gap-2">
+                <Link href={`/player/${p.id}`} className="truncate font-semibold hover:underline">
+                  <span className="numeral mr-2 text-accent-ink">{i + 1}</span>
+                  {p.name}
+                </Link>
+                <span className="numeral text-xl">{p.score.toFixed(2)}</span>
+              </div>
+              <p className="mt-0.5 text-xs text-fg-muted">
+                {p.summary} · {ordinal(p.rank)} in the NHL
+              </p>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="mt-3 text-sm text-fg-muted">
+          {c.ready ? "No Oilers clutch points yet this season. The first late equalizer or OT winner will show up here." : "Appears after the next update."}
+        </p>
+      )}
+      {c.leaguePlayers > 0 && (
+        <Link href="/clutch" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent-ink hover:underline">
+          See the league&apos;s clutch leaders ({c.leaguePlayers} players) <ArrowRight size={14} aria-hidden />
+        </Link>
+      )}
+    </section>
   );
 }
 

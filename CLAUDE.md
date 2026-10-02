@@ -58,6 +58,11 @@ Independent fan site; the footer disclaimer must stay on every page.
 - **No NHL logos or headshots** (trademarks/photos). Teams show as abbreviation badges.
 - Theme: Oilers blue and orange only, light/dark mode. Chart colours come from theme tokens
   (`--chart-us` orange, `--chart-them` blue).
+- **Clutch Score** (`lib/stats/clutch.ts`): a fun stat, set apart in orange (`.clutch-card`), never
+  labelled "fun stat". Last 10 min of the 3rd or OT, within one goal: OT winner 3, tying 2 (2.5 goalie
+  pulled), go-ahead 2, insurance 0.5 (0 empty net); A1 70%, A2 50%; playoffs ×1.5. League-wide.
+  Home: Oilers top 3 under Leaders; `/clutch` lists every player with a clutch point (30/50/100/All
+  per page), Oilers marked. Not in the main nav.
 - No live in-game updates (would need a paid server); game pages for live games say they're a
   snapshot and link to NHL.com. Cost must stay at $0.
 
@@ -73,6 +78,8 @@ Independent fan site; the footer disclaimer must stay on every page.
   Only results are stored (`player_games`: TOI, 5-on-5 on-ice CF/GF/xGF, Game Score per player
   per game; `unit_games`: lines/pairs with ≥ 30 s together in a game), never raw shifts.
   `npm run update` adds them for new games and catches up any missing (capped at 25 min a run).
+- **Goals** (`goals`, `goal_status`, `player_names` tables): every goal with the score before it,
+  stored at ingest; `npm run update` catches up any game of this season without them.
 - **Ratings out of 10** (`lib/stats/ratings.ts`): Game Score ranked against the two previous
   seasons, cut-offs in `rating-model.json`. Re-run `npm run ratings:calibrate` each summer
   (after the season rolls over), with `npm run shifts:backfill` first if a season is missing.

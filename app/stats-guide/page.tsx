@@ -3,6 +3,7 @@ import Link from "next/link";
 import { currentModel } from "@/lib/stats/xg";
 import { GAME_SCORE } from "@/lib/stats/shifts";
 import { RATING_ANCHORS, ratingModel } from "@/lib/stats/ratings";
+import { CLUTCH } from "@/lib/stats/clutch";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
@@ -147,6 +148,7 @@ export default function StatsGuidePage() {
           {[
             ["#terms", "The stats"],
             ["#ratings", "Player ratings"],
+            ["#clutch", "Clutch Score"],
             ["#model", "Our xG model"],
             ["#sources", "Data and updates"],
             ["#caveats", "Caveats"],
@@ -176,6 +178,8 @@ export default function StatsGuidePage() {
       </section>
 
       <Ratings />
+
+      <Clutch />
 
       <section aria-labelledby="model" className="space-y-4">
         <h2 id="model" className="display text-3xl sm:text-4xl">
@@ -361,6 +365,57 @@ function Ratings() {
         <p className="text-fg-muted">
           Game Score rewards what shows up in the event data, so it favours scorers and shooters, and a quiet, solid defensive game can rate as average.
           Treat one rating as a summary of one night, and look at several games before drawing conclusions.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/** How Clutch Score works. */
+function Clutch() {
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const weights: [string, string][] = [
+    ["Overtime winner", String(CLUTCH.otWinner)],
+    ["Tying goal", `${CLUTCH.tying} (${CLUTCH.tyingGoaliePulled} with their own goalie pulled)`],
+    ["Go-ahead goal from a tie", String(CLUTCH.goAhead)],
+    ["Insurance goal, from up one to up two", `${CLUTCH.insurance} (nothing for an empty-netter)`],
+  ];
+  return (
+    <section aria-labelledby="clutch" className="scroll-mt-24 space-y-4">
+      <h2 id="clutch" className="display text-3xl sm:text-4xl">
+        Clutch Score
+      </h2>
+      <div className="clutch-card space-y-3 p-4 text-sm sm:p-5">
+        <p>
+          Nobody has found a reliable way to measure &ldquo;clutch&rdquo;, so treat this as a fun stat, not proof. Clutch Score adds up the big late goals:
+          the <strong>last 10 minutes of the third period, or overtime</strong>, when the scoring team was behind by one, tied, or ahead by one just before
+          the goal.
+        </p>
+        <table className="w-full max-w-md text-sm">
+          <caption className="sr-only">Clutch Score points per goal</caption>
+          <tbody>
+            {weights.map(([k, v]) => (
+              <tr key={k} className="border-t border-line">
+                <th scope="row" className="py-1 pr-3 text-left font-normal">
+                  {k}
+                </th>
+                <td className="numeral py-1 text-right">{v}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p>
+          The primary assist earns {pct(CLUTCH.a1Share)} of the goal&apos;s value and the secondary assist {pct(CLUTCH.a2Share)}, close to how Game Score
+          weighs assists. Playoff goals count {CLUTCH.playoffs} times. Shootout goals don&apos;t count. It&apos;s worked out for every player in the league,
+          so you can see where the Oilers stand on the{" "}
+          <Link href="/clutch" className="underline">
+            clutch leaders page
+          </Link>
+          .
+        </p>
+        <p className="text-fg-muted">
+          Even top scorers only get a handful of these a season, so one big night can move a player a long way. It also rewards being on the ice late in
+          close games, which depends on the coach as much as the player.
         </p>
       </div>
     </section>

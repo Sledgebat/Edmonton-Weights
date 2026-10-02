@@ -13,6 +13,7 @@ import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type Standi
 import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
 import { analyzeGame, type GameReport } from "@/lib/stats/game";
+import { clutchSummary, clutchTable, hasGoalData } from "@/lib/stats/clutch";
 import { gameRatings, ratingLeaders, topGameScores } from "@/lib/stats/onice";
 import {
   METRICS,
@@ -156,6 +157,8 @@ export type HomeData = {
     ixg: { id: number; name: string; ixg: number; goals: number; hd: number }[];
     goalies: { id: number; name: string; gp: number; svPct: number; gsax: number | null }[];
   };
+  /** The Oilers' top three in Clutch Score, with their league rank (`ready` is false until goals are stored). */
+  clutch: { ready: boolean; leaguePlayers: number; rows: { id: number; name: string; score: number; rank: number; summary: string }[] };
   /** The most recent finished game, analysed from its play-by-play. */
   lastReport: GameReport | null;
   /** The best three Oilers ratings in that game (empty until its shift charts are stored). */
@@ -592,6 +595,15 @@ export async function homeData(): Promise<HomeData> {
   const trendGames = teamGames(TEAM_ID, season);
 
   // ------------------------------------------------ leaders
+  const league = clutchTable(season);
+  const clutch: HomeData["clutch"] = {
+    ready: hasGoalData(season),
+    leaguePlayers: league.length,
+    rows: league
+      .filter((r) => r.teamId === TEAM_ID)
+      .slice(0, 3)
+      .map((r) => ({ id: r.playerId, name: r.name, score: r.score, rank: r.rank, summary: clutchSummary(r) })),
+  };
   const cs = clubStats.ok ? clubStats.data : undefined;
   const leaderGsax = new Map<number, number>();
   for (const g of goalies) {
@@ -694,6 +706,7 @@ export async function homeData(): Promise<HomeData> {
     ),
     trend: rollingShare(trendGames, "xgf5", "xga5", 5),
     leaders,
+    clutch,
     lastReport,
     lastRatings,
     edge,
