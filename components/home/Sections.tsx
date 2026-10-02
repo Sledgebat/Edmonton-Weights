@@ -5,7 +5,7 @@ import { DataError } from "@/components/data/Module";
 import { RatingBadge } from "@/components/data/RatingBadge";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
-import { RankPill, rankTone } from "@/components/ui/RankPill";
+import { RankPill } from "@/components/ui/RankPill";
 import { EdgeTiles, type EdgeTileData } from "@/components/home/EdgeTiles";
 import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
@@ -477,7 +477,7 @@ function TileCard({ t }: { t: Tile }) {
     <div className="card flex flex-col p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>
       <div className="mt-1 flex items-baseline justify-between gap-2">
-        <p className={`numeral text-3xl leading-none ${rankTone(t.rank, t.of)}`}>{t.value}</p>
+        <p className="numeral text-3xl leading-none">{t.value}</p>
         <RankPill rank={t.rank} of={t.of} />
       </div>
       <div className="mt-1 min-h-4">

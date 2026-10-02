@@ -3,7 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useId, useState } from "react";
-import { RankPill, rankTone } from "@/components/ui/RankPill";
+import { RankPill } from "@/components/ui/RankPill";
 
 export type EdgeListRow = { id: number; name: string; pos: string; value: number };
 export type EdgeTileData = {
@@ -34,7 +34,7 @@ export function EdgeTiles({ tiles }: { tiles: EdgeTileData[] }) {
             <>
               <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>
               <div className="mt-1 flex items-baseline justify-between gap-2">
-                <p className={`numeral text-2xl leading-none sm:text-3xl ${rankTone(t.rank, t.of)}`}>{t.value}</p>
+                <p className="numeral text-2xl leading-none sm:text-3xl">{t.value}</p>
                 <RankPill rank={t.rank} of={t.of} />
               </div>
               {t.note && <p className="mt-2 text-xs text-fg-muted">{t.note}</p>}
