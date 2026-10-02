@@ -3,16 +3,21 @@ const ordinal = (n: number) => {
   return `${n}${s}`;
 };
 
-/** League rank as "3rd / 32": top quarter stands out, bottom quarter is muted. */
+/** Green in the top half of the league, red in the bottom half, plain exactly in the middle. */
+export function rankTone(rank: number | null, of: number): "text-win" | "text-loss" | "" {
+  if (rank === null || !of) return "";
+  const middle = (of + 1) / 2;
+  return rank < middle ? "text-win" : rank > middle ? "text-loss" : "";
+}
+
+/** League rank as "3rd / 32", outlined green (top half) or red (bottom half). */
 export function RankPill({ rank, of }: { rank: number | null; of: number }) {
   if (rank === null || !of) return null;
-  const top = rank <= Math.ceil(of / 4);
-  const bottom = rank > of - Math.ceil(of / 4);
+  const tone = rankTone(rank, of);
+  const border = tone === "text-win" ? "border-win" : tone === "text-loss" ? "border-loss" : "border-line-strong";
   return (
     <span
-      className={`numeral inline-flex shrink-0 items-center whitespace-nowrap rounded px-1.5 text-xs leading-5 ${
-        top ? "bg-header text-header-fg" : bottom ? "border border-line-strong text-fg-muted" : "bg-sunken text-fg"
-      }`}
+      className={`numeral inline-flex shrink-0 items-center whitespace-nowrap rounded border px-1.5 text-xs leading-5 ${border} ${tone || "text-fg"}`}
       title={`${ordinal(rank)} of ${of} teams`}
     >
       {ordinal(rank)}

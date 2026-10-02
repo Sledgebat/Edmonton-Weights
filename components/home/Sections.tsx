@@ -5,7 +5,7 @@ import { DataError } from "@/components/data/Module";
 import { RatingBadge } from "@/components/data/RatingBadge";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
-import { RankPill } from "@/components/ui/RankPill";
+import { RankPill, rankTone } from "@/components/ui/RankPill";
 import { EdgeTiles, type EdgeTileData } from "@/components/home/EdgeTiles";
 import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
@@ -55,19 +55,21 @@ export function Snapshot({ d }: { d: HomeData }) {
   const p = d.picture;
   if (!d.standings.ok) return <DataError what="the standings" error={d.standings.error} />;
   if (!e || !p) return <p className="text-fg-muted">The Oilers aren&apos;t in the current standings.</p>;
-  const items: [string, string][] = [
+  // Streak: green while winning, red on a losing run (regulation or overtime).
+  const streakTone = e.streakCode === "W" ? "text-win" : e.streakCode === "L" || e.streakCode === "OT" ? "text-loss" : "";
+  const items: [string, string, string?][] = [
     ["Record", `${e.wins}-${e.losses}-${e.otLosses}`],
     ["Points", String(e.points)],
     ["Division", `${ordinal(e.divisionSequence)} ${e.divisionName}`],
-    ["Streak", streakLabel(e) || "—"],
+    ["Streak", streakLabel(e) || "—", streakTone],
   ];
   return (
     <div className="grid gap-3 lg:grid-cols-[3fr_2fr]">
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {items.map(([k, v]) => (
+        {items.map(([k, v, tone]) => (
           <div key={k} className="card px-4 py-3">
             <dt className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
-            <dd className="numeral mt-0.5 text-2xl leading-tight sm:text-3xl">{v}</dd>
+            <dd className={`numeral mt-0.5 text-2xl leading-tight sm:text-3xl ${tone ?? ""}`}>{v}</dd>
           </div>
         ))}
       </dl>
@@ -475,7 +477,7 @@ function TileCard({ t }: { t: Tile }) {
     <div className="card flex flex-col p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>
       <div className="mt-1 flex items-baseline justify-between gap-2">
-        <p className="numeral text-3xl leading-none">{t.value}</p>
+        <p className={`numeral text-3xl leading-none ${rankTone(t.rank, t.of)}`}>{t.value}</p>
         <RankPill rank={t.rank} of={t.of} />
       </div>
       <div className="mt-1 min-h-4">
