@@ -3,7 +3,7 @@
  * context (ranks), stat tiles, chance maps, goalie list and recent form, for any team.
  */
 import { getDb } from "@/db";
-import { gamesCount, heatMap, lastN, leagueContext, playerName, sampleNote, statTiles, teamGoalies, type GoalieCard, type HeatMap, type Tile } from "@/lib/home";
+import { gamesCount, heatMap, lastN, leagueContext, oddsFor, playerName, sampleNote, seasonGamesOf, statTiles, teamGoalies, type GoalieCard, type HeatMap, type HomeData, type Tile } from "@/lib/home";
 import { load, type Loaded } from "@/lib/load";
 import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
@@ -42,6 +42,7 @@ export type TeamPageData = {
   standings: Loaded<{ standings: StandingsRow[] }>;
   row: StandingsRow | null;
   picture: PlayoffPicture | null;
+  odds: HomeData["odds"];
   basicTiles: Tile[];
   advancedTiles: Tile[];
   heat: { for: HeatMap; against: HeatMap } | null;
@@ -105,7 +106,8 @@ export async function teamPageData(abbrev: string): Promise<TeamPageData> {
     seasonNote: sampleNote(teamId === null ? 0 : gamesCount(teamId, season)),
     standings,
     row,
-    picture: rows.length ? playoffPicture(rows, abbrev) : null,
+    picture: rows.length ? playoffPicture(rows, abbrev, seasonGamesOf(schedule.ok ? schedule.data.games : [])) : null,
+    odds: oddsFor(season, abbrev),
     basicTiles,
     advancedTiles,
     heat: teamId === null ? null : { for: heatMap(teamId, season, "for"), against: heatMap(teamId, season, "against") },

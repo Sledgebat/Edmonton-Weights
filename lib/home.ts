@@ -7,7 +7,8 @@ import { burstTable, rosterEdge, type BurstTable, type SkaterEdgeRow } from "@/l
 import { rankOf } from "@/lib/rank";
 import { builtPlayerIds, playerHref } from "@/lib/site";
 import { load, type Loaded } from "@/lib/load";
-import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
+import { SEASON_GAMES, playoffPicture, type PlayoffPicture } from "@/lib/magic";
+import { latestOdds, oddsHistory } from "@/lib/stats/odds";
 import { nhl, txt, type ClubStats, type EdgeTeam, type ScheduleGame, type StandingsRow, type TeamSummaryRow } from "@/lib/nhl";
 import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
 import { lastGame, liveGame, nextGame, ordinal, teamOf, teamView } from "@/lib/oilers";
@@ -129,6 +130,8 @@ export type HomeData = {
   standings: Loaded<{ standings: StandingsRow[] }>;
   edm: StandingsRow | null;
   picture: PlayoffPicture | null;
+  /** Simulated playoff odds (0–1) from the last update, and their history this season. */
+  odds: { odds: number; projPoints: number; runAt: number; history: { date: string; gp: number; odds: number }[] } | null;
   schedule: Loaded<{ games: ScheduleGame[]; currentSeason: number }>;
   next: ScheduleGame | null;
   last: ScheduleGame | null;
@@ -613,7 +616,8 @@ export async function homeData(): Promise<HomeData> {
     seasonNote,
     standings,
     edm,
-    picture: rows.length ? playoffPicture(rows, TEAM) : null,
+    picture: rows.length ? playoffPicture(rows, TEAM, seasonGamesOf(games)) : null,
+    odds: oddsFor(season, TEAM),
     schedule,
     next,
     last,
@@ -636,6 +640,19 @@ export async function homeData(): Promise<HomeData> {
     updated: { stats: statsUpdated },
     sources: { summary, clubStats },
   };
+}
+
+/** Regular-season length from a club schedule (84 games from 2026-27). */
+export function seasonGamesOf(games: ScheduleGame[]): number {
+  const n = games.filter((g) => g.gameType === 2).length;
+  return n >= 60 ? n : SEASON_GAMES;
+}
+
+/** A team's latest simulated playoff odds and how they've moved this season. */
+export function oddsFor(season: number, team: string): HomeData["odds"] {
+  const latest = latestOdds(season);
+  const row = latest?.rows.find((r) => r.team === team);
+  return latest && row ? { odds: row.odds, projPoints: row.projPoints, runAt: latest.runAt, history: oddsHistory(season, team) } : null;
 }
 
 /**

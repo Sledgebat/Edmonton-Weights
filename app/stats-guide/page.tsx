@@ -110,6 +110,22 @@ const TERMS: { id: string; term: string; short: string; body: React.ReactNode }[
     ),
   },
   {
+    id: "odds",
+    term: "Playoff odds",
+    short: "How often a team makes the playoffs when we play out the rest of the season 10,000 times.",
+    body: (
+      <>
+        At every site update we simulate every remaining regular-season game, 10,000 times over. Each game&apos;s winner is drawn at random, weighted by the
+        two teams&apos; strength (60% their expected-goals share this season, 40% their actual goal share), with a small edge for the home team and about
+        one game in four going to overtime, where the loser still gets a point. Early in the season each team&apos;s strength is pulled toward average and
+        allowed to vary between simulations, because a few games can&apos;t tell us how good a team really is. Each simulated season ends with the NHL&apos;s
+        format (top three in each division plus two wild cards per conference) and we count how often each team gets in. <strong>Projected points</strong>{" "}
+        is the average final total. The odds are <strong>green above 50%</strong> and <strong>red below</strong>. They&apos;re estimates: injuries,
+        trades and the NHL&apos;s later tiebreakers aren&apos;t modelled, and they move a lot in the first few weeks.
+      </>
+    ),
+  },
+  {
     id: "edge",
     term: "NHL EDGE",
     short: "The NHL's puck- and player-tracking numbers.",

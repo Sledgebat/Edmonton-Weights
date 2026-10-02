@@ -72,6 +72,23 @@ test("site is fully static: views switch in the browser and the address remember
   await expect(page.getByRole("button", { name: "Preseason" })).toHaveAttribute("aria-pressed", "true");
 });
 
+test("playoff odds: home snapshot, team page and the Playoff race view, green above 50% and red below", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Playoff odds", { exact: true }).first()).toBeVisible();
+  await page.goto("/standings?view=race");
+  await expect(page.getByRole("heading", { name: "Oilers' playoff odds this season" })).toBeVisible();
+  const cells = page.locator("table td span.numeral");
+  await expect(cells).toHaveCount(32);
+  for (const cell of await cells.all()) {
+    const n = Number((await cell.textContent())!.replace(/[^0-9]/g, ""));
+    const cls = (await cell.getAttribute("class")) ?? "";
+    if (n > 50) expect(cls).toContain("text-win");
+    else if (n < 50) expect(cls).toContain("text-loss");
+  }
+  await page.goto("/team/EDM");
+  await expect(page.getByText("Playoff odds", { exact: true })).toBeVisible();
+});
+
 test.describe("pages", () => {
   test("standings team names open that team's scouting page", async ({ page }) => {
     await page.goto("/standings");

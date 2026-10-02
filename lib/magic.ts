@@ -12,15 +12,18 @@
 import type { StandingsRow } from "./nhl/schemas";
 import { teamOf, wildCardTable } from "./oilers";
 
-export const SEASON_GAMES = 82;
-/** Show the magic number from about the midpoint of the season. */
-export const MAGIC_FROM_GP = 41;
+/** Regular-season length when the schedule can't tell us (84 games from 2026-27; 82 before). */
+export const SEASON_GAMES = 84;
+/** Show the magic number from the midpoint of the season. */
+export const magicFromGp = (seasonGames: number) => Math.ceil(seasonGames / 2);
 
 export type PlayoffPicture = {
   team: string;
   points: number;
   gamesPlayed: number;
-  /** Points pace over 82 games. */
+  /** Games in the regular season. */
+  seasonGames: number;
+  /** Points pace over the full season. */
   pace: number;
   inPlayoffSpot: boolean;
   /** How the spot is held: "Division 2nd", "Wild card 1", or null when out. */
@@ -38,9 +41,9 @@ export type PlayoffPicture = {
   showNumbers: boolean;
 };
 
-const maxPoints = (r: Pick<StandingsRow, "points" | "gamesPlayed">) => r.points + 2 * Math.max(0, SEASON_GAMES - r.gamesPlayed);
-
-export function playoffPicture(rows: StandingsRow[], team = "EDM"): PlayoffPicture | null {
+/** `seasonGames` comes from the schedule (count the team's regular-season games). */
+export function playoffPicture(rows: StandingsRow[], team = "EDM", seasonGames = SEASON_GAMES): PlayoffPicture | null {
+  const maxPoints = (r: Pick<StandingsRow, "points" | "gamesPlayed">) => r.points + 2 * Math.max(0, seasonGames - r.gamesPlayed);
   const me = rows.find((r) => teamOf(r) === team);
   if (!me) return null;
   const wc = wildCardTable(rows, me.conferenceAbbrev);
@@ -61,15 +64,16 @@ export function playoffPicture(rows: StandingsRow[], team = "EDM"): PlayoffPictu
   const rival = rivalRow ? { team: teamOf(rivalRow), points: rivalRow.points, gamesPlayed: rivalRow.gamesPlayed } : null;
   const cushion = rival ? me.points - rival.points : 0;
 
-  const showNumbers = me.gamesPlayed >= MAGIC_FROM_GP;
+  const showNumbers = me.gamesPlayed >= magicFromGp(seasonGames);
   const magicNumber = inPlayoffSpot && firstOut ? Math.max(0, maxPoints(firstOut) - me.points + 1) : null;
   const tragicNumber = !inPlayoffSpot && lastIn ? Math.max(0, maxPoints(me) - lastIn.points + 1) : null;
 
   return {
     team,
+    seasonGames,
     points: me.points,
     gamesPlayed: me.gamesPlayed,
-    pace: me.gamesPlayed ? Math.round((me.points / me.gamesPlayed) * SEASON_GAMES) : 0,
+    pace: me.gamesPlayed ? Math.round((me.points / me.gamesPlayed) * seasonGames) : 0,
     inPlayoffSpot,
     spot,
     rival,

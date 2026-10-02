@@ -170,3 +170,21 @@ export const unitGames = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.gameId, t.teamId, t.players] }), index("unit_games_team").on(t.teamId, t.season)],
 );
+
+// ---------------------------------------------------------------- playoff odds
+
+/** Every team's simulated playoff odds at each update, so the site can chart them over time. */
+export const playoffOdds = sqliteTable(
+  "playoff_odds",
+  {
+    runAt: integer("run_at").notNull(),
+    season: integer("season").notNull(),
+    team: text("team").notNull(),
+    gp: integer("gp").notNull(),
+    points: integer("points").notNull(),
+    /** 0–1. */
+    odds: real("odds").notNull(),
+    projPoints: real("proj_points").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.runAt, t.team] }), index("playoff_odds_season").on(t.season, t.team)],
+);

@@ -97,6 +97,11 @@ export function ingestGame(pbp: PlayByPlay): { shots: number } {
 
 /** Every finished regular-season and playoff game in a season, from all 32 club schedules. */
 export async function listSeasonGames(season: number, onProgress?: (msg: string) => void): Promise<ScheduleGame[]> {
+  return (await listSeasonSchedule(season, onProgress)).filter((g) => isFinished(g.gameState));
+}
+
+/** Every regular-season and playoff game in a season, played or not, from all 32 club schedules. */
+export async function listSeasonSchedule(season: number, onProgress?: (msg: string) => void): Promise<ScheduleGame[]> {
   const standings = await fetchFresh(endpoints.standingsNow(), Standings);
   const teams = [...new Set(standings.standings.map((r) => txt(r.teamAbbrev)))];
   const games = new Map<number, ScheduleGame>();
@@ -104,7 +109,7 @@ export async function listSeasonGames(season: number, onProgress?: (msg: string)
     try {
       const sched = await fetchFresh(endpoints.scheduleSeason(season, team), ClubSchedule);
       for (const g of sched.games) {
-        if ((g.gameType === 2 || g.gameType === 3) && isFinished(g.gameState)) games.set(g.id, g);
+        if (g.gameType === 2 || g.gameType === 3) games.set(g.id, g);
       }
     } catch (err) {
       onProgress?.(`  schedule ${team} ${season}: ${err instanceof Error ? err.message : String(err)}`);

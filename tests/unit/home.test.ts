@@ -21,7 +21,8 @@ describe("playoff picture", () => {
     expect(p.showNumbers).toBe(false);
     expect(p.magicNumber).toBeNull();
     expect(p.inPlayoffSpot).toBe(true);
-    expect(p.pace).toBe(82); // 1 point in 1 game
+    expect(p.pace).toBe(84); // 1 point in 1 game, 84-game season (from 2026-27)
+    expect(playoffPicture(standings, "EDM", 82)!.pace).toBe(82); // earlier seasons
   });
 
   it("late season: magic number against the first team out, using their maximum possible points", () => {
@@ -34,7 +35,7 @@ describe("playoff picture", () => {
     expect(p.showNumbers).toBe(true);
     expect(p.inPlayoffSpot).toBe(true);
     const firstOut = p.rival!;
-    const max = firstOut.points + 2 * (82 - firstOut.gamesPlayed);
+    const max = firstOut.points + 2 * (p.seasonGames - firstOut.gamesPlayed);
     expect(p.magicNumber).toBe(Math.max(0, max - 100 + 1));
   });
 

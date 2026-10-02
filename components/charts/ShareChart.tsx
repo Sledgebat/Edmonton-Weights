@@ -30,7 +30,18 @@ function ShareTooltip({ active, payload, names }: Partial<TooltipContentProps<nu
  * with the 50% break-even line. Colours come from theme tokens; identity is also in the legend
  * the page draws above the chart.
  */
-export function ShareChart({ series, ariaLabel, xTitle }: { series: ShareSeries[]; ariaLabel: string; xTitle?: string }) {
+export function ShareChart({
+  series,
+  ariaLabel,
+  xTitle,
+  fullScale = false,
+}: {
+  series: ShareSeries[];
+  ariaLabel: string;
+  xTitle?: string;
+  /** Always show 0–100% (e.g. playoff odds), with smaller dots for long runs. */
+  fullScale?: boolean;
+}) {
   const length = Math.max(...series.map((s) => s.points.length));
   const rows: Row[] = Array.from({ length }, (_, i) => {
     const row: Row = { x: "" };
@@ -46,8 +57,9 @@ export function ShareChart({ series, ariaLabel, xTitle }: { series: ShareSeries[
     return row;
   });
   const values = series.flatMap((s) => s.points.map((p) => p.value));
-  const lo = Math.max(0, Math.floor((Math.min(30, ...values) - 5) / 10) * 10);
-  const hi = Math.min(100, Math.ceil((Math.max(70, ...values) + 5) / 10) * 10);
+  const lo = fullScale ? 0 : Math.max(0, Math.floor((Math.min(30, ...values) - 5) / 10) * 10);
+  const hi = fullScale ? 100 : Math.min(100, Math.ceil((Math.max(70, ...values) + 5) / 10) * 10);
+  const dot = length > 30 ? 0 : fullScale ? 3 : 4;
   const names = Object.fromEntries(series.map((s) => [s.key, s.name]));
 
   return (
@@ -56,7 +68,7 @@ export function ShareChart({ series, ariaLabel, xTitle }: { series: ShareSeries[
         <LineChart data={rows} margin={{ top: 10, right: 12, bottom: xTitle ? 16 : 4, left: -12 }}>
           <CartesianGrid vertical={false} className="chart-grid" />
           <XAxis dataKey="x" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} interval="preserveStartEnd" minTickGap={12} />
-          <YAxis domain={[lo, hi]} tickFormatter={(v) => `${v}%`} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} width={48} />
+          <YAxis domain={[lo, hi]} ticks={fullScale ? [0, 25, 50, 75, 100] : undefined} tickFormatter={(v) => `${v}%`} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} width={48} />
           <ReferenceLine y={50} className="chart-ref" strokeDasharray="0" />
           <Tooltip content={<ShareTooltip names={names} />} cursor={{ className: "chart-cursor" }} isAnimationActive={false} />
           {series.map((s) => (
@@ -67,7 +79,7 @@ export function ShareChart({ series, ariaLabel, xTitle }: { series: ShareSeries[
               name={s.name}
               className={`line-${s.key}`}
               strokeWidth={2}
-              dot={{ r: 4, strokeWidth: 2, className: `dot-${s.key}` }}
+              dot={dot ? { r: dot, strokeWidth: 2, className: `dot-${s.key}` } : false}
               activeDot={{ r: 6, strokeWidth: 2, className: `dot-${s.key}` }}
               connectNulls
               isAnimationActive={false}

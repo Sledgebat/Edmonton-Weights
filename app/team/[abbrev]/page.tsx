@@ -10,6 +10,7 @@ import { load } from "@/lib/load";
 import { nhl, txt } from "@/lib/nhl";
 import { TEAM, seasonLabel } from "@/lib/nhl/endpoints";
 import { ordinal, pointPct, signed, streakLabel, teamOf } from "@/lib/oilers";
+import { formatOdds, oddsTone } from "@/lib/stats/odds";
 import { teamAbbrevs, teamPageData, type TeamPageData } from "@/lib/team";
 
 export const dynamicParams = false;
@@ -52,7 +53,13 @@ function RecordCards({ d }: { d: TeamPageData }) {
         ))}
       </dl>
       {p && (
-        <div className="card flex items-center gap-4 px-4 py-3">
+        <div className="card flex flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3">
+          {d.odds && (
+            <div className="text-center">
+              <p className={`numeral text-5xl leading-none ${oddsTone(d.odds.odds)}`}>{formatOdds(d.odds.odds)}</p>
+              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Playoff odds</p>
+            </div>
+          )}
           <div className="text-center">
             <p className="numeral text-5xl leading-none">{p.pace}</p>
             <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Points pace</p>
@@ -63,7 +70,18 @@ function RecordCards({ d }: { d: TeamPageData }) {
             {p.rival
               ? `, ${Math.abs(p.cushion)} ${Math.abs(p.cushion) === 1 ? "point" : "points"} ${p.cushion >= 0 ? "ahead of" : "behind"} ${p.rival.team}.`
               : "."}{" "}
-            <span className="text-fg-muted">Pace = points per game over 82 games.</span>
+            <span className="text-fg-muted">
+              Pace = points per game over {p.seasonGames} games.
+              {d.odds && (
+                <>
+                  {" "}
+                  Odds: an estimate from 10,000 simulations of the rest of the season (projected {Math.round(d.odds.projPoints)} points).{" "}
+                  <Link href="/standings?view=race" className="underline">
+                    Playoff race
+                  </Link>
+                </>
+              )}
+            </span>
           </p>
         </div>
       )}

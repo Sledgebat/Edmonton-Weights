@@ -45,6 +45,10 @@ Independent fan site; the footer disclaimer must stay on every page.
   chance maps, goalie matchup with *all* goalies on both rosters, since starters aren't known),
   Last game (links to the game report), team stat tiles with ranks and last-10 trends, recent
   performance, leaders, NHL EDGE.
+- **Playoff odds** (`lib/stats/odds.ts`): 10,000 seeded simulations of the rest of the regular
+  season, run in `npm run update` and saved per run in `playoff_odds` (history = the chart).
+  Shown green above 50%, red below, plain at 50%; never "0%" or "100%". The season is **84
+  games from 2026-27**: lengths come from the schedule (`seasonGamesOf`), not a constant.
 - **Tale of the tape** has no single-player stats. Pace of play = 5-on-5 shot attempts per 60 by
   both teams in that team's games (rank 1 = fastest). Speed bursts are per game and **ranked by
   us** across the league (`lib/edge.ts`), not the NHL's season-total rank.
@@ -97,8 +101,8 @@ build. If Playwright's browser is missing: `npx playwright install chromium`.
 
 ## Known follow-ups
 
-- **Next features plan:** `docs/next-features.md` (team pages, shift data → lines / on-ice impact /
-  player ratings, playoff odds). Build in that order, stopping for Josh's review after each step.
+- **Next features plan:** `docs/next-features.md`: all three steps built (team pages, shift data,
+  playoff odds), October 2026.
 
 - Playoffs: games are stored, but pages are built around the regular season. Review before April.
 - Step 5 polish from the plan (accessibility pass, mobile check) is not finished.

@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { ViewTabs } from "@/components/ui/ViewTabs";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
-import { conferenceTable, divisionTable, pointPct, signed, streakLabel, teamOf, wildCardTable } from "@/lib/oilers";
+import { conferenceTable, divisionTable, formatGameDate, pointPct, signed, streakLabel, teamOf, wildCardTable } from "@/lib/oilers";
+import { formatOdds, latestOdds, oddsHistory, oddsTone } from "@/lib/stats/odds";
 
 export const metadata: Metadata = { title: "Standings" };
 
-type View = "wildcard" | "division" | "conference";
+type View = "wildcard" | "division" | "conference" | "race";
 const VIEWS: { key: View; label: string }[] = [
   { key: "division", label: "Division" },
   { key: "wildcard", label: "Wild card" },
   { key: "conference", label: "Conference" },
+  { key: "race", label: "Playoff race" },
 ];
 
 const CONFERENCES = [
@@ -181,6 +184,120 @@ function StandingsView({ view, rows }: { view: View; rows: StandingsRow[] }) {
   );
 }
 
+/** Every team's simulated playoff odds and projected points, by conference, and the Oilers' odds over the season. */
+function PlayoffRace({ rows }: { rows: StandingsRow[] }) {
+  const season = rows[0]?.seasonId;
+  const latest = season ? latestOdds(season) : null;
+  if (!season || !latest) {
+    return <p className="mt-6 text-fg-muted">Playoff odds appear after the next site update.</p>;
+  }
+  const odds = new Map(latest.rows.map((r) => [r.team, r]));
+  const history = oddsHistory(season, "EDM");
+  const early = Math.max(...rows.map((r) => r.gamesPlayed)) < 10;
+  const th = "px-2 py-2 text-right font-semibold";
+  return (
+    <div className="mt-6 space-y-10">
+      <p className="max-w-3xl text-sm text-fg-muted">
+        Estimates from simulating the rest of the regular season 10,000 times, based on each team&apos;s results and expected goals this season and the
+        games they have left. Green: better than even odds; red: worse.{early ? " This early, a single game moves them a lot." : ""}{" "}
+        <Link href="/stats-guide#odds" className="underline">
+          How the odds work
+        </Link>
+      </p>
+      <section aria-labelledby="odds-trend" className="card p-4 sm:p-5">
+        <h2 id="odds-trend" className="display text-2xl">
+          Oilers&apos; playoff odds this season
+        </h2>
+        <p className="text-xs text-fg-muted">One point per day, after that day&apos;s last update</p>
+        {history.length >= 2 ? (
+          <ShareChart
+            fullScale
+            ariaLabel={`Oilers playoff odds over the season, now ${formatOdds(history.at(-1)!.odds)}`}
+            series={[
+              {
+                key: "us",
+                name: "Oilers",
+                points: history.map((h) => ({ label: formatGameDate(h.date + "T18:00:00Z", { month: "short", day: "numeric" }), detail: `after ${h.gp} games`, value: h.odds * 100 })),
+              },
+            ]}
+          />
+        ) : (
+          <p className="mt-3 text-sm text-fg-muted">The chart fills in as the season goes, one point per day.</p>
+        )}
+      </section>
+      {CONFERENCES.map((conf) => {
+        const teams = rows
+          .filter((r) => r.conferenceAbbrev === conf.abbrev)
+          .sort((a, b) => (odds.get(teamOf(b))?.odds ?? 0) - (odds.get(teamOf(a))?.odds ?? 0) || b.points - a.points);
+        return (
+          <div key={conf.abbrev} className="card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="tabular w-full min-w-[26rem] text-sm">
+                <caption className="display bg-header px-3 py-2 text-left text-xl text-header-fg">{conf.name}</caption>
+                <thead className="bg-sunken text-[11px] uppercase tracking-wider text-fg-muted">
+                  <tr>
+                    <th scope="col" className="w-8 px-2 py-2 text-right font-semibold">
+                      #
+                    </th>
+                    <th scope="col" className="sticky left-0 bg-sunken px-2 py-2 text-left font-semibold">
+                      Team
+                    </th>
+                    <th scope="col" className={th}>
+                      <abbr title="Games played">GP</abbr>
+                    </th>
+                    <th scope="col" className={th}>
+                      <abbr title="Points">PTS</abbr>
+                    </th>
+                    <th scope="col" className={th}>
+                      <abbr title="Projected points at the end of the regular season (average of the simulations)">Proj. PTS</abbr>
+                    </th>
+                    <th scope="col" className={`${th} pr-3`}>
+                      Playoff odds
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teams.map((r, i) => {
+                    const o = odds.get(teamOf(r));
+                    const edm = teamOf(r) === "EDM";
+                    return (
+                      <tr key={teamOf(r)} aria-current={edm ? "true" : undefined} className={`${i ? "border-t border-line" : ""} ${edm ? "bg-sunken font-semibold" : ""}`}>
+                        <td className={`px-2 py-2 text-right text-fg-muted ${edm ? "shadow-[inset_4px_0_0_var(--brand-accent)]" : ""}`}>{i + 1}</td>
+                        <th scope="row" className={`sticky left-0 px-2 py-2 text-left font-normal ${edm ? "bg-sunken font-semibold" : "bg-raised"}`}>
+                          <Link href={`/team/${teamOf(r)}`} className="flex items-center gap-2 whitespace-nowrap hover:underline">
+                            <TeamLogo abbrev={teamOf(r)} logo={r.teamLogo} size={24} />
+                            <span className="sm:hidden">{teamOf(r)}</span>
+                            <span className="hidden sm:inline">{txt(r.teamCommonName)}</span>
+                          </Link>
+                        </th>
+                        <td className="px-2 py-2 text-right">{r.gamesPlayed}</td>
+                        <td className="px-2 py-2 text-right">{r.points}</td>
+                        <td className="px-2 py-2 text-right">{o ? Math.round(o.projPoints) : "—"}</td>
+                        <td className="px-2 py-2 pr-3 text-right">
+                          {o ? (
+                            <span className="inline-flex items-center justify-end gap-2">
+                              <span className="relative hidden h-2 w-20 overflow-hidden rounded-full bg-sunken sm:inline-block" aria-hidden>
+                                <span className={`absolute inset-y-0 left-0 rounded-full ${oddsTone(o.odds) === "text-win" ? "bg-win" : oddsTone(o.odds) === "text-loss" ? "bg-loss" : "bg-line-strong"}`} style={{ width: `${o.odds * 100}%` }} />
+                              </span>
+                              <span className={`numeral w-12 text-base ${oddsTone(o.odds)}`}>{formatOdds(o.odds)}</span>
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default async function StandingsPage() {
   const standings = await load(nhl.standings);
 
@@ -198,7 +315,12 @@ export default async function StandingsPage() {
             defaultKey="division"
             options={VIEWS.map((v) => ({ key: v.key, label: v.label }))}
             extra={<LastUpdated at={standings.meta.fetchedAt} stale={standings.meta.stale} className="ml-auto" />}
-            panels={Object.fromEntries(VIEWS.map((v) => [v.key, <StandingsView key={v.key} view={v.key} rows={standings.data.standings} />]))}
+            panels={Object.fromEntries(
+              VIEWS.map((v) => [
+                v.key,
+                v.key === "race" ? <PlayoffRace key={v.key} rows={standings.data.standings} /> : <StandingsView key={v.key} view={v.key} rows={standings.data.standings} />,
+              ]),
+            )}
           />
         )}
       </div>

@@ -10,7 +10,8 @@ import { EdgeTiles, type EdgeTileData } from "@/components/home/EdgeTiles";
 import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
 import { TeamLogo } from "@/components/ui/TeamLogo";
-import type { GoalieCard, HeatMap, HomeData, TapeRow, Tile } from "@/lib/home";
+import { SMALL_SAMPLE_GAMES, type GoalieCard, type HeatMap, type HomeData, type TapeRow, type Tile } from "@/lib/home";
+import { formatOdds, oddsTone } from "@/lib/stats/odds";
 import { txt } from "@/lib/nhl";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 import { edmontonDate } from "@/lib/nhl/resources";
@@ -70,46 +71,64 @@ export function Snapshot({ d }: { d: HomeData }) {
           </div>
         ))}
       </dl>
-      <div className="card flex items-center gap-4 px-4 py-3">
-        {p.showNumbers && p.inPlayoffSpot ? (
-          <>
-            <div className="text-center">
-              <p className="numeral text-5xl leading-none text-accent-ink">{p.clinched ? "✓" : p.magicNumber}</p>
-              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Magic number</p>
-            </div>
-            <p className="text-sm">
-              {p.clinched
-                ? "Playoff spot clinched (estimate)."
-                : `Any combination of ${p.magicNumber} Oilers points gained or ${p.rival?.team} points lost clinches a playoff spot.`}{" "}
-              <span className="text-fg-muted">Estimate: full NHL tiebreakers aren&apos;t modelled.</span>
-            </p>
-          </>
-        ) : p.showNumbers && !p.inPlayoffSpot ? (
-          <>
-            <div className="text-center">
-              <p className="numeral text-5xl leading-none text-loss">{p.eliminated ? "✕" : p.tragicNumber}</p>
-              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Tragic number</p>
-            </div>
-            <p className="text-sm">
-              {Math.abs(p.cushion)} points behind {p.rival?.team} for the last playoff spot. <span className="text-fg-muted">Estimate.</span>
-            </p>
-          </>
-        ) : (
-          <>
-            <div className="text-center">
-              <p className="numeral text-5xl leading-none">{p.pace}</p>
-              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Points pace</p>
-            </div>
-            <p className="text-sm">
-              {p.inPlayoffSpot ? `Holding a playoff spot (${p.spot}), ` : "Outside the playoff spots, "}
-              {p.rival
-                ? `${Math.abs(p.cushion)} ${Math.abs(p.cushion) === 1 ? "point" : "points"} ${p.cushion >= 0 ? "ahead of" : "behind"} ${p.rival.team}.`
-                : ""}{" "}
-              <span className="text-fg-muted">The magic number appears at the season&apos;s midpoint.</span>
-            </p>
-          </>
-        )}
+      <PictureCard d={d} />
+    </div>
+  );
+}
+
+/** A big number with its label underneath. */
+function Figure({ value, label, tone = "" }: { value: string; label: string; tone?: string }) {
+  return (
+    <div className="text-center">
+      <p className={`numeral text-5xl leading-none ${tone}`}>{value}</p>
+      <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{label}</p>
+    </div>
+  );
+}
+
+/** Playoff odds beside the points pace (or, from mid-season, the magic or tragic number). */
+function PictureCard({ d }: { d: HomeData }) {
+  const p = d.picture!;
+  const o = d.odds;
+  const plural = (n: number) => `${n} ${n === 1 ? "point" : "points"}`;
+  let figure: { value: string; label: string; tone?: string };
+  let sentence: React.ReactNode;
+  if (p.showNumbers && p.inPlayoffSpot) {
+    figure = { value: p.clinched ? "✓" : String(p.magicNumber), label: "Magic number", tone: "text-accent-ink" };
+    sentence = p.clinched
+      ? "Playoff spot clinched (estimate)."
+      : `Any combination of ${p.magicNumber} Oilers points gained or ${p.rival?.team} points lost clinches a playoff spot.`;
+  } else if (p.showNumbers) {
+    figure = { value: p.eliminated ? "✕" : String(p.tragicNumber), label: "Tragic number", tone: "text-loss" };
+    sentence = `${plural(Math.abs(p.cushion))} behind ${p.rival?.team} for the last playoff spot.`;
+  } else {
+    figure = { value: String(p.pace), label: "Points pace" };
+    sentence = (
+      <>
+        {p.inPlayoffSpot ? `Holding a playoff spot (${p.spot})` : "Outside the playoff spots"}
+        {p.rival ? `, ${plural(Math.abs(p.cushion))} ${p.cushion >= 0 ? "ahead of" : "behind"} ${p.rival.team}.` : "."}{" "}
+        <span className="text-fg-muted">The magic number appears at the season&apos;s midpoint.</span>
+      </>
+    );
+  }
+  return (
+    <div className="card px-4 py-3">
+      <div className="flex flex-wrap items-start gap-x-8 gap-y-3">
+        {o && <Figure value={formatOdds(o.odds)} label="Playoff odds" tone={oddsTone(o.odds)} />}
+        <Figure {...figure} />
       </div>
+      <p className="mt-3 text-sm">{sentence}</p>
+      {o ? (
+        <p className="mt-1 text-xs text-fg-muted">
+          Odds and magic number are estimates. Odds come from 10,000 simulations of the rest of the season
+          {p.gamesPlayed < SMALL_SAMPLE_GAMES ? "; this early they move a lot from game to game" : ""}.{" "}
+          <Link href="/standings?view=race" className="underline">
+            Playoff race
+          </Link>
+        </p>
+      ) : (
+        <p className="mt-1 text-xs text-fg-muted">Estimate: full NHL tiebreakers aren&apos;t modelled.</p>
+      )}
     </div>
   );
 }
