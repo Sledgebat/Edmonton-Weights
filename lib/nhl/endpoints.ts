@@ -45,6 +45,11 @@ export const endpoints = {
   /** League-wide team summary for a season (one row per team). */
   teamSummary: (season: number, gameType: GameType = 2) =>
     `/stats/rest/en/team/summary?cayenneExp=seasonId=${season}%20and%20gameTypeId=${gameType}`,
+  /** League-wide power-play report (opportunities) and penalty-kill report (times shorthanded). */
+  teamPowerPlay: (season: number, gameType: GameType = 2) =>
+    `/stats/rest/en/team/powerplay?cayenneExp=seasonId=${season}%20and%20gameTypeId=${gameType}`,
+  teamPenaltyKill: (season: number, gameType: GameType = 2) =>
+    `/stats/rest/en/team/penaltykill?cayenneExp=seasonId=${season}%20and%20gameTypeId=${gameType}`,
   /** Every shift in a game: who was on the ice, and when. */
   shiftCharts: (gameId: number) => `/stats/rest/en/shiftcharts?cayenneExp=gameId=${gameId}`,
   /** NHL EDGE tracking: season-to-date summaries with league ranks. */

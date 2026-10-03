@@ -26,8 +26,11 @@ Independent fan site; the footer disclaimer must stay on every page.
 - **Views that used to use the URL** (standings view, schedule filter, Players season) are
   `components/ui/ViewTabs.tsx`: all panels are built into the page and switched in the browser.
 - **Player pages** exist only for current and recent Oilers (`lib/site.ts`); other players link to
-  NHL.com via `playerHref`. Game pages exist for every Oilers game this season. Team scouting
-  pages (`/team/EDM` etc., `lib/team.ts`) exist for every team in the standings. The Players
+  NHL.com via `playerHref`. Game pages exist for every Oilers game this season. **Season In-Depth**
+  pages (`/team/EDM` = "Oilers Season In-Depth", others "[Team] Season In-Depth"; `lib/team.ts`,
+  `components/team/InDepth.tsx`) exist for every team in the standings, in tabs (`?tab=`):
+  Overview · Situations · Scoring · Goaltending. League-wide inputs are built once per season in
+  `lib/indepth.ts` and shared by all 32 pages. The nav highlights Home on EDM's page. The Players
   page has Stats / Lines / Roster tabs; `/roster` still works on its own.
 - **NHL client** (`lib/nhl/client.ts`): validates every response with Zod, caches in SQLite,
   limits parallel requests politely, and bypasses Next's patched `fetch` (needed for static export).
@@ -71,9 +74,20 @@ Independent fan site; the footer disclaimer must stay on every page.
   in the standings has a stored game (`LeagueContext.ranksReady`); a short note shows instead.
 - **Players page** Stats view: skater table in three tabs (Scoring · Advanced · Physical &
   discipline, `?stat=`), GP in each; goalie table adds HDSV%, quality starts (Vollman), really bad
-  starts (< .850) and stolen games (win with game GSAx ≥ 2), from `lib/stats/goalies.ts` (starter
+  starts (< .850) and stolen games (win with game GSAx ≥ 2 and ≥ the winning margin, empty-net goals aside; agreed with Josh), from `lib/stats/goalies.ts` (starter
   = goalie who faced his team's first shot on goal). 5v5 P/60 needs the `goals` table, so it's
   "—" for 2025-26. Standings tables show RW, GF, GA, Home and Road records.
+- **Season In-Depth stats** (all team-agnostic, this season only):
+  game scripts (`lib/stats/situations.ts`, from `goals` + `stats_games`: records by situation,
+  one-goal games incl. 2 with an empty-netter, comebacks/blown leads = 2+ goals); special teams
+  (`lib/stats/special.ts`; PP opportunities, times shorthanded and PP/SH goals from the NHL's
+  `team/powerplay` and `team/penaltykill` reports, since it counts PP goals with the goalie pulled);
+  luck meter (`lib/stats/luck.ts`: exact score distribution from regulation non-empty-net xG,
+  deserved = 2·P(W) + 1.5·P(tie), tie chances scaled by the season's actual/expected tie ratio,
+  prior 1.37; gauge neutral, verdict after 10 games); personality (`lib/stats/personality.ts`,
+  rules over league ranks, tuned on 2024-25 and 2025-26, hidden until 10 games and all teams have
+  played); how they score (`lib/stats/scoring.ts`). Our rush flag only catches ~1% of shots (the
+  play-by-play rarely logs the neutral-zone play before an entry), so rush isn't ranked.
 - No live in-game updates (would need a paid server); game pages for live games say they're a
   snapshot and link to NHL.com. Cost must stay at $0.
 
@@ -125,7 +139,8 @@ build. If Playwright's browser is missing: `npx playwright install chromium`.
   playoff odds), October 2026.
 - **Season In-Depth plan:** `docs/season-in-depth-plan.md`, four phases, stop for Josh's review
   after each. Phase 1 (colours, standings columns, hits/giveaways/takeaways, Players tabs, goalie
-  starts) built 3 Oct 2026.
+  starts) built 3 Oct 2026. Phase 2 (Season In-Depth page) built 3 Oct 2026; the Schedule tab
+  comes with Phase 4's remaining-schedule numbers.
 
 - Playoffs: games are stored, but pages are built around the regular season. Review before April.
 - Step 5 polish from the plan (accessibility pass, mobile check) is not finished.

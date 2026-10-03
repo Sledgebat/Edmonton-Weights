@@ -241,6 +241,11 @@ a {
   .share-chart .line-them path {
     stroke: var(--chart-them);
   }
+  .share-chart path.line-deserved,
+  .share-chart .line-deserved .recharts-line-curve,
+  .share-chart .line-deserved path {
+    stroke: var(--text-muted);
+  }
   .share-chart .dot-us,
   .share-chart .line-us .recharts-dot {
     fill: var(--chart-us);

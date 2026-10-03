@@ -602,6 +602,29 @@ export type TeamSummaryRow = z.infer<typeof TeamSummaryRow>;
 export const TeamSummary = z.object({ data: z.array(TeamSummaryRow), total: z.number().int().optional() });
 export type TeamSummary = z.infer<typeof TeamSummary>;
 
+/** The power-play report: opportunities and time per game, one row per team. */
+export const TeamPowerPlayRow = z.object({
+  teamId: z.number().int(),
+  gamesPlayed: z.number().int(),
+  ppOpportunities: z.number().int().nullable().optional(),
+  powerPlayGoalsFor: z.number().int().nullable().optional(),
+  shGoalsAgainst: z.number().int().nullable().optional(),
+  ppTimeOnIcePerGame: z.number().nullable().optional(),
+});
+export const TeamPowerPlay = z.object({ data: z.array(TeamPowerPlayRow) });
+export type TeamPowerPlay = z.infer<typeof TeamPowerPlay>;
+
+/** The penalty-kill report: times shorthanded, one row per team. */
+export const TeamPenaltyKillRow = z.object({
+  teamId: z.number().int(),
+  gamesPlayed: z.number().int(),
+  timesShorthanded: z.number().int().nullable().optional(),
+  ppGoalsAgainst: z.number().int().nullable().optional(),
+  shGoalsFor: z.number().int().nullable().optional(),
+});
+export const TeamPenaltyKill = z.object({ data: z.array(TeamPenaltyKillRow) });
+export type TeamPenaltyKill = z.infer<typeof TeamPenaltyKill>;
+
 // ---------------------------------------------------------------- shift charts (stats REST API)
 
 /** One shift: a player on the ice from startTime to endTime (mm:ss into the period). typeCode 517 = shift. */

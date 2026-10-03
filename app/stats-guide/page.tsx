@@ -8,6 +8,8 @@ import { CLUTCH } from "@/lib/stats/clutch";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 import { BAD_START_SV, QS_SMALL_SHOTS, QS_SMALL_SV, STOLEN_GSAX } from "@/lib/stats/goalies";
 import { MIN_P60_SECONDS, PHYSICAL_FROM_SEASON } from "@/lib/stats/skaters";
+import { FALLBACK, TYPES } from "@/lib/stats/personality";
+import { SMALL_SAMPLE_GAMES } from "@/lib/home";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
 
@@ -139,8 +141,78 @@ const TERMS: { id: string; term: string; short: string; body: React.ReactNode }[
         Vollman) is a start with a save % at or above the league&apos;s average that season, or at least {QS_SMALL_SV.toFixed(3).replace(/^0/, "")} on{" "}
         {QS_SMALL_SHOTS} shots or fewer; around 55–60% of starts is typical for a regular starter. A <strong>really bad start</strong> (RBS) is a save %
         below {BAD_START_SV.toFixed(3).replace(/^0/, "")}. A <strong>stolen game</strong> is a win where he saved {STOLEN_GSAX} or more goals above
-        expected that night: the team probably loses without him. A typical starter has a handful a season. <strong>HDSV%</strong> is save % on
+        expected that night, and at least as many as the winning margin (empty-net goals aside): the team probably loses without him. A blowout
+        he starred in doesn&apos;t count. A typical starter has a handful a season. <strong>HDSV%</strong> is save % on
         high-danger shots. Empty-net goals don&apos;t count against anyone.
+      </>
+    ),
+  },
+  {
+    id: "luck",
+    term: "Luck meter (points vs deserved)",
+    short: "How many points a team has banked compared with what its chances deserved.",
+    body: (
+      <>
+        For every game we take each unblocked shot in regulation and treat it as landing with a chance equal to its expected goals. Adding those up
+        shot by shot gives the exact chance of every final score (no simulation), and from that the chance of winning in regulation, going to overtime
+        tied, or losing. <strong>Deserved points</strong> = 2 × the chance of a regulation win + 1.5 × the chance of a tie (a tie gives each team a point
+        plus a coin flip for the extra one). Real games end tied more often than independent shots suggest, so tie chances are scaled up to match how
+        often games actually go to overtime that season. The gauge shows points banked minus points deserved: right of centre is lucky, left is
+        unlucky, and it&apos;s grey on purpose, because being lucky isn&apos;t the same as playing well. Empty-net shots and overtime are left out, and
+        it ignores score effects (a team protecting a lead gives up more chances than usual). The verdict appears after {SMALL_SAMPLE_GAMES} games and
+        uses <a href="#pdo" className="underline">PDO</a> to say whether things should even out.
+      </>
+    ),
+  },
+  {
+    id: "personality",
+    term: "Team personality",
+    short: "A one-line label for how a team plays, from where it ranks in the league.",
+    body: (
+      <>
+        Each label is a couple of conditions on league ranks, for example <strong>Run-and-gun</strong>: top 10 in 5-on-5 expected goals for per 60
+        and bottom 12 in expected goals against. The closer a team is to the top (or bottom) of each, the stronger the match, and the strongest match
+        wins; a second strong match is mentioned too. The labels: {TYPES.map((t) => t.label).join(", ")}, and {FALLBACK.label.toLowerCase()} when
+        nothing stands out. The three reasons underneath are the ranks behind it. Labels appear after {SMALL_SAMPLE_GAMES} games, once every team has
+        played. We tuned the thresholds on 2024-25 and 2025-26 so the 32 teams spread across them.
+      </>
+    ),
+  },
+  {
+    id: "situations",
+    term: "Records by situation, comebacks and blown leads",
+    short: "How a team does depending on the score: scoring first, leading after two, one-goal games.",
+    body: (
+      <>
+        We replay every game goal by goal. Records are wins-losses-OT/shootout losses; the league rank compares point % (points won out of points
+        available) in that situation. <strong>One-goal games</strong> are decided by one goal (shootouts included) or by two with an empty-net goal.
+        A <strong>comeback win</strong> is a win after trailing by two or more at any point; a <strong>blown lead</strong> is a loss (including in
+        overtime or a shootout) after leading by two or more. Shootout goals don&apos;t count as goals by period.
+      </>
+    ),
+  },
+  {
+    id: "special-teams",
+    term: "Special teams and discipline",
+    short: "Power plays, penalty kills, and penalties drawn and taken.",
+    body: (
+      <>
+        Power-play opportunities, times shorthanded and power-play and shorthanded goals come from the NHL&apos;s team reports (they count a
+        power-play goal scored with the goalie pulled for an extra attacker). Power-play time comes from the play-by-play, and penalties drawn and
+        taken from the players&apos; games. Most of these are per game so teams with games in hand compare fairly. Hits, blocks, giveaways and
+        takeaways are ranked by volume and shown without green or red: more hits isn&apos;t clearly better, and scorekeepers count them differently.
+      </>
+    ),
+  },
+  {
+    id: "how-they-score",
+    term: "How they score",
+    short: "Where a team's goals and expected goals come from, against the league average.",
+    body: (
+      <>
+        Every goal and unblocked shot is sorted three ways: where the chance came from (off the rush, a rebound, or everything else), shot type, and
+        strength. Bars compare the team&apos;s share of its own expected goals with the league&apos;s share. The NHL&apos;s play-by-play rarely
+        records the play just before a team carries the puck into the zone, so only the clearest rush chances are caught (about 1 shot in 100).
       </>
     ),
   },

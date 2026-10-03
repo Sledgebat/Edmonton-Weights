@@ -15,12 +15,15 @@ export const FOOTER_EXTRAS: NavItem[] = [
   { href: "/styleguide", label: "Style guide" },
 ];
 
+/** The Oilers' own Season In-Depth page belongs with Home; other teams' with Standings. */
+const isOilersInDepth = (pathname: string) => /^\/team\/EDM\/?$/.test(pathname);
+
 export function isActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/";
+  if (href === "/") return pathname === "/" || isOilersInDepth(pathname);
   // Player and game pages belong to Players and Games.
   if (href === "/players" && (pathname.startsWith("/player/") || pathname === "/roster")) return true;
   if (href === "/schedule" && pathname.startsWith("/game/")) return true;
   // Team scouting pages are reached from Standings.
-  if (href === "/standings" && pathname.startsWith("/team/")) return true;
+  if (href === "/standings" && pathname.startsWith("/team/")) return !isOilersInDepth(pathname);
   return pathname === href || pathname.startsWith(href + "/");
 }

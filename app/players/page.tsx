@@ -78,7 +78,7 @@ const GOALIE_COLUMNS: Column[] = [
   { key: "qs", label: "QS", title: "Quality starts: a league-average save % or better, or .885+ on 20 shots or fewer", format: "int" },
   { key: "qsPct", label: "QS%", title: "Share of starts that were quality starts", format: "pct1" },
   { key: "rbs", label: "RBS", title: "Really bad starts: save % below .850", format: "int", descFirst: false },
-  { key: "stolen", label: "Stolen", title: "Stolen games: wins where he saved 2 or more goals above expected", format: "int" },
+  { key: "stolen", label: "Stolen", title: "Stolen games: wins where he saved 2+ goals above expected, and at least the winning margin", format: "int" },
 ];
 
 function SeasonTables({ d }: { d: PlayersData }) {

@@ -476,7 +476,7 @@ export function LastGame({ d }: { d: HomeData }) {
 
 // ------------------------------------------------------------------ 3. stat tiles
 
-function TileCard({ t }: { t: Tile }) {
+export function TileCard({ t }: { t: Tile }) {
   return (
     <div className="card flex flex-col p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>

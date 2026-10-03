@@ -5,7 +5,9 @@
  *   Quality start    (Rob Vollman) a start with a save % at or above the league's average that
  *                    season, or at least .885 on 20 or fewer shots
  *   Really bad start a start with a save % below .850
- *   Stolen game      a win where the goalie saved 2 or more goals above expected in that game
+ *   Stolen game      a win where the goalie saved 2 or more goals above expected in that game,
+ *                    and at least as many as the winning margin (empty-net goals left out of
+ *                    the margin), so a blowout he starred in doesn't count
  *   HD save %        save % on high-danger shots on goal
  *
  * Empty-net goals don't count: they have no goalie.
@@ -24,6 +26,8 @@ export type GoalieGame = {
   teamId: number;
   started: boolean;
   won: boolean;
+  /** Final margin from his team's side, not counting its empty-net goals. */
+  margin: number;
   shots: number;
   goals: number;
   /** Goals saved above expected: expected goals on unblocked shots faced minus goals allowed. */
@@ -54,7 +58,7 @@ export function isBadStart(shots: number, goals: number): boolean {
   return shots > 0 && 1 - goals / shots < BAD_START_SV;
 }
 
-export const isStolen = (g: Pick<GoalieGame, "won" | "gsax">) => g.won && g.gsax >= STOLEN_GSAX;
+export const isStolen = (g: Pick<GoalieGame, "won" | "gsax" | "margin">) => g.won && g.gsax >= STOLEN_GSAX && g.gsax >= g.margin;
 
 /** Add each goalie's games up (per team, so a traded goalie has a row for each). */
 export function summariseStarts(games: GoalieGame[], leagueSv: number): GoalieStarts[] {
@@ -98,7 +102,9 @@ export function goalieGames(season: number, { teamId, gameType = 2 }: { teamId?:
          SUM(s.xg) - SUM(s.is_goal) gsax,
          SUM(s.high_danger = 1 AND s.type IN ('shot-on-goal', 'goal')) hdShots,
          SUM(s.high_danger = 1 AND s.is_goal = 1) hdGoals,
-         CASE WHEN g.home_id = s.opp_team_id THEN g.home_score > g.away_score ELSE g.away_score > g.home_score END won
+         CASE WHEN g.home_id = s.opp_team_id THEN g.home_score > g.away_score ELSE g.away_score > g.home_score END won,
+         CASE WHEN g.home_id = s.opp_team_id THEN g.home_score - g.away_score ELSE g.away_score - g.home_score END
+           - (SELECT COUNT(*) FROM shots e WHERE e.game_id = s.game_id AND e.team_id = s.opp_team_id AND e.is_goal = 1 AND e.strength = 'EN') margin
        FROM shots s JOIN stats_games g ON g.id = s.game_id
        WHERE s.season = ? AND s.game_type = ? AND s.goalie_id IS NOT NULL AND s.type != 'blocked-shot'${team}
        GROUP BY s.game_id, s.goalie_id, s.opp_team_id`,

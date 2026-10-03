@@ -45,6 +45,9 @@ export type TeamMetrics = {
   xgfPct: number;
   hdcfPct: number;
   pdo: number;
+  /** 5-on-5 shooting % and save % (the two halves of PDO), as percentages. */
+  sh5Pct: number;
+  sv5Pct: number;
   xgf60: number;
   xga60: number;
   cf60: number;
@@ -66,6 +69,8 @@ export const METRICS: Record<MetricKey, { label: string; higherIsBetter: boolean
   sfPct: { label: "Shots on goal share", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 shots on goal." },
   xgfPct: { label: "Expected goals share (xGF%)", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 expected goals, which weights every shot by its chance of going in. The best single measure of who's controlling play." },
   hdcfPct: { label: "High-danger chance share", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 chances from the area right in front of the net, plus rebounds from the slot." },
+  sh5Pct: { label: "5-on-5 shooting %", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 shots on goal that go in. League average is around 8%; well above or below usually evens out." },
+  sv5Pct: { label: "5-on-5 save %", higherIsBetter: true, format: "pct", explain: "Share of 5-on-5 shots on goal the goalies stop. League average is around 92%." },
   pdo: { label: "PDO (luck gauge)", higherIsBetter: true, format: "pdo", explain: "5-on-5 shooting % plus save %. Around 100 is normal; well above usually means hot shooting or goaltending that won't last." },
   xgf60: { label: "Expected goals for per 60", higherIsBetter: true, format: "rate", explain: "5-on-5 expected goals created per 60 minutes." },
   xga60: { label: "Expected goals against per 60", higherIsBetter: false, format: "rate", explain: "5-on-5 expected goals allowed per 60 minutes. Lower is better." },
@@ -92,6 +97,8 @@ export function metricsOf(r: TeamRow): TeamMetrics {
     xgfPct: share(r.xgf5, r.xga5),
     hdcfPct: share(r.hdcf, r.hdca),
     pdo: (sh + sv) * 100,
+    sh5Pct: sh * 100,
+    sv5Pct: sv * 100,
     xgf60: per60(r.xgf5, r.toi5),
     xga60: per60(r.xga5, r.toi5),
     cf60: per60(r.cf, r.toi5),
@@ -383,4 +390,21 @@ export function goalieSeasons(goalieId: number): PlayerGoalieSeason[] {
     svPct: r.shotsFaced ? 1 - r.goalsAllowed / r.shotsFaced : 0,
     xSvPct: r.shotsFaced ? 1 - xgOnTarget / r.shotsFaced : 0,
   }));
+}
+
+/** A team's 5-on-5 expected-goals share at home and on the road (null with no games there). */
+export function homeRoadXgf(teamId: number, season: number, gameType = 2): { home: number | null; road: number | null } {
+  const rows = getDb()
+    .$client.prepare(
+      `SELECT CASE WHEN (team_id = @t AND is_home = 1) OR (opp_team_id = @t AND is_home = 0) THEN 'home' ELSE 'road' END venue,
+         SUM(CASE WHEN team_id = @t THEN xg ELSE 0 END) f, SUM(CASE WHEN opp_team_id = @t THEN xg ELSE 0 END) a
+       FROM shots WHERE season = @season AND game_type = @gameType AND strength = '5v5' AND (team_id = @t OR opp_team_id = @t)
+       GROUP BY venue`,
+    )
+    .all({ t: teamId, season, gameType }) as { venue: "home" | "road"; f: number; a: number }[];
+  const of = (v: "home" | "road") => {
+    const r = rows.find((x) => x.venue === v);
+    return r && r.f + r.a > 0 ? share(r.f, r.a) : null;
+  };
+  return { home: of("home"), road: of("road") };
 }

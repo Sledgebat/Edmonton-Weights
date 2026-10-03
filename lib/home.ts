@@ -358,7 +358,7 @@ export function leagueContext(season: number): Promise<LeagueContext> {
 }
 
 /** A team's basic and advanced stat tiles, with league ranks and last-10 trends. */
-export function statTiles(teamId: number, season: number, lg: LeagueContext): { basicTiles: Tile[]; advancedTiles: Tile[] } {
+export function statTiles(teamId: number, season: number, lg: LeagueContext): { basicTiles: Tile[]; advancedTiles: Tile[]; pdoTiles: Tile[] } {
   const { table, basics, summaryRows, teamGsax } = lg;
 
   // Last 10 games for trends.
@@ -461,9 +461,11 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
       explain: "Goals the team's goalies stopped beyond what an average goalie would, given the shots they faced. Above zero is good.",
     },
   ];
-  if (lg.ranksReady) return { basicTiles, advancedTiles };
+  // The two halves of PDO, for the Season In-Depth page.
+  const pdoTiles: Tile[] = [advTile("sh5Pct"), advTile("sv5Pct")];
+  if (lg.ranksReady) return { basicTiles, advancedTiles, pdoTiles };
   const noRank = (t: Tile): Tile => ({ ...t, rank: null });
-  return { basicTiles: basicTiles.map(noRank), advancedTiles: advancedTiles.map(noRank) };
+  return { basicTiles: basicTiles.map(noRank), advancedTiles: advancedTiles.map(noRank), pdoTiles: pdoTiles.map(noRank) };
 }
 
 export async function homeData(): Promise<HomeData> {

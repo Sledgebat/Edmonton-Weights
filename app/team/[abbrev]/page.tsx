@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { DataError } from "@/components/data/Module";
-import { GoalieList, Heat, RecentPerformance, SectionHeading, StatTiles } from "@/components/home/Sections";
+import { GoalieList, Heat, RecentPerformance, SectionHeading, StatTiles, TileCard } from "@/components/home/Sections";
+import { Comebacks, GoalieStarts, GoalsByPeriod, HowTheyScore, LuckMeter, MoreRecords, PersonalityCard, SituationRecords, SpecialTeams, StolenGames } from "@/components/team/InDepth";
+import { ViewTabs } from "@/components/ui/ViewTabs";
 import { LastUpdated } from "@/components/ui/LastUpdated";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
@@ -22,12 +24,19 @@ export async function generateStaticParams() {
   return (abbrevs.length ? abbrevs : [TEAM]).map((abbrev) => ({ abbrev }));
 }
 
+/** "Oilers Season In-Depth" for Edmonton, "[Team name] Season In-Depth" for everyone else. */
+function pageTitle(abbrev: string, name: string | null) {
+  return abbrev === TEAM ? "Oilers Season In-Depth" : `${name ?? abbrev} Season In-Depth`;
+}
+
 export async function generateMetadata({ params }: PageProps<"/team/[abbrev]">): Promise<Metadata> {
   const { abbrev } = await params;
-  if (abbrev === TEAM) return { title: "Oilers at a glance" };
   const standings = await load(nhl.standings);
   const row = standings.ok ? standings.data.standings.find((r) => teamOf(r) === abbrev) : undefined;
-  return { title: row ? `Scouting the ${txt(row.teamName)}` : "Team" };
+  return {
+    title: pageTitle(abbrev, row ? txt(row.teamName) : null),
+    description: `How the ${row ? txt(row.teamName) : abbrev} are really doing this season: records by situation, luck, special teams, how they score and their goaltending.`,
+  };
 }
 
 function RecordCards({ d }: { d: TeamPageData }) {
@@ -163,7 +172,14 @@ function Shooters({ d }: { d: TeamPageData }) {
   );
 }
 
-/** Team scouting page: how any NHL team is doing this season, and why. Edmonton's is "Oilers at a glance". */
+const TABS = [
+  { key: "overview", label: "Overview" },
+  { key: "situations", label: "Situations" },
+  { key: "scoring", label: "Scoring" },
+  { key: "goaltending", label: "Goaltending" },
+];
+
+/** Season In-Depth: how any NHL team is doing this season, and why, in tabs. */
 export default async function TeamPage({ params }: PageProps<"/team/[abbrev]">) {
   const { abbrev } = await params;
   if (!/^[A-Z]{3}$/.test(abbrev)) notFound();
@@ -171,40 +187,62 @@ export default async function TeamPage({ params }: PageProps<"/team/[abbrev]">) 
   const us = abbrev === TEAM;
   const side = us ? "us" : "them";
   const heatMax = d.heat ? Math.max(d.heat.for.max, d.heat.against.max) : 1;
+  const tilesNote = `${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`;
 
-  return (
-    <div className="mx-auto max-w-6xl space-y-12 px-4 py-6 sm:px-6 sm:py-10">
-      <header>
-        <Link href="/standings" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:underline">
-          <ArrowLeft size={14} aria-hidden /> Standings
-        </Link>
-        <div className="mt-3 flex items-center gap-4">
-          <TeamLogo abbrev={abbrev} size={64} />
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">{us ? "Oilers at a glance" : "Team scouting"}</p>
-            <h1 className="display-hero mt-1 text-5xl sm:text-6xl">{d.name}</h1>
-            <p className="mt-1 text-sm text-fg-muted">
-              {d.row ? `${d.row.divisionName} Division · ` : ""}
-              {seasonLabel(d.season)} regular season
-            </p>
-          </div>
-        </div>
-        {d.seasonNote && <p className="mt-4 text-sm text-fg-muted">{d.seasonNote}</p>}
-      </header>
-
+  const overview = (
+    <div className="space-y-10">
       <section aria-labelledby="record">
         <SectionHeading id="record" title="Record" />
         <RecordCards d={d} />
+        <MoreRecords d={d} />
         {d.standings.ok && <LastUpdated at={d.standings.meta.fetchedAt} stale={d.standings.meta.stale} className="mt-2 block text-right" />}
       </section>
 
+      <div className="grid items-start gap-4 lg:grid-cols-[2fr_3fr]">
+        <PersonalityCard d={d} />
+        <LuckMeter d={d} />
+      </div>
+
       <section aria-labelledby="tiles">
-        <SectionHeading id="tiles" title="Team stats" note={`${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`} />
+        <SectionHeading id="tiles" title="Team stats" note={tilesNote} />
         {d.ranksNote && d.advancedTiles.length > 0 && <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.ranksNote}</p>}
-        {d.advancedTiles.length ? <StatTiles d={d} /> : <p className="text-sm text-fg-muted">No games stored for this team yet this season.</p>}
+        {d.advancedTiles.length ? (
+          <div className="space-y-5">
+            <StatTiles d={d} />
+            <div>
+              <h3 className="mb-2 text-sm font-semibold uppercase tracking-widest text-fg-muted">The two halves of PDO</h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {d.pdoTiles.map((t) => (
+                  <TileCard key={t.key} t={t} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-fg-muted">No games stored for this team yet this season.</p>
+        )}
         {d.updated.stats && <LastUpdated at={d.updated.stats} className="mt-2 block text-right" />}
       </section>
 
+      <section aria-labelledby="recent">
+        <SectionHeading id="recent" title="Recent form" note="Last 10 games, oldest first" />
+        <RecentPerformance d={d} team={d.shortName} side={side} hasGamePage={(g) => us || g.opponent === TEAM} />
+      </section>
+    </div>
+  );
+
+  const situations = (
+    <div className="space-y-4">
+      <SituationRecords d={d} />
+      <Comebacks d={d} />
+      <GoalsByPeriod d={d} />
+      <SpecialTeams d={d} />
+    </div>
+  );
+
+  const scoring = (
+    <div className="space-y-10">
+      <HowTheyScore d={d} />
       {d.heat && (
         <section aria-labelledby="heat">
           <SectionHeading id="heat" title="Where the chances come from" />
@@ -220,23 +258,61 @@ export default async function TeamPage({ params }: PageProps<"/team/[abbrev]">) 
           </div>
         </section>
       )}
-
-      <section aria-labelledby="recent">
-        <SectionHeading id="recent" title="Recent form" note="Last 10 games, oldest first" />
-        <RecentPerformance d={d} team={d.shortName} side={side} hasGamePage={(g) => us || g.opponent === TEAM} />
-      </section>
-
       <section aria-labelledby="shooters">
         <SectionHeading id="shooters" title="Most dangerous shooters" note={`${seasonLabel(d.season)} · top ${d.shooters.length || 10} by individual expected goals (ixG), all situations`} />
         <Shooters d={d} />
       </section>
+    </div>
+  );
 
-      <section aria-labelledby="goalies">
-        <SectionHeading id="goalies" title="Goalies" note={`${seasonLabel(d.season)} · everyone on the roster`} />
-        <div className="max-w-xl">
+  const goaltending = (
+    <div className="space-y-4">
+      <section aria-labelledby="goalies" className="card p-4 sm:p-5">
+        <h3 id="goalies" className="display text-2xl">
+          Goalies
+        </h3>
+        <p className="mt-0.5 text-xs text-fg-muted">{seasonLabel(d.season)} · everyone on the roster</p>
+        <div className="mt-3 max-w-xl">
           <GoalieList goalies={d.goalies} team={d.shortName} />
         </div>
       </section>
+      <GoalieStarts d={d} />
+      <StolenGames d={d} />
+    </div>
+  );
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8 px-4 py-6 sm:px-6 sm:py-10">
+      <header>
+        <Link href="/standings" className="inline-flex items-center gap-1 text-sm text-fg-muted hover:underline">
+          <ArrowLeft size={14} aria-hidden /> Standings
+        </Link>
+        <div className="mt-3 flex items-center gap-4">
+          <TeamLogo abbrev={abbrev} size={64} />
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-accent-ink">Season In-Depth</p>
+            <h1 className="display-hero mt-1 text-5xl sm:text-6xl">{d.name}</h1>
+            <p className="mt-1 text-sm text-fg-muted">
+              {d.row ? `${d.row.divisionName} Division · ` : ""}
+              {seasonLabel(d.season)} regular season
+            </p>
+          </div>
+        </div>
+        {d.seasonNote && <p className="mt-4 text-sm text-fg-muted">{d.seasonNote}</p>}
+      </header>
+
+      <ViewTabs
+        param="tab"
+        label="Season In-Depth sections"
+        defaultKey="overview"
+        options={TABS}
+        panels={{
+          overview: <div className="mt-6">{overview}</div>,
+          situations: <div className="mt-6">{situations}</div>,
+          scoring: <div className="mt-6">{scoring}</div>,
+          goaltending: <div className="mt-6">{goaltending}</div>,
+        }}
+      />
     </div>
   );
 }

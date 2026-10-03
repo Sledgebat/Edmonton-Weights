@@ -10,6 +10,8 @@ import {
   ClubSchedule,
   EdgePlayer,
   EdgeTeam,
+  TeamPenaltyKill,
+  TeamPowerPlay,
   TeamSummary,
   ClubStats,
   GameLanding,
@@ -145,6 +147,18 @@ export const RESOURCES: Resource[] = [
     label: "Team summary",
     pattern: /^\/stats\/rest\/en\/team\/summary/,
     schema: TeamSummary,
+    ttl: () => 1 * HOUR,
+  },
+  {
+    label: "Team power play",
+    pattern: /^\/stats\/rest\/en\/team\/powerplay/,
+    schema: TeamPowerPlay,
+    ttl: () => 1 * HOUR,
+  },
+  {
+    label: "Team penalty kill",
+    pattern: /^\/stats\/rest\/en\/team\/penaltykill/,
+    schema: TeamPenaltyKill,
     ttl: () => 1 * HOUR,
   },
   {

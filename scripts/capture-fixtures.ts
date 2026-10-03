@@ -190,6 +190,8 @@ async function main() {
   //    for the Oilers, their next opponent, two stars and the starting goalie.
   await capture("stats", "Team summary (all teams)", endpoints.teamSummary(currentSeason));
   await capture("stats", "Team summary (last season)", endpoints.teamSummary(previousSeason(currentSeason)));
+  await capture("stats", "Team power play (all teams)", endpoints.teamPowerPlay(currentSeason));
+  await capture("stats", "Team penalty kill (all teams)", endpoints.teamPenaltyKill(currentSeason));
   await capture("stats", "Club stats (last season)", endpoints.clubStatsSeason(previousSeason(currentSeason)));
   await capture("edge", "EDGE team: Oilers", endpoints.edgeTeam(TEAM_ID));
   if (next) {

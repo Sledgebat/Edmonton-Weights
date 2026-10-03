@@ -23,14 +23,16 @@ describe("quality starts", () => {
     expect(isBadStart(20, 3)).toBe(false); // .850
   });
 
-  it("a stolen game is a win with 2+ goals saved above expected", () => {
-    expect(isStolen({ won: true, gsax: 2.4 })).toBe(true);
-    expect(isStolen({ won: true, gsax: 1.9 })).toBe(false);
-    expect(isStolen({ won: false, gsax: 3.5 })).toBe(false);
+  it("a stolen game is a win with 2+ goals saved above expected, and at least the winning margin", () => {
+    expect(isStolen({ won: true, gsax: 2.4, margin: 1 })).toBe(true);
+    expect(isStolen({ won: true, gsax: 1.9, margin: 1 })).toBe(false);
+    expect(isStolen({ won: false, gsax: 3.5, margin: -1 })).toBe(false);
+    // A 6-0 win isn't stolen, however good the goalie was.
+    expect(isStolen({ won: true, gsax: 3.4, margin: 6 })).toBe(false);
   });
 
   it("adds up starts per goalie and team; relief appearances aren't starts", () => {
-    const g = (over: Partial<GoalieGame>): GoalieGame => ({ gameId: 1, goalieId: 30, teamId: 22, started: true, won: true, shots: 30, goals: 2, gsax: 0, hdShots: 5, hdGoals: 1, ...over });
+    const g = (over: Partial<GoalieGame>): GoalieGame => ({ gameId: 1, goalieId: 30, teamId: 22, started: true, won: true, margin: 1, shots: 30, goals: 2, gsax: 0, hdShots: 5, hdGoals: 1, ...over });
     const rows = summariseStarts(
       [
         g({ gameId: 1 }),

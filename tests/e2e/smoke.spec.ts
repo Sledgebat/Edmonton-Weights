@@ -122,11 +122,29 @@ test("shooting vs career: home box links to the full list, and picking a player 
 });
 
 test.describe("pages", () => {
-  test("standings team names open that team's scouting page", async ({ page }) => {
+  test("standings team names open that team's Season In-Depth page", async ({ page }) => {
     await page.goto("/standings");
     await page.locator('tr[aria-current="true"] a').first().click();
     await expect(page).toHaveURL(/\/team\/EDM\/?$/);
-    await expect(page.getByText("Oilers at a glance").first()).toBeVisible();
+    await expect(page).toHaveTitle(/Oilers Season In-Depth/);
+    await expect(page.getByText("Season In-Depth").first()).toBeVisible();
+  });
+
+  test("Season In-Depth tabs: overview, situations, scoring, goaltending", async ({ page }) => {
+    await page.goto("/team/EDM");
+    await expect(page.getByRole("heading", { name: "Luck meter" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Team personality" })).toBeVisible();
+    await page.getByRole("button", { name: "Situations", exact: true }).click();
+    await expect(page).toHaveURL(/tab=situations/);
+    await expect(page.getByRole("heading", { name: "Records by situation" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Special teams and discipline" })).toBeVisible();
+    await page.getByRole("button", { name: "Scoring", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "How they score" })).toBeVisible();
+    await page.getByRole("button", { name: "Goaltending", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Stolen games" })).toBeVisible();
+    // Another team gets the same page under its own name.
+    await page.goto("/team/VAN");
+    await expect(page).toHaveTitle(/Vancouver Canucks Season In-Depth/);
   });
 
   test("standings highlight the Oilers and draw the wild card line", async ({ page }) => {
