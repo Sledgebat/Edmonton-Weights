@@ -4,6 +4,7 @@ import type { Loaded } from "@/lib/load";
 import type { EdgeGoalie, EdgeSkater } from "@/lib/nhl/schemas";
 import { seasonShort } from "@/lib/oilers";
 import type { PlayerGoalieSeason, PlayerShootingSeason } from "@/lib/stats/team";
+import { signedTone } from "@/lib/tone";
 
 type Pct = { value?: number | null; imperial?: number | null; percentile?: number | null; leagueAvg?: unknown } | undefined;
 
@@ -156,7 +157,7 @@ export function SkaterModel({ rows }: { rows: PlayerShootingSeason[] }) {
                   </th>
                   <td className="numeral px-1 text-right">{r.goals}</td>
                   <td className="numeral px-1 text-right">{r.ixg.toFixed(2)}</td>
-                  <td className={`numeral px-1 text-right ${Math.abs(diff) < 0.005 ? "" : diff > 0 ? "text-win" : "text-loss"}`}>
+                  <td className={`numeral px-1 text-right ${signedTone(diff, 2)}`}>
                     {diff > 0 ? "+" : ""}
                     {diff.toFixed(2)}
                   </td>
@@ -205,7 +206,7 @@ export function GoalieModel({ rows }: { rows: PlayerGoalieSeason[] }) {
                 <td className="numeral px-1 text-right">{r.shotsFaced}</td>
                 <td className="numeral px-1 text-right">{r.svPct.toFixed(3).replace(/^0/, "")}</td>
                 <td className="numeral px-1 text-right">{r.xSvPct.toFixed(3).replace(/^0/, "")}</td>
-                <td className={`numeral px-1 text-right ${r.gsax >= 0 ? "text-win" : "text-loss"}`}>
+                <td className={`numeral px-1 text-right ${signedTone(r.gsax, 2)}`}>
                   {r.gsax > 0 ? "+" : ""}
                   {r.gsax.toFixed(2)}
                 </td>

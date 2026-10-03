@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Module } from "@/components/data/Module";
 import type { Linemate, OnIce } from "@/lib/stats/onice";
+import { signedTone } from "@/lib/tone";
 
 const pct = (v: number | null) => (v === null ? "—" : `${v.toFixed(1)}%`);
 const rel = (v: number | null) => (v === null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(1)}`);
 const minutes = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-const tone = (v: number | null) => (v === null || Math.abs(v) < 0.05 ? "" : v > 0 ? "text-win" : "text-loss");
+const tone = (v: number | null) => signedTone(v, 1);
 
 /** 5-on-5 results with the player on the ice, against the team's results without him. */
 export function OnIceImpact({ o, avgRating, season }: { o: OnIce | null; avgRating: number | null; season: string }) {

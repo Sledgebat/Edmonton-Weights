@@ -293,9 +293,3 @@ export function formatOdds(odds: number): string {
   if (p > 99) return ">99%";
   return `${p}%`;
 }
-
-/** Green above 50%, red below, plain at exactly even (judged on the number shown). */
-export function oddsTone(odds: number): string {
-  const p = Math.round(odds * 100);
-  return p > 50 ? "text-win" : p < 50 ? "text-loss" : "";
-}

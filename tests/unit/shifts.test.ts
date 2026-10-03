@@ -6,7 +6,7 @@ import { PlayByPlay, ShiftCharts } from "@/lib/nhl/schemas";
 import { extractShots } from "@/lib/stats/extract";
 import { regularUnits, type Unit } from "@/lib/stats/onice";
 import { RATING_ANCHORS, calibrate, rate } from "@/lib/stats/ratings";
-import { onIceGame, shiftIntervals, skaterGameScore } from "@/lib/stats/shifts";
+import { onIceGame, physicalCounts, shiftIntervals, skaterGameScore } from "@/lib/stats/shifts";
 import { scoreShots } from "@/lib/stats/xg";
 
 const fixtures = path.resolve(__dirname, "../../fixtures");
@@ -19,7 +19,7 @@ const box = json(`v1/gamecenter/${GAME}/boxscore.json`);
 const shots = scoreShots(extractShots(pbp));
 const { players, units } = onIceGame(pbp, shifts, shots);
 
-type BoxLine = { playerId: number; toi: string; sog?: number; blockedShots?: number };
+type BoxLine = { playerId: number; toi: string; sog?: number; blockedShots?: number; hits?: number; giveaways?: number; takeaways?: number };
 const official = new Map<number, BoxLine>();
 for (const side of ["homeTeam", "awayTeam"])
   for (const group of ["forwards", "defense", "goalies"]) for (const p of (box.playerByGameStats?.[side]?.[group] ?? []) as BoxLine[]) official.set(p.playerId, p);
@@ -48,6 +48,21 @@ describe("shift charts", () => {
       expect(p.sog).toBe(o.sog ?? 0);
       expect(p.blk).toBe(o.blockedShots ?? 0);
     }
+  });
+
+  it("hits, giveaways and takeaways match the box score", () => {
+    const counts = physicalCounts(pbp);
+    let total = 0;
+    for (const p of players.filter((x) => x.pos !== "G")) {
+      const o = official.get(p.playerId)!;
+      expect(p.hits, `hits ${p.playerId}`).toBe(o.hits ?? 0);
+      expect(p.giveaways, `giveaways ${p.playerId}`).toBe(o.giveaways ?? 0);
+      expect(p.takeaways, `takeaways ${p.playerId}`).toBe(o.takeaways ?? 0);
+      // The catch-up for older games counts the same way.
+      expect(counts.get(p.playerId) ?? { hits: 0, giveaways: 0, takeaways: 0 }).toEqual({ hits: p.hits, giveaways: p.giveaways, takeaways: p.takeaways });
+      total += p.hits;
+    }
+    expect(total).toBeGreaterThan(10);
   });
 
   it("credits every 5-on-5 attempt to the skaters on the ice for both sides", () => {

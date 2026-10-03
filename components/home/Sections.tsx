@@ -12,7 +12,8 @@ import { Countdown } from "@/components/ui/Countdown";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { SMALL_SAMPLE_GAMES, type GoalieCard, type HeatMap, type HomeData, type TapeRow, type Tile } from "@/lib/home";
 import type { Shooter } from "@/lib/shooting";
-import { formatOdds, oddsTone } from "@/lib/stats/odds";
+import { formatOdds } from "@/lib/stats/odds";
+import { RANKS_PENDING_NOTE, oddsTone, ratingTone, signedTone, streakTone, trendTone } from "@/lib/tone";
 import { txt } from "@/lib/nhl";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 import { edmontonDate } from "@/lib/nhl/resources";
@@ -38,7 +39,7 @@ function TrendTag({ trend, recent }: { trend: Tile["trend"]; recent: string | nu
   const word = trend === "better" ? "Better" : trend === "worse" ? "Worse" : "Steady";
   return (
     <span
-      className={`inline-flex items-center gap-1 text-xs font-semibold ${trend === "better" ? "text-win" : trend === "worse" ? "text-loss" : "text-fg-muted"}`}
+      className={`inline-flex items-center gap-1 text-xs font-semibold ${trendTone(trend) || "text-fg-muted"}`}
     >
       <Icon size={14} aria-hidden />
       {word} lately · last 10: {recent}
@@ -56,13 +57,11 @@ export function Snapshot({ d }: { d: HomeData }) {
   const p = d.picture;
   if (!d.standings.ok) return <DataError what="the standings" error={d.standings.error} />;
   if (!e || !p) return <p className="text-fg-muted">The Oilers aren&apos;t in the current standings.</p>;
-  // Streak: green while winning, red on a losing run (regulation or overtime).
-  const streakTone = e.streakCode === "W" ? "text-win" : e.streakCode === "L" || e.streakCode === "OT" ? "text-loss" : "";
   const items: [string, string, string?][] = [
     ["Record", `${e.wins}-${e.losses}-${e.otLosses}`],
     ["Points", String(e.points)],
     ["Division", `${ordinal(e.divisionSequence)} ${e.divisionName}`],
-    ["Streak", streakLabel(e) || "—", streakTone],
+    ["Streak", streakLabel(e) || "—", streakTone(e.streakCode)],
   ];
   return (
     <div className="grid gap-3 lg:grid-cols-[3fr_2fr]">
@@ -181,7 +180,11 @@ function TaleOfTheTape({ rows, oppAbbrev }: { rows: TapeRow[]; oppAbbrev: string
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-xs text-fg-muted">Longer bar = better league rank, so every row reads the same way (for goals against, fewer is better).</p>
+      <p className="mt-3 text-xs text-fg-muted">
+        {rows.some((r) => r.us.rank !== null || r.them.rank !== null)
+          ? "Longer bar = better league rank, so every row reads the same way (for goals against, fewer is better)."
+          : RANKS_PENDING_NOTE}
+      </p>
     </div>
   );
 }
@@ -231,8 +234,8 @@ export function GoalieList({ goalies, team }: { goalies: GoalieCard[]; team: str
                 </th>
                 <td className="numeral text-right">{g.gp}</td>
                 <td className="numeral text-right">{g.svPct === null ? "—" : g.svPct.toFixed(3).replace(/^0/, "")}</td>
-                <td className={`numeral text-right ${g.gsax === null ? "" : g.gsax >= 0 ? "text-win" : "text-loss"}`}>
-                  {g.gsax === null ? "—" : `${g.gsax >= 0 ? "+" : ""}${g.gsax.toFixed(1)}`}
+                <td className={`numeral text-right ${signedTone(g.gsax, 1)}`}>
+                  {g.gsax === null ? "—" : `${g.gsax > 0 ? "+" : ""}${g.gsax.toFixed(1)}`}
                 </td>
               </tr>
             ))}
@@ -728,7 +731,7 @@ export function Leaders({ d }: { d: HomeData }) {
           id: p.id,
           name: p.name,
           value: p.avgRating.toFixed(1),
-          tone: p.avgRating.toFixed(1) === "5.0" ? "" : p.avgRating > 5 ? "text-win" : "text-loss",
+          tone: ratingTone(p.avgRating),
           detail: `(${p.gp} GP)`,
         }))}
         empty="Appears once games have shift data."
@@ -843,7 +846,7 @@ function ShooterLine({ s }: { s: Shooter }) {
           {s.pct === null ? "—" : `${s.pct.toFixed(1)}%`} this season · {s.careerPct?.toFixed(1)}% career
         </p>
       </div>
-      <span className={`numeral whitespace-nowrap text-xl ${v > 0 ? "text-win" : "text-loss"}`} title="Goals above or below what his career shooting % would give on the same shots">
+      <span className={`numeral whitespace-nowrap text-xl ${signedTone(v, 1)}`} title="Goals above or below what his career shooting % would give on the same shots">
         {v > 0 ? "+" : ""}
         {v.toFixed(1)}
       </span>
@@ -990,5 +993,11 @@ export function EdgeSection({ d }: { d: HomeData }) {
       note: "Lower is better; rank 1 = least time defending",
     },
   ];
-  return <EdgeTiles tiles={tiles} />;
+  if (!d.ranksNote) return <EdgeTiles tiles={tiles} />;
+  return (
+    <>
+      <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.ranksNote}</p>
+      <EdgeTiles tiles={tiles.map((t) => ({ ...t, rank: null }))} />
+    </>
+  );
 }

@@ -9,7 +9,8 @@ import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
 import { conferenceTable, divisionTable, formatGameDate, pointPct, signed, streakLabel, teamOf, wildCardTable } from "@/lib/oilers";
-import { formatOdds, latestOdds, oddsHistory, oddsTone } from "@/lib/stats/odds";
+import { formatOdds, latestOdds, oddsHistory } from "@/lib/stats/odds";
+import { fillOf, oddsTone, signedTone, streakTone } from "@/lib/tone";
 import { TEAM_STAT_COLUMNS, teamStatRows } from "@/lib/teamstats";
 
 export const metadata: Metadata = { title: "Standings" };
@@ -46,7 +47,7 @@ function StandingsTable({
   return (
     <div className="card overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="tabular w-full min-w-[34rem] text-sm">
+        <table className="tabular w-full min-w-[50rem] text-sm">
           <caption className="display bg-header px-3 py-2 text-left text-xl text-header-fg">{title}</caption>
           <thead className="bg-sunken text-[11px] uppercase tracking-wider text-fg-muted">
             <tr>
@@ -75,7 +76,22 @@ function StandingsTable({
                 <abbr title="Points percentage">P%</abbr>
               </th>
               <th scope="col" className={th}>
+                <abbr title="Regulation wins (the first tiebreaker)">RW</abbr>
+              </th>
+              <th scope="col" className={th}>
+                <abbr title="Goals for">GF</abbr>
+              </th>
+              <th scope="col" className={th}>
+                <abbr title="Goals against">GA</abbr>
+              </th>
+              <th scope="col" className={th}>
                 <abbr title="Goal differential">GD</abbr>
+              </th>
+              <th scope="col" className={th}>
+                <abbr title="Home record: wins, losses, overtime losses">Home</abbr>
+              </th>
+              <th scope="col" className={th}>
+                <abbr title="Road record: wins, losses, overtime losses">Road</abbr>
               </th>
               <th scope="col" className={th}>
                 <abbr title="Last 10 games">L10</abbr>
@@ -111,14 +127,23 @@ function StandingsTable({
                   <td className="hidden px-2 py-2 text-right sm:table-cell">{r.otLosses}</td>
                   <td className="numeral px-2 py-2 text-right">{r.points}</td>
                   <td className="px-2 py-2 text-right">{pointPct(r)}</td>
-                  <td className="px-2 py-2 text-right">{signed(r.goalDifferential)}</td>
+                  <td className="px-2 py-2 text-right">{r.regulationWins}</td>
+                  <td className="px-2 py-2 text-right">{r.goalFor}</td>
+                  <td className="px-2 py-2 text-right">{r.goalAgainst}</td>
+                  <td className={`px-2 py-2 text-right ${signedTone(r.goalDifferential)}`}>{signed(r.goalDifferential)}</td>
+                  <td className="whitespace-nowrap px-2 py-2 text-right">
+                    {r.homeWins}-{r.homeLosses}-{r.homeOtLosses}
+                  </td>
+                  <td className="whitespace-nowrap px-2 py-2 text-right">
+                    {r.roadWins}-{r.roadLosses}-{r.roadOtLosses}
+                  </td>
                   <td className="whitespace-nowrap px-2 py-2 text-right">
                     <span>
                       {r.l10Wins}-{r.l10Losses}-{r.l10OtLosses}
                     </span>
                   </td>
                   <td className="px-2 py-2 pr-3 text-right">
-                    <span>{streakLabel(r) || "—"}</span>
+                    <span className={streakTone(r.streakCode)}>{streakLabel(r) || "—"}</span>
                   </td>
                 </tr>
               );
@@ -182,7 +207,10 @@ function StandingsView({ view, rows }: { view: View; rows: StandingsRow[] }) {
           </section>
         );
       })}
-      <p className="text-xs text-fg-muted">Ties are broken by the NHL&apos;s own ordering. Tap a team for its scouting page.</p>
+      <p className="text-xs text-fg-muted">
+        Ties are broken by the NHL&apos;s own ordering. RW = regulation wins, the first tiebreaker. On a phone, swipe the table sideways for more
+        columns. Tap a team for its scouting page.
+      </p>
     </div>
   );
 }
@@ -280,7 +308,7 @@ function PlayoffRace({ rows }: { rows: StandingsRow[] }) {
                           {o ? (
                             <span className="inline-flex items-center justify-end gap-2">
                               <span className="relative hidden h-2 w-20 overflow-hidden rounded-full bg-sunken sm:inline-block" aria-hidden>
-                                <span className={`absolute inset-y-0 left-0 rounded-full ${oddsTone(o.odds) === "text-win" ? "bg-win" : oddsTone(o.odds) === "text-loss" ? "bg-loss" : "bg-line-strong"}`} style={{ width: `${o.odds * 100}%` }} />
+                                <span className={`absolute inset-y-0 left-0 rounded-full ${fillOf(oddsTone(o.odds))}`} style={{ width: `${o.odds * 100}%` }} />
                               </span>
                               <span className={`numeral w-12 text-base ${oddsTone(o.odds)}`}>{formatOdds(o.odds)}</span>
                             </span>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOME_EDGE, OT_SHARE, formatOdds, homeWinChance, oddsTone, seasonLength, simulate, strengthOf, type Fixture, type OddsTeam } from "@/lib/stats/odds";
+import { HOME_EDGE, OT_SHARE, formatOdds, homeWinChance, seasonLength, simulate, strengthOf, type Fixture, type OddsTeam } from "@/lib/stats/odds";
 
 /** A 32-team league: two conferences of two divisions, every team playing `games` games (circle method). */
 function league(games = 84, played = 0): { teams: OddsTeam[]; fixtures: Fixture[] } {
@@ -90,11 +90,5 @@ describe("showing odds", () => {
     expect(formatOdds(0.62)).toBe("62%");
     expect(formatOdds(0.996)).toBe(">99%");
     expect(formatOdds(1)).toBe(">99%");
-  });
-
-  it("is green above 50%, red below, plain at even", () => {
-    expect(oddsTone(0.62)).toBe("text-win");
-    expect(oddsTone(0.38)).toBe("text-loss");
-    expect(oddsTone(0.502)).toBe(""); // shows as 50%
   });
 });

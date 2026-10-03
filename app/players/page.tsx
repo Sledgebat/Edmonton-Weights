@@ -8,27 +8,64 @@ import { linesData, type LinesData, type NamedUnit } from "@/lib/lines";
 import { seasonLabel } from "@/lib/nhl/endpoints";
 import { formatGameDate } from "@/lib/oilers";
 import { playersData, type PlayersData } from "@/lib/players";
+import { PHYSICAL_FROM_SEASON } from "@/lib/stats/skaters";
 
 export const metadata: Metadata = { title: "Players" };
 
-const SKATER_COLUMNS: Column[] = [
-  { key: "gp", label: "GP", title: "Games played", format: "int" },
-  { key: "g", label: "G", title: "Goals", format: "int" },
-  { key: "a", label: "A", title: "Assists", format: "int" },
-  { key: "p", label: "P", title: "Points", format: "int" },
-  { key: "pm", label: "+/-", title: "Plus-minus", format: "signed", tone: true },
-  { key: "sog", label: "SOG", title: "Shots on goal", format: "int" },
-  { key: "shPct", label: "S%", title: "Shooting percentage", format: "pct1" },
-  { key: "toi", label: "TOI", title: "Average time on ice per game", format: "toi" },
-  { key: "ixg", label: "ixG", title: "Individual expected goals: the quality of the player's own shots", format: "dec2" },
-  { key: "hd", label: "HD", title: "High-danger chances taken", format: "int" },
-  { key: "gax", label: "G−ixG", title: "Goals minus individual expected goals: above zero means finishing better than expected", format: "signed2", tone: true },
-  { key: "oixgf", label: "On-ice xGF%", title: "5-on-5 expected-goals share while he's on the ice", format: "pct1" },
-  { key: "relxgf", label: "Rel xGF%", title: "On-ice xGF% minus the team's xGF% with him off the ice, in the same games: above zero means the team does better with him on", format: "signed1", tone: true },
+const GP: Column = { key: "gp", label: "GP", title: "Games played", format: "int" };
+
+/** The skater table's three views; name and GP stay in every one. */
+const SKATER_GROUPS: { key: string; label: string; columns: Column[]; initialSort: string }[] = [
+  {
+    key: "scoring",
+    label: "Scoring",
+    initialSort: "p",
+    columns: [
+      GP,
+      { key: "g", label: "G", title: "Goals", format: "int" },
+      { key: "a", label: "A", title: "Assists", format: "int" },
+      { key: "p", label: "P", title: "Points", format: "int" },
+      { key: "p1", label: "P1", title: "Primary points: goals plus first assists", format: "int" },
+      { key: "pm", label: "+/-", title: "Plus-minus", format: "signed", tone: true },
+      { key: "sog", label: "SOG", title: "Shots on goal", format: "int" },
+      { key: "shPct", label: "S%", title: "Shooting percentage", format: "pct1" },
+      { key: "toi", label: "TOI", title: "Average time on ice per game", format: "toi" },
+    ],
+  },
+  {
+    key: "advanced",
+    label: "Advanced",
+    initialSort: "ixg",
+    columns: [
+      GP,
+      { key: "p60", label: "5v5 P/60", title: "Points per 60 minutes at 5 on 5 (needs 50 minutes at 5 on 5)", format: "dec2" },
+      { key: "ixg", label: "ixG", title: "Individual expected goals: the quality of the player's own shots", format: "dec2" },
+      { key: "hd", label: "HD", title: "High-danger chances taken", format: "int" },
+      { key: "gax", label: "G−ixG", title: "Goals minus individual expected goals: above zero means finishing better than expected", format: "signed2", tone: true },
+      { key: "oixgf", label: "On-ice xGF%", title: "5-on-5 expected-goals share while he's on the ice", format: "pct1" },
+      { key: "relxgf", label: "Rel xGF%", title: "On-ice xGF% minus the team's xGF% with him off the ice, in the same games: above zero means the team does better with him on", format: "signed1", tone: true },
+    ],
+  },
+  {
+    key: "physical",
+    label: "Physical & discipline",
+    initialSort: "hits",
+    columns: [
+      GP,
+      { key: "foPct", label: "FO%", title: "Faceoffs won, centres only (hover for won and lost)", format: "pct1", titleKey: "foTitle" },
+      { key: "pd", label: "PD", title: "Penalties drawn", format: "int" },
+      { key: "pt", label: "PT", title: "Penalties taken", format: "int", descFirst: false },
+      { key: "pdiff", label: "+/- Pen", title: "Penalties drawn minus taken: above zero means more power plays for the Oilers", format: "signed", tone: true },
+      { key: "blk", label: "BLK", title: "Shots blocked", format: "int" },
+      { key: "hits", label: "HIT", title: "Hits thrown", format: "int" },
+      { key: "gv", label: "GV", title: "Giveaways", format: "int", descFirst: false },
+      { key: "tk", label: "TK", title: "Takeaways", format: "int" },
+    ],
+  },
 ];
 
 const GOALIE_COLUMNS: Column[] = [
-  { key: "gp", label: "GP", title: "Games played", format: "int" },
+  GP,
   { key: "w", label: "W", title: "Wins", format: "int" },
   { key: "l", label: "L", title: "Losses", format: "int" },
   { key: "otl", label: "OTL", title: "Overtime and shootout losses", format: "int" },
@@ -37,9 +74,15 @@ const GOALIE_COLUMNS: Column[] = [
   { key: "so", label: "SO", title: "Shutouts", format: "int" },
   { key: "xsv", label: "xSV%", title: "Expected save percentage, given the shots faced", format: "sv" },
   { key: "gsax", label: "GSAx", title: "Goals saved above expected", format: "signed2", tone: true },
+  { key: "hdsv", label: "HDSV%", title: "Save percentage on high-danger shots", format: "sv" },
+  { key: "qs", label: "QS", title: "Quality starts: a league-average save % or better, or .885+ on 20 shots or fewer", format: "int" },
+  { key: "qsPct", label: "QS%", title: "Share of starts that were quality starts", format: "pct1" },
+  { key: "rbs", label: "RBS", title: "Really bad starts: save % below .850", format: "int", descFirst: false },
+  { key: "stolen", label: "Stolen", title: "Stolen games: wins where he saved 2 or more goals above expected", format: "int" },
 ];
 
 function SeasonTables({ d }: { d: PlayersData }) {
+  const rows = d.skaters as unknown as TableRow[];
   return (
     <div className="mt-4 space-y-6">
       {d.note && <p className="text-sm text-fg-muted">{d.note}</p>}
@@ -48,19 +91,39 @@ function SeasonTables({ d }: { d: PlayersData }) {
       ) : (
         <>
           <Module title={`Skaters · ${seasonLabel(d.season)}`} meta={d.stats.meta}>
-            <SortableTable columns={SKATER_COLUMNS} rows={d.skaters as unknown as TableRow[]} initialSort="p" caption={`Oilers skaters, ${seasonLabel(d.season)}`} />
+            <ViewTabs
+              param="stat"
+              label="Skater stats"
+              defaultKey="scoring"
+              options={SKATER_GROUPS.map((g) => ({ key: g.key, label: g.label }))}
+              panels={Object.fromEntries(
+                SKATER_GROUPS.map((g) => [
+                  g.key,
+                  <div key={g.key} className="mt-3">
+                    <SortableTable columns={g.columns} rows={rows} initialSort={g.initialSort} caption={`Oilers skaters, ${g.label.toLowerCase()}, ${seasonLabel(d.season)}`} />
+                  </div>,
+                ]),
+              )}
+            />
             <p className="mt-3 text-xs text-fg-muted">
-              ixG, HD and G−ixG come from our expected-goals model, all situations. On-ice xGF% and Rel xGF% are 5 on 5, from the NHL&apos;s shift
-              charts.{" "}
-              {!d.hasAdvanced && "They fill in once games from this season are stored. "}
+              ixG, HD and G−ixG come from our expected-goals model, all situations. 5v5 P/60, on-ice xGF% and Rel xGF% are 5 on 5, from the NHL&apos;s
+              shift charts. Hits, giveaways and takeaways are counted by each arena&apos;s scorekeeper, so they vary a lot from rink to rink
+              {d.season < PHYSICAL_FROM_SEASON ? `; we only have them from ${seasonLabel(PHYSICAL_FROM_SEASON)}` : ""}.{" "}
+              {!d.hasAdvanced && "Our numbers fill in once games from this season are stored. "}
               <Link href="/stats-guide" className="underline">
                 What these mean
               </Link>
             </p>
           </Module>
           <Module title={`Goalies · ${seasonLabel(d.season)}`} meta={d.stats.meta}>
-            <SortableTable columns={GOALIE_COLUMNS} rows={d.goalies as unknown as TableRow[]} initialSort="gp" caption={`Oilers goalies, ${seasonLabel(d.season)}`} />
-            <p className="mt-3 text-xs text-fg-muted">xSV% and GSAx count only shots faced for the Oilers, from our expected-goals model.</p>
+            <SortableTable columns={GOALIE_COLUMNS} rows={d.goalies as unknown as TableRow[]} initialSort="gp" caption={`Oilers goalies, ${seasonLabel(d.season)}`} minWidth="52rem" />
+            <p className="mt-3 text-xs text-fg-muted">
+              xSV%, GSAx, HDSV%, quality starts, really bad starts and stolen games count only games for the Oilers, from our expected-goals model.
+              A goalie&apos;s start is the game where he faced the first shot.{" "}
+              <Link href="/stats-guide#goalie-starts" className="underline">
+                What these mean
+              </Link>
+            </p>
           </Module>
         </>
       )}

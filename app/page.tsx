@@ -39,7 +39,7 @@ export default async function Home() {
 
       <section aria-labelledby="tiles">
         <SectionHeading id="tiles" title="Team stats at a glance" note={`${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`} />
-        {d.seasonNote && <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.seasonNote}</p>}
+        {(d.seasonNote || d.ranksNote) && <p className="-mt-2 mb-3 text-sm text-fg-muted">{[d.seasonNote, d.ranksNote].filter(Boolean).join(" ")}</p>}
         <StatTiles d={d} />
         {d.updated.stats && <LastUpdated at={d.updated.stats} className="mt-2 block text-right" />}
       </section>

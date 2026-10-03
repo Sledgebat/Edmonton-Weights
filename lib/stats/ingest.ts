@@ -9,7 +9,7 @@ import { endpoints, isFinished } from "@/lib/nhl/endpoints";
 import { ClubSchedule, PlayByPlay, ShiftCharts, Standings, txt, type ScheduleGame, type Shift } from "@/lib/nhl/schemas";
 import { extractGoals, rosterNames } from "./clutch";
 import { extractShots, strengthTime } from "./extract";
-import { onIceGame } from "./shifts";
+import { onIceGame, physicalCounts } from "./shifts";
 import { scoreShots } from "./xg";
 
 export function isIngested(gameId: number): boolean {
@@ -236,9 +236,9 @@ export function storeShifts(pbp: PlayByPlay, shifts: Shift[]): boolean {
     tx.delete(schema.playerGames).where(eq(schema.playerGames.gameId, pbp.id)).run();
     tx.delete(schema.unitGames).where(eq(schema.unitGames.gameId, pbp.id)).run();
     for (const p of players) {
-      const { playerId, teamId, pos, toi, toi5, cf, ca, gf, ga, xgf, xga, goals, a1, a2, sog, blk, pd, pt, fow, fol, gsax, gameScore } = p;
+      const { playerId, teamId, pos, toi, toi5, cf, ca, gf, ga, xgf, xga, goals, a1, a2, sog, blk, pd, pt, fow, fol, hits, giveaways, takeaways, gsax, gameScore } = p;
       tx.insert(schema.playerGames)
-        .values({ ...base, playerId, teamId, pos, toi, toi5, cf, ca, gf, ga, xgf, xga, goals, a1, a2, sog, blk, pd, pt, fow, fol, gsax, gameScore })
+        .values({ ...base, playerId, teamId, pos, toi, toi5, cf, ca, gf, ga, xgf, xga, goals, a1, a2, sog, blk, pd, pt, fow, fol, hits, giveaways, takeaways, gsax, gameScore })
         .run();
     }
     // Groups together for a few seconds during a change are noise and would triple the table.
@@ -316,6 +316,62 @@ export async function ingestShiftsMissing(
   }
   await Promise.all(Array.from({ length: Math.min(concurrency, todo.length) }, worker));
   return { todo: todo.length, stored, unavailable, failed, remaining: todo.length - done };
+}
+
+// ------------------------------------------------------------------ hits, giveaways, takeaways
+
+/** Stored games in these seasons whose players don't have hits, giveaways and takeaways yet. */
+export function gamesNeedingPhysical(seasons: number[]): number[] {
+  return (
+    getDb()
+      .$client.prepare(
+        `SELECT DISTINCT game_id id FROM player_games
+         WHERE season IN (${seasons.map(Number).join(",") || "0"}) AND hits IS NULL
+         ORDER BY game_id DESC`,
+      )
+      .all() as { id: number }[]
+  ).map((r) => r.id);
+}
+
+/** Write one game's hits, giveaways and takeaways onto its stored player rows (0 for everyone else). */
+export function storePhysical(pbp: PlayByPlay) {
+  const counts = physicalCounts(pbp);
+  const db = getDb().$client;
+  const zero = db.prepare(`UPDATE player_games SET hits = 0, giveaways = 0, takeaways = 0 WHERE game_id = ?`);
+  const set = db.prepare(`UPDATE player_games SET hits = ?, giveaways = ?, takeaways = ? WHERE game_id = ? AND player_id = ?`);
+  db.transaction(() => {
+    zero.run(pbp.id);
+    for (const [playerId, c] of counts) set.run(c.hits, c.giveaways, c.takeaways, pbp.id, playerId);
+  })();
+}
+
+/**
+ * One-time catch-up: games whose shift data was stored before hits, giveaways and takeaways
+ * were counted get them from a fresh copy of their play-by-play. Stops after `budgetMs`.
+ */
+export async function ingestPhysicalMissing(
+  seasons: number[],
+  { concurrency = 3, delayMs = 200, budgetMs = 10 * 60_000 }: { concurrency?: number; delayMs?: number; budgetMs?: number } = {},
+) {
+  const todo = gamesNeedingPhysical(seasons);
+  const stopAt = Date.now() + budgetMs;
+  let done = 0;
+  const failed: { id: number; error: string }[] = [];
+  let next = 0;
+  async function worker() {
+    while (next < todo.length && Date.now() < stopAt) {
+      const id = todo[next++];
+      try {
+        storePhysical(await fetchFresh(endpoints.gamePlayByPlay(id), PlayByPlay));
+      } catch (err) {
+        failed.push({ id, error: err instanceof Error ? err.message : String(err) });
+      }
+      done++;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(concurrency, todo.length) }, worker));
+  return { todo: todo.length, stored: done - failed.length, failed, remaining: todo.length - done };
 }
 
 /** Counts for the status page. */

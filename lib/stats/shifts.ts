@@ -39,6 +39,10 @@ export type PlayerGame = {
   pt: number;
   fow: number;
   fol: number;
+  /** Hits thrown, giveaways and takeaways (arena scorekeepers' counts, which vary a lot). */
+  hits: number;
+  giveaways: number;
+  takeaways: number;
   /** Goalies only: goals saved above expected in this game. */
   gsax: number | null;
   gameScore: number;
@@ -75,6 +79,30 @@ export const GAME_SCORE = {
 
 /** Misconducts don't put a team shorthanded, so they don't count as penalties taken or drawn. */
 const NO_POWER_PLAY = new Set(["MIS", "GMIS", "GAM"]);
+
+type PhysicalKey = "hits" | "giveaways" | "takeaways";
+
+/** A hit (credited to the hitter), giveaway or takeaway, and who it belongs to. */
+function physicalEvent(p: PlayByPlay["plays"][number]): { playerId: number; key: PhysicalKey } | null {
+  const d = p.details;
+  const playerId = p.typeDescKey === "hit" ? d?.hittingPlayerId : p.typeDescKey === "giveaway" || p.typeDescKey === "takeaway" ? d?.playerId : undefined;
+  if (!playerId) return null;
+  return { playerId, key: p.typeDescKey === "hit" ? "hits" : p.typeDescKey === "giveaway" ? "giveaways" : "takeaways" };
+}
+
+/** Hits, giveaways and takeaways per player for one game, all situations (shootout excluded). */
+export function physicalCounts(pbp: PlayByPlay): Map<number, Record<PhysicalKey, number>> {
+  const out = new Map<number, Record<PhysicalKey, number>>();
+  for (const p of pbp.plays) {
+    if (p.periodDescriptor.periodType === "SO") continue;
+    const e = physicalEvent(p);
+    if (!e) continue;
+    const row = out.get(e.playerId) ?? { hits: 0, giveaways: 0, takeaways: 0 };
+    row[e.key]++;
+    out.set(e.playerId, row);
+  }
+  return out;
+}
 
 export const posOf = (code: string | undefined): Pos => (code === "G" ? "G" : code === "D" ? "D" : "F");
 
@@ -176,6 +204,9 @@ export function onIceGame(pbp: PlayByPlay, shifts: Shift[], shots: ShotAttempt[]
         pt: 0,
         fow: 0,
         fol: 0,
+        hits: 0,
+        giveaways: 0,
+        takeaways: 0,
         gsax: null,
         gameScore: 0,
       };
@@ -247,7 +278,7 @@ export function onIceGame(pbp: PlayByPlay, shifts: Shift[], shots: ShotAttempt[]
   for (const p of plays) {
     const d = p.details;
     if (!d) continue;
-    const add = (id: number | undefined, key: "goals" | "a1" | "a2" | "sog" | "blk" | "pd" | "pt" | "fow" | "fol") => {
+    const add = (id: number | undefined, key: "goals" | "a1" | "a2" | "sog" | "blk" | "pd" | "pt" | "fow" | "fol" | PhysicalKey) => {
       if (!id) return;
       const l = line(id);
       if (l) l[key]++;
@@ -276,6 +307,10 @@ export function onIceGame(pbp: PlayByPlay, shifts: Shift[], shots: ShotAttempt[]
         add(d.winningPlayerId, "fow");
         add(d.losingPlayerId, "fol");
         break;
+      default: {
+        const e = physicalEvent(p);
+        if (e) add(e.playerId, e.key);
+      }
     }
   }
 

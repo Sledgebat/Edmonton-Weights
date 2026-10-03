@@ -7,7 +7,41 @@ import { load, type Loaded } from "@/lib/load";
 import { nhl, txt, type ClubStats } from "@/lib/nhl";
 import { previousSeason, TEAM_ID } from "@/lib/nhl/endpoints";
 import { onIceTable } from "@/lib/stats/onice";
+import { goalieStarts, type GoalieStarts } from "@/lib/stats/goalies";
+import { pointsPer60, skaterExtras, type SkaterExtras } from "@/lib/stats/skaters";
 import { goalieTable, shooterTable } from "@/lib/stats/team";
+
+type ExtraColumns = Pick<SkaterRow, "p1" | "p60" | "foPct" | "foTitle" | "pd" | "pt" | "pdiff" | "blk" | "hits" | "gv" | "tk">;
+
+/** The Scoring, Advanced and Physical columns we add up from our own data. */
+function extraColumns(goals: number, pos: string, x: SkaterExtras | undefined): ExtraColumns {
+  const faceoffs = x ? x.fow + x.fol : 0;
+  return {
+    p1: goals + (x?.a1 ?? 0),
+    p60: x ? pointsPer60(x.points5, x.toi5) : null,
+    // Faceoff % only means something for centres.
+    foPct: pos === "C" && faceoffs > 0 ? (x!.fow / faceoffs) * 100 : null,
+    foTitle: pos === "C" && x && faceoffs > 0 ? `${x.fow} won, ${x.fol} lost` : null,
+    pd: x?.pd ?? null,
+    pt: x?.pt ?? null,
+    pdiff: x ? x.pd - x.pt : null,
+    blk: x?.blk ?? null,
+    hits: x?.hits ?? null,
+    gv: x?.giveaways ?? null,
+    tk: x?.takeaways ?? null,
+  };
+}
+
+function startColumns(s: GoalieStarts | undefined): Pick<GoalieRow, "hdsv" | "qs" | "qsPct" | "rbs" | "stolen"> {
+  if (!s) return { hdsv: null, qs: null, qsPct: null, rbs: null, stolen: null };
+  return {
+    hdsv: s.hdShots ? 1 - s.hdGoals / s.hdShots : null,
+    qs: s.starts ? s.qualityStarts : null,
+    qsPct: s.starts ? (s.qualityStarts / s.starts) * 100 : null,
+    rbs: s.starts ? s.badStarts : null,
+    stolen: s.stolen,
+  };
+}
 
 export type SkaterRow = {
   id: number;
@@ -27,6 +61,20 @@ export type SkaterRow = {
   /** 5-on-5 expected-goals share with him on the ice, and on minus off (percentage points). */
   oixgf: number | null;
   relxgf: number | null;
+  /** Goals plus first assists. */
+  p1: number;
+  /** 5-on-5 points per 60 minutes (null with too little ice time or no goal data). */
+  p60: number | null;
+  /** Faceoff win % (centres only) and "won–lost" for its tooltip. */
+  foPct: number | null;
+  foTitle: string | null;
+  pd: number | null;
+  pt: number | null;
+  pdiff: number | null;
+  blk: number | null;
+  hits: number | null;
+  gv: number | null;
+  tk: number | null;
 };
 
 export type GoalieRow = {
@@ -41,6 +89,12 @@ export type GoalieRow = {
   so: number;
   gsax: number | null;
   xsv: number | null;
+  /** High-danger save %, quality starts (count and share of starts), really bad starts, stolen games. */
+  hdsv: number | null;
+  qs: number | null;
+  qsPct: number | null;
+  rbs: number | null;
+  stolen: number | null;
 };
 
 export type PlayersData = {
@@ -76,6 +130,8 @@ export async function playersData(requested?: string): Promise<PlayersData> {
   );
   const hasAdvanced = gamesCount(TEAM_ID, season) > 0;
   const onIce = new Map(onIceTable(season, { teamId: TEAM_ID }).map((o) => [o.playerId, o]));
+  const extras = skaterExtras(season, TEAM_ID);
+  const starts = new Map(goalieStarts(season, TEAM_ID).map((g) => [g.goalieId, g]));
 
   const skaters: SkaterRow[] = stats.ok
     ? stats.data.skaters.map((s) => {
@@ -98,6 +154,7 @@ export async function playersData(requested?: string): Promise<PlayersData> {
           gax: ixg === null ? null : s.goals - ixg,
           oixgf: onIce.get(s.playerId)?.xgfPct ?? null,
           relxgf: onIce.get(s.playerId)?.relXgfPct ?? null,
+          ...extraColumns(s.goals, s.positionCode, extras.get(s.playerId)),
         };
       })
     : [];
@@ -117,6 +174,7 @@ export async function playersData(requested?: string): Promise<PlayersData> {
           so: g.shutouts,
           gsax: adv ? adv.gsax : null,
           xsv: adv ? adv.xSvPct : null,
+          ...startColumns(starts.get(g.playerId)),
         };
       })
     : [];

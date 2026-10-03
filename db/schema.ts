@@ -138,6 +138,10 @@ export const playerGames = sqliteTable(
     pt: integer("pt").notNull(),
     fow: integer("fow").notNull(),
     fol: integer("fol").notNull(),
+    /** Null for games processed before these were counted (2025-26 and earlier). */
+    hits: integer("hits"),
+    giveaways: integer("giveaways"),
+    takeaways: integer("takeaways"),
     gsax: real("gsax"),
     gameScore: real("game_score").notNull(),
   },

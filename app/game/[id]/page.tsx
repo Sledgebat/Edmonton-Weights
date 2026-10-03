@@ -15,6 +15,7 @@ import { formatGameDate, formatGameTime, savePct } from "@/lib/oilers";
 import { builtGameIds, builtPlayerIds, playerHref } from "@/lib/site";
 import { analyzeGame, type GameReport, type Side, type TeamTotals } from "@/lib/stats/game";
 import { gameRatings, gameUnits, regularUnits, type RatedGame, type Unit } from "@/lib/stats/onice";
+import { signedTone } from "@/lib/tone";
 
 export const dynamicParams = false;
 
@@ -381,7 +382,7 @@ function Goalies({ report, href }: { report: GameReport; href: (id: number) => s
                   </td>
                   <td className="numeral px-1 text-right">{savePct(gl.svPct)}</td>
                   <td className="numeral px-1 text-right">{f2(gl.xga)}</td>
-                  <td className={`numeral px-1 text-right ${gl.gsax >= 0 ? "text-win" : "text-loss"}`}>
+                  <td className={`numeral px-1 text-right ${signedTone(gl.gsax, 2)}`}>
                     {gl.gsax > 0 ? "+" : ""}
                     {f2(gl.gsax)}
                   </td>

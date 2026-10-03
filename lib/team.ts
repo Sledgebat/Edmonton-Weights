@@ -8,6 +8,7 @@ import { load, type Loaded } from "@/lib/load";
 import { playoffPicture, type PlayoffPicture } from "@/lib/magic";
 import { nhl, txt, type StandingsRow } from "@/lib/nhl";
 import { teamOf } from "@/lib/oilers";
+import { RANKS_PENDING_NOTE } from "@/lib/tone";
 import { builtPlayerIds, playerHref } from "@/lib/site";
 import { rollingShare, shooterTable, teamGames, type TeamGame } from "@/lib/stats/team";
 
@@ -39,6 +40,8 @@ export type TeamPageData = {
   shortName: string;
   season: number;
   seasonNote: string | null;
+  /** Set until every team has played, while league ranks are hidden. */
+  ranksNote: string | null;
   standings: Loaded<{ standings: StandingsRow[] }>;
   row: StandingsRow | null;
   picture: PlayoffPicture | null;
@@ -104,6 +107,7 @@ export async function teamPageData(abbrev: string): Promise<TeamPageData> {
     shortName,
     season,
     seasonNote: sampleNote(teamId === null ? 0 : gamesCount(teamId, season)),
+    ranksNote: lg.ranksReady ? null : RANKS_PENDING_NOTE,
     standings,
     row,
     picture: rows.length ? playoffPicture(rows, abbrev, seasonGamesOf(schedule.ok ? schedule.data.games : [])) : null,

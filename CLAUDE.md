@@ -63,6 +63,17 @@ Independent fan site; the footer disclaimer must stay on every page.
   pulled), go-ahead 2, insurance 0.5 (0 empty net); A1 70%, A2 50%; playoffs ×1.5. League-wide.
   Home: Oilers top 3 under Leaders; `/clutch` lists every player with a clutch point (30/50/100/All
   per page), Oilers marked. Not in the main nav.
+- **Colour rules** (`lib/tone.ts`, one helper for every page): green = good, red = bad, plain =
+  neutral. Ranks top/bottom half; streak W vs L/OT; odds vs 50%; ratings vs 5.0; plus/minus values
+  vs 0 (judged on the number shown); trends better/worse. On another team's page green = good for
+  that team. Exceptions (later phases): luck meter neutral, calendar uses result colours.
+- **Early-season ranks:** league ranks (tiles, tale of the tape, EDGE) are hidden until every team
+  in the standings has a stored game (`LeagueContext.ranksReady`); a short note shows instead.
+- **Players page** Stats view: skater table in three tabs (Scoring · Advanced · Physical &
+  discipline, `?stat=`), GP in each; goalie table adds HDSV%, quality starts (Vollman), really bad
+  starts (< .850) and stolen games (win with game GSAx ≥ 2), from `lib/stats/goalies.ts` (starter
+  = goalie who faced his team's first shot on goal). 5v5 P/60 needs the `goals` table, so it's
+  "—" for 2025-26. Standings tables show RW, GF, GA, Home and Road records.
 - No live in-game updates (would need a paid server); game pages for live games say they're a
   snapshot and link to NHL.com. Cost must stay at $0.
 
@@ -78,6 +89,8 @@ Independent fan site; the footer disclaimer must stay on every page.
   Only results are stored (`player_games`: TOI, 5-on-5 on-ice CF/GF/xGF, Game Score per player
   per game; `unit_games`: lines/pairs with ≥ 30 s together in a game), never raw shifts.
   `npm run update` adds them for new games and catches up any missing (capped at 25 min a run).
+  `player_games.hits/giveaways/takeaways` exist from 2026-27 only (null before = "—"); arena
+  scorekeepers count them very differently.
 - **Goals** (`goals`, `goal_status`, `player_names` tables): every goal with the score before it,
   stored at ingest; `npm run update` catches up any game of this season without them.
 - **Ratings out of 10** (`lib/stats/ratings.ts`): Game Score ranked against the two previous
@@ -110,6 +123,9 @@ build. If Playwright's browser is missing: `npx playwright install chromium`.
 
 - **Next features plan:** `docs/next-features.md`: all three steps built (team pages, shift data,
   playoff odds), October 2026.
+- **Season In-Depth plan:** `docs/season-in-depth-plan.md`, four phases, stop for Josh's review
+  after each. Phase 1 (colours, standings columns, hits/giveaways/takeaways, Players tabs, goalie
+  starts) built 3 Oct 2026.
 
 - Playoffs: games are stored, but pages are built around the regular season. Review before April.
 - Step 5 polish from the plan (accessibility pass, mobile check) is not finished.

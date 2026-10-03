@@ -5,6 +5,7 @@
 import { getDb } from "@/db";
 import { burstTable, rosterEdge, type BurstTable, type SkaterEdgeRow } from "@/lib/edge";
 import { rankOf } from "@/lib/rank";
+import { RANKS_PENDING_NOTE, ranksReady } from "@/lib/tone";
 import { builtPlayerIds, playerHref } from "@/lib/site";
 import { load, type Loaded } from "@/lib/load";
 import { SEASON_GAMES, playoffPicture, type PlayoffPicture } from "@/lib/magic";
@@ -129,6 +130,8 @@ export type HomeData = {
   currentSeason: number;
   /** Set while the season is only a few games old. */
   seasonNote: string | null;
+  /** Set until every team has played, while league ranks are hidden. */
+  ranksNote: string | null;
   standings: Loaded<{ standings: StandingsRow[] }>;
   edm: StandingsRow | null;
   picture: PlayoffPicture | null;
@@ -309,6 +312,8 @@ export type LeagueContext = {
   summary: Loaded<{ data: TeamSummaryRow[] }>;
   summaryRows: TeamSummaryRow[];
   summaryById: Map<number, TeamSummaryRow>;
+  /** False until every team in the league has a game stored: until then ranks are hidden. */
+  ranksReady: boolean;
 };
 
 const contextCache = new Map<number, { at: number; value: Promise<LeagueContext> }>();
@@ -318,7 +323,7 @@ export function leagueContext(season: number): Promise<LeagueContext> {
   const hit = contextCache.get(season);
   if (hit && Date.now() - hit.at < 5 * 60_000) return hit.value;
   const value = (async () => {
-    const summary = await load(() => nhl.teamSummary(season));
+    const [summary, standings] = await Promise.all([load(() => nhl.teamSummary(season)), load(nhl.standings)]);
     const table = leagueTable(season);
     const basics = basicRows(season);
     const goalies = goalieTable(season);
@@ -345,6 +350,7 @@ export function leagueContext(season: number): Promise<LeagueContext> {
       summary,
       summaryRows,
       summaryById: new Map(summaryRows.map((r) => [r.teamId, r])),
+      ranksReady: ranksReady(table.length, standings.ok ? standings.data.standings.length : table.length),
     };
   })();
   contextCache.set(season, { at: Date.now(), value });
@@ -455,7 +461,9 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
       explain: "Goals the team's goalies stopped beyond what an average goalie would, given the shots they faced. Above zero is good.",
     },
   ];
-  return { basicTiles, advancedTiles };
+  if (lg.ranksReady) return { basicTiles, advancedTiles };
+  const noRank = (t: Tile): Tile => ({ ...t, rank: null });
+  return { basicTiles: basicTiles.map(noRank), advancedTiles: advancedTiles.map(noRank) };
 }
 
 export async function homeData(): Promise<HomeData> {
@@ -581,6 +589,7 @@ export async function homeData(): Promise<HomeData> {
         (x) => `${x.toFixed(1)}%`,
       ),
     ];
+    if (!lg.ranksReady) tape = tape.map((r) => ({ ...r, us: { ...r.us, rank: null }, them: { ...r.them, rank: null } }));
     keys = keysToTheGame(tape, opponent.abbrev);
 
     goalieCards = { us: await teamGoalies(TEAM, TEAM_ID, season), them: await teamGoalies(v.opp.abbrev, v.opp.id, season) };
@@ -681,6 +690,7 @@ export async function homeData(): Promise<HomeData> {
     season,
     currentSeason,
     seasonNote,
+    ranksNote: lg.ranksReady ? null : RANKS_PENDING_NOTE,
     standings,
     edm,
     picture: rows.length ? playoffPicture(rows, TEAM, seasonGamesOf(games)) : null,

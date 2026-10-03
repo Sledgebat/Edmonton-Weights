@@ -222,12 +222,30 @@ test("game report for an upcoming game explains when it fills in", async ({ page
 
 test("players table sorts by column", async ({ page }) => {
   await page.goto("/players?season=this");
-  const table = page.locator("table").first();
+  const table = page.locator("table:visible").first();
   await expect(table.locator("tbody tr").first()).toContainText("Evan Bouchard"); // most points
-  await table.getByRole("button", { name: "ixG", exact: true }).click();
-  await expect(table.locator("tbody tr").first()).toContainText("Vasily Podkolzin"); // most individual xG
-  await table.getByRole("button", { name: "ixG", exact: true }).click();
-  await expect(table.locator("thead th").nth(9)).toHaveAttribute("aria-sort", "ascending");
+  await page.getByRole("button", { name: "Advanced", exact: true }).first().click();
+  const advanced = page.locator("table:visible").first();
+  await expect(advanced.locator("tbody tr").first()).toContainText("Vasily Podkolzin"); // most individual xG
+  await advanced.getByRole("button", { name: "ixG", exact: true }).click();
+  await expect(advanced.locator("thead th").nth(3)).toHaveAttribute("aria-sort", "ascending");
+});
+
+test("players stats come in Scoring, Advanced and Physical tabs, with GP in each", async ({ page }) => {
+  await page.goto("/players");
+  const header = () => page.locator("table:visible").first().locator("thead");
+  await expect(header()).toContainText("P1");
+  await page.getByRole("button", { name: "Physical & discipline", exact: true }).first().click();
+  await expect(page).toHaveURL(/stat=physical/);
+  for (const col of ["GP", "FO%", "HIT", "GV", "TK"]) await expect(header()).toContainText(col);
+  // Goalies get quality starts and stolen games.
+  await expect(page.locator("table:visible").nth(1).locator("thead")).toContainText("QS%");
+});
+
+test("standings show regulation wins, goals and home/road records", async ({ page }) => {
+  await page.goto("/standings");
+  const head = page.locator("table").first().locator("thead");
+  for (const col of ["RW", "GF", "GA", "Home", "Road"]) await expect(head).toContainText(col);
 });
 
 test("players page has Lines and Roster tabs", async ({ page }) => {

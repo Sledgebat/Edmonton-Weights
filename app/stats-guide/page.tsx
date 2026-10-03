@@ -6,6 +6,8 @@ import { GAME_SCORE } from "@/lib/stats/shifts";
 import { RATING_ANCHORS, ratingModel } from "@/lib/stats/ratings";
 import { CLUTCH } from "@/lib/stats/clutch";
 import { seasonLabel } from "@/lib/nhl/endpoints";
+import { BAD_START_SV, QS_SMALL_SHOTS, QS_SMALL_SV, STOLEN_GSAX } from "@/lib/stats/goalies";
+import { MIN_P60_SECONDS, PHYSICAL_FROM_SEASON } from "@/lib/stats/skaters";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
 
@@ -98,6 +100,47 @@ const TERMS: { id: string; term: string; short: string; body: React.ReactNode }[
     body: (
       <>
         From the NHL&apos;s shift charts we know who was on the ice for every 5-on-5 shot. <strong>On-ice xGF%</strong> is the Oilers&apos; share of expected goals while he&apos;s out there. <strong>Relative</strong> (Rel) subtracts the team&apos;s share in the same games while he&apos;s off the ice: +3 means the Oilers control 3 points more of the play with him on. Relative numbers help separate a player from his team, but linemates and the minutes a coach gives him still shape them.
+      </>
+    ),
+  },
+  {
+    id: "primary-points",
+    term: "Primary points (P1) and 5-on-5 points per 60",
+    short: "Goals plus first assists; and how often a player scores at full strength.",
+    body: (
+      <>
+        A second assist is often a pass several touches before the goal, so <strong>primary points</strong> (goals plus first assists) say more about who
+        drives the scoring. <strong>5v5 P/60</strong> is points at 5 on 5 per 60 minutes of 5-on-5 ice time: it puts a third-liner and a top-liner on the
+        same footing, and leaves out power-play points. It appears once a player has {MIN_P60_SECONDS / 60} minutes at 5 on 5.
+      </>
+    ),
+  },
+  {
+    id: "physical",
+    term: "Physical and discipline (FO%, penalties, hits, giveaways, takeaways)",
+    short: "Faceoffs, penalties drawn and taken, and the scorekeeper's hits, giveaways and takeaways.",
+    body: (
+      <>
+        <strong>FO%</strong> is faceoffs won, shown for centres only (hover for won and lost). <strong>Penalties drawn minus taken</strong> above zero
+        means a player earns his team more power plays than he gives away. <strong>Hits</strong>, <strong>giveaways</strong> (losing the puck to the
+        other team) and <strong>takeaways</strong> (winning it back) are logged by each arena&apos;s scorekeeper, and some rinks count far more than
+        others, so compare players on the same team rather than across the league. We have them from {seasonLabel(PHYSICAL_FROM_SEASON)}; earlier
+        seasons show &ldquo;—&rdquo;. A lot of giveaways often just means a player has the puck a lot.
+      </>
+    ),
+  },
+  {
+    id: "goalie-starts",
+    term: "Quality starts, really bad starts and stolen games",
+    short: "Game-by-game goalie measures: how often he gives his team a chance to win.",
+    body: (
+      <>
+        A goalie&apos;s <strong>start</strong> is a game where he faced his team&apos;s first shot on goal. A <strong>quality start</strong> (QS, from Rob
+        Vollman) is a start with a save % at or above the league&apos;s average that season, or at least {QS_SMALL_SV.toFixed(3).replace(/^0/, "")} on{" "}
+        {QS_SMALL_SHOTS} shots or fewer; around 55–60% of starts is typical for a regular starter. A <strong>really bad start</strong> (RBS) is a save %
+        below {BAD_START_SV.toFixed(3).replace(/^0/, "")}. A <strong>stolen game</strong> is a win where he saved {STOLEN_GSAX} or more goals above
+        expected that night: the team probably loses without him. A typical starter has a handful a season. <strong>HDSV%</strong> is save % on
+        high-danger shots. Empty-net goals don&apos;t count against anyone.
       </>
     ),
   },
@@ -260,7 +303,13 @@ export default function StatsGuidePage() {
         </h2>
         <ul className="card list-disc space-y-2 p-4 pl-9 text-sm sm:p-5 sm:pl-10">
           <li>
-            <strong>Early season:</strong> every number on the site is this season only. In the first few weeks that means small samples, so ranks and trends swing a lot from game to game.
+            <strong>Early season:</strong> every number on the site is this season only. In the first few weeks that means small samples, so ranks and trends swing a lot from game to game. League ranks only appear once every team has played a game.
+          </li>
+          <li>
+            <strong>Colours:</strong> green is good and red is bad, everywhere: a league rank in the top half or bottom half, a winning or losing streak, playoff odds above or below 50%, a rating above or below 5.0, and any plus/minus number above or below zero. On another team&apos;s page, green means good for that team.
+          </li>
+          <li>
+            <strong>Hits, giveaways and takeaways</strong> depend on who&apos;s keeping score: some arenas record far more than others.
           </li>
           <li>
             <strong>Magic number:</strong> it appears from the midpoint of the season and is an estimate. It counts points against the first team outside the playoffs and doesn&apos;t model the NHL&apos;s full tiebreakers.

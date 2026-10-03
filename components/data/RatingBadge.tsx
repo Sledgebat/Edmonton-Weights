@@ -1,8 +1,10 @@
 import { ratingLabel } from "@/lib/stats/ratings";
+import { borderOf, ratingTone } from "@/lib/tone";
 
-/** A rating out of 10: green above 5 (above average), red below, plain at exactly 5.0. */
+/** A rating out of 10: green above 5.0 (above average), red below, plain at exactly 5.0. */
 export function RatingBadge({ rating, className = "" }: { rating: number; className?: string }) {
-  const style = rating > 5 ? "border-win text-win" : rating < 5 ? "border-loss text-loss" : "border-line bg-sunken text-fg";
+  const tone = ratingTone(rating);
+  const style = tone ? `${borderOf(tone)} ${tone}` : "border-line bg-sunken text-fg";
   return (
     <abbr
       title={`${rating.toFixed(1)} out of 10: ${ratingLabel(rating)}`}

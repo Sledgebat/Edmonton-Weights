@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { RatingBadge } from "@/components/data/RatingBadge";
+import { signedTone } from "@/lib/tone";
 
 export type Format = "int" | "signed" | "pct1" | "dec2" | "signed1" | "signed2" | "sv" | "toi" | "text" | "rating";
 
@@ -15,9 +16,13 @@ export type Column = {
   format: Format;
   /** Sort descending first (most stats); false for e.g. GAA or names. */
   descFirst?: boolean;
-  /** Colour above zero as good, below as bad. */
+  /** Colour above zero as good, below as bad (judged on the number shown). */
   tone?: boolean;
+  /** A row field holding a tooltip for each cell in this column (e.g. faceoffs won–lost). */
+  titleKey?: string;
 };
+
+const DIGITS: Partial<Record<Format, number>> = { signed1: 1, signed2: 2, pct1: 1, dec2: 2 };
 
 /**
  * One row. Optional fields: `href` (where the name links; default the player page, null = no
@@ -218,9 +223,14 @@ export function SortableTable({
               </th>
               {columns.map((c) => {
                 const v = r[c.key];
-                const tone = c.tone && typeof v === "number" && Math.abs(v) >= 0.005 ? (v > 0 ? "text-win" : "text-loss") : "";
+                const tone = c.tone && typeof v === "number" ? signedTone(v, DIGITS[c.format] ?? 0) : "";
+                const cellTitle = c.titleKey ? r[c.titleKey] : null;
                 return (
-                  <td key={c.key} className={`numeral whitespace-nowrap px-1 text-right ${tone} ${sort.key === c.key ? "font-semibold" : ""}`}>
+                  <td
+                    key={c.key}
+                    title={typeof cellTitle === "string" ? cellTitle : undefined}
+                    className={`numeral whitespace-nowrap px-1 text-right ${tone} ${sort.key === c.key ? "font-semibold" : ""}`}
+                  >
                     {c.format === "rating" && typeof v === "number" ? <RatingBadge rating={v} /> : fmt(v, c.format)}
                   </td>
                 );

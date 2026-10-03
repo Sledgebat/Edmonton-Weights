@@ -10,7 +10,8 @@ import { load } from "@/lib/load";
 import { nhl, txt } from "@/lib/nhl";
 import { TEAM, seasonLabel } from "@/lib/nhl/endpoints";
 import { ordinal, pointPct, signed, streakLabel, teamOf } from "@/lib/oilers";
-import { formatOdds, oddsTone } from "@/lib/stats/odds";
+import { formatOdds } from "@/lib/stats/odds";
+import { oddsTone, signedTone, streakTone } from "@/lib/tone";
 import { teamAbbrevs, teamPageData, type TeamPageData } from "@/lib/team";
 
 export const dynamicParams = false;
@@ -34,21 +35,21 @@ function RecordCards({ d }: { d: TeamPageData }) {
   const p = d.picture;
   if (!d.standings.ok) return <DataError what="the standings" error={d.standings.error} />;
   if (!r) return <p className="text-fg-muted">This team isn&apos;t in the current standings.</p>;
-  const items: [string, string][] = [
+  const items: [string, string, string?][] = [
     ["Record", `${r.wins}-${r.losses}-${r.otLosses}`],
     ["Points", String(r.points)],
     ["Point %", pointPct(r)],
-    ["Goal diff", signed(r.goalDifferential)],
+    ["Goal diff", signed(r.goalDifferential), signedTone(r.goalDifferential)],
     ["Last 10", `${r.l10Wins}-${r.l10Losses}-${r.l10OtLosses}`],
-    ["Streak", streakLabel(r) || "—"],
+    ["Streak", streakLabel(r) || "—", streakTone(r.streakCode)],
   ];
   return (
     <div className="grid gap-3 lg:grid-cols-[3fr_2fr]">
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {items.map(([k, v]) => (
+        {items.map(([k, v, tone]) => (
           <div key={k} className="card px-4 py-3">
             <dt className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted">{k}</dt>
-            <dd className="numeral mt-0.5 text-2xl leading-tight sm:text-3xl">{v}</dd>
+            <dd className={`numeral mt-0.5 text-2xl leading-tight sm:text-3xl ${tone ?? ""}`}>{v}</dd>
           </div>
         ))}
       </dl>
@@ -148,8 +149,8 @@ function Shooters({ d }: { d: TeamPageData }) {
                   <td className="px-2 py-2 text-right">{s.shots}</td>
                   <td className="numeral px-2 py-2 text-right">{s.ixg.toFixed(1)}</td>
                   <td className="px-2 py-2 text-right">{s.hd}</td>
-                  <td className={`px-2 py-2 pr-3 text-right ${gax >= 0 ? "text-win" : "text-loss"}`}>
-                    {gax >= 0 ? "+" : ""}
+                  <td className={`px-2 py-2 pr-3 text-right ${signedTone(gax, 1)}`}>
+                    {gax > 0 ? "+" : ""}
                     {gax.toFixed(1)}
                   </td>
                 </tr>
@@ -199,6 +200,7 @@ export default async function TeamPage({ params }: PageProps<"/team/[abbrev]">) 
 
       <section aria-labelledby="tiles">
         <SectionHeading id="tiles" title="Team stats" note={`${seasonLabel(d.season)} · league rank · arrows compare the last 10 games with the season`} />
+        {d.ranksNote && d.advancedTiles.length > 0 && <p className="-mt-2 mb-3 text-sm text-fg-muted">{d.ranksNote}</p>}
         {d.advancedTiles.length ? <StatTiles d={d} /> : <p className="text-sm text-fg-muted">No games stored for this team yet this season.</p>}
         {d.updated.stats && <LastUpdated at={d.updated.stats} className="mt-2 block text-right" />}
       </section>

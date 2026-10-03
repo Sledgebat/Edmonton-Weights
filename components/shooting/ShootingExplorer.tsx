@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis, type TooltipContentProps } from "recharts";
 import type { Shooter, ShootingSeason } from "@/lib/shooting";
+import { signedTone } from "@/lib/tone";
 
 const short = (season: number) => {
   const y = Math.floor(season / 10000);
@@ -10,7 +11,7 @@ const short = (season: number) => {
 };
 const pct = (v: number | null) => (v === null ? "—" : `${v.toFixed(1)}%`);
 const signed = (v: number | null, digits = 1) => (v === null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(digits)}`);
-const tone = (v: number | null) => (v === null || Math.abs(v) < 0.05 ? "" : v > 0 ? "text-win" : "text-loss");
+const tone = (v: number | null) => signedTone(v, 1);
 
 type Point = ShootingSeason & { label: string };
 
