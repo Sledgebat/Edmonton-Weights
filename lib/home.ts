@@ -4,6 +4,7 @@
  */
 import { getDb } from "@/db";
 import { burstTable, rosterEdge, type BurstTable, type SkaterEdgeRow } from "@/lib/edge";
+import { dashboardData, type Dashboard } from "@/lib/dashboard";
 import { rankOf } from "@/lib/rank";
 import { RANKS_PENDING_NOTE, ranksReady } from "@/lib/tone";
 import { builtPlayerIds, playerHref } from "@/lib/site";
@@ -54,6 +55,8 @@ export type Tile = {
   trend: Trend;
   /** Last-10 value, shown with the trend arrow. */
   recent: string | null;
+  /** Small print under the value (e.g. PDO's two halves). */
+  detail?: string | null;
   explain: string;
 };
 
@@ -176,6 +179,8 @@ export type HomeData = {
   rosterEdge: SkaterEdgeRow[];
   updated: { stats: number | null };
   sources: { summary: Loaded<{ data: TeamSummaryRow[] }>; clubStats: Loaded<ClubStats> };
+  /** Stakes, season series, badges, luck gauge, personality tag, streaks, milestones. */
+  dash: Dashboard;
 };
 
 const NX = 15; // 5 ft columns from the blue line (x 25) to the end boards
@@ -449,7 +454,7 @@ export function statTiles(teamId: number, season: number, lg: LeagueContext): { 
     advTile("xgfPct"),
     advTile("cfPct"),
     advTile("hdcfPct"),
-    advTile("pdo"),
+    { ...advTile("pdo"), detail: us ? `5v5 Sh% ${us.metrics.sh5Pct.toFixed(1)} · Sv% ${us.metrics.sv5Pct.toFixed(1)}` : null },
     {
       key: "gsax",
       label: "Goaltending: goals saved above expected",
@@ -687,8 +692,10 @@ export async function homeData(): Promise<HomeData> {
   }
 
   const statsUpdated = (getDb().$client.prepare(`SELECT MAX(ingested_at) t FROM stats_games`).get() as { t: number | null }).t;
+  const dash = await dashboardData({ season, team: TEAM, teamId: TEAM_ID, teamName: "Edmonton Oilers", teamWord: "an Oiler", games, next, last, clubStats: cs, lg });
 
   return {
+    dash,
     season,
     currentSeason,
     seasonNote,

@@ -40,8 +40,11 @@ export type OddsTeam = {
   strength: number;
 };
 
-/** A remaining game. */
-export type Fixture = { home: string; away: string };
+/** A remaining game (`id` when it came from the schedule). */
+export type Fixture = { home: string; away: string; id?: number };
+
+/** Force one fixture's result: who wins, and whether in overtime/shootout (the loser gets a point). */
+export type ForcedResult = { fixture: number; winner: "home" | "away"; ot: boolean };
 
 export type TeamOdds = { abbrev: string; odds: number; projPoints: number };
 
@@ -91,10 +94,13 @@ export function seasonLength(teams: OddsTeam[], scheduled: number[]): number {
  * Simulate the rest of the season `runs` times. Teams whose listed fixtures don't cover the
  * whole season (a schedule couldn't be loaded) play their missing games against an average team.
  */
-export function simulate(teams: OddsTeam[], fixtures: Fixture[], { runs = RUNS, seed = 84 } = {}): TeamOdds[] {
+export function simulate(teams: OddsTeam[], fixtures: Fixture[], { runs = RUNS, seed = 84, force }: { runs?: number; seed?: number; force?: ForcedResult } = {}): TeamOdds[] {
   const n = teams.length;
   const index = new Map(teams.map((t, i) => [t.abbrev, i]));
-  const games = fixtures.filter((f) => index.has(f.home) && index.has(f.away)).map((f) => [index.get(f.home)!, index.get(f.away)!] as const);
+  const kept = fixtures.map((f, i) => ({ f, i })).filter(({ f }) => index.has(f.home) && index.has(f.away));
+  const games = kept.map(({ f }) => [index.get(f.home)!, index.get(f.away)!] as const);
+  // Where the forced fixture sits among the games actually played out (-1 = none).
+  const forced = force ? kept.findIndex(({ i }) => i === force.fixture) : -1;
   const scheduled = Array<number>(n).fill(0);
   for (const [h, a] of games) {
     scheduled[h]++;
@@ -145,7 +151,13 @@ export function simulate(teams: OddsTeam[], fixtures: Fixture[], { runs = RUNS, 
       const pHome = Math.min(0.97, Math.max(0.03, (x * (1 - y)) / (x * (1 - y) + y * (1 - x)) + HOME_EDGE));
       const ot = rand() < OT_SHARE;
       const p = ot ? 0.5 + (pHome - 0.5) * 0.5 : pHome;
-      if (rand() < p) play(h, a, ot);
+      const homeWins = rand() < p;
+      // A forced game still makes the same random draws, so every other game plays out exactly
+      // as in the main run and the difference in odds comes from this game alone.
+      if (g === forced) {
+        if (force!.winner === "home") play(h, a, force!.ot);
+        else play(a, h, force!.ot);
+      } else if (homeWins) play(h, a, ot);
       else play(a, h, ot);
     }
     for (let i = 0; i < n; i++) {
@@ -227,7 +239,7 @@ export function oddsInputs(season: number, standings: StandingsLike[], schedule:
     // Unplayed regular-season games; a game in progress isn't in the standings yet either.
     if (g.gameType !== 2 || g.gameState === "FINAL" || g.gameState === "OFF" || seen.has(g.id)) continue;
     seen.add(g.id);
-    fixtures.push({ home: g.homeTeam.abbrev, away: g.awayTeam.abbrev });
+    fixtures.push({ home: g.homeTeam.abbrev, away: g.awayTeam.abbrev, id: g.id });
   }
   return { teams, fixtures };
 }
@@ -244,6 +256,67 @@ export function runPlayoffOdds(season: number, standings: StandingsLike[], sched
     runAt,
   );
   return [...odds].sort((a, b) => b.odds - a.odds);
+}
+
+// ------------------------------------------------------------------ what's at stake
+
+export type Stakes = { gameId: number; team: string; now: number; win: number; otLoss: number; loss: number };
+
+/**
+ * A team's playoff odds now and after each result of one game: a win (two points, counted as a
+ * regulation win), an overtime/shootout loss (one point; the opponent gets two) and a regulation
+ * loss. Same seed and the same random draws as the main run.
+ */
+export function gameStakes(teams: OddsTeam[], fixtures: Fixture[], gameId: number, team: string, opts: { runs?: number; seed?: number } = {}): Stakes | null {
+  const fixture = fixtures.findIndex((f) => f.id === gameId);
+  if (fixture < 0) return null;
+  const f = fixtures[fixture];
+  if (f.home !== team && f.away !== team) return null;
+  const us = f.home === team ? "home" : "away";
+  const them = us === "home" ? "away" : "home";
+  const odds = (force?: ForcedResult) => simulate(teams, fixtures, { ...opts, force }).find((o) => o.abbrev === team)?.odds ?? 0;
+  return {
+    gameId,
+    team,
+    now: odds(),
+    win: odds({ fixture, winner: us, ot: false }),
+    otLoss: odds({ fixture, winner: them, ot: true }),
+    loss: odds({ fixture, winner: them, ot: false }),
+  };
+}
+
+type ScheduledGame = GameLike & { startTimeUTC?: string };
+
+/** The team's next unplayed regular-season game, from the league schedule. */
+export function nextGameOf(schedule: ScheduledGame[], team: string): ScheduledGame | null {
+  const upcoming = schedule
+    .filter((g) => g.gameType === 2 && (g.gameState === "FUT" || g.gameState === "PRE") && (g.homeTeam.abbrev === team || g.awayTeam.abbrev === team))
+    .sort((a, b) => (a.startTimeUTC ?? "").localeCompare(b.startTimeUTC ?? "") || a.id - b.id);
+  return upcoming[0] ?? null;
+}
+
+/** Work out and save what tonight's game means for a team's playoff odds. */
+export function runStakes(season: number, standings: StandingsLike[], schedule: ScheduledGame[], team: string, runAt = Date.now()): Stakes | null {
+  const next = nextGameOf(schedule, team);
+  if (!next) return null;
+  const { teams, fixtures } = oddsInputs(season, standings, schedule);
+  const s = gameStakes(teams, fixtures, next.id, team);
+  if (!s) return null;
+  getDb()
+    .$client.prepare(`INSERT OR REPLACE INTO stakes (run_at, season, game_id, team, odds_now, if_win, if_ot_loss, if_loss) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(runAt, season, s.gameId, team, s.now, s.win, s.otLoss, s.loss);
+  return s;
+}
+
+/** The latest saved stakes for a team's game, or null if that game was never worked out. */
+export function latestStakes(season: number, team: string, gameId: number): Stakes | null {
+  const r = getDb()
+    .$client.prepare(
+      `SELECT game_id gameId, team, odds_now now, if_win win, if_ot_loss otLoss, if_loss loss FROM stakes
+       WHERE season = ? AND team = ? AND game_id = ? ORDER BY run_at DESC LIMIT 1`,
+    )
+    .get(season, team, gameId) as Stakes | undefined;
+  return r ?? null;
 }
 
 // ------------------------------------------------------------------ stored runs

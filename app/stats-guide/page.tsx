@@ -10,6 +10,8 @@ import { BAD_START_SV, QS_SMALL_SHOTS, QS_SMALL_SV, STOLEN_GSAX } from "@/lib/st
 import { MIN_P60_SECONDS, PHYSICAL_FROM_SEASON } from "@/lib/stats/skaters";
 import { FALLBACK, TYPES } from "@/lib/stats/personality";
 import { SMALL_SAMPLE_GAMES } from "@/lib/home";
+import { HOME_MILESTONES } from "@/lib/dashboard";
+import { DROUGHT_MIN, GOAL_STREAK_MIN, POINT_STREAK_MIN, REGULAR_GP } from "@/lib/streaks";
 
 export const metadata: Metadata = { title: "Stats guide", description: "What every stat on EdmontonWeights means, and how our expected-goals model works." };
 
@@ -239,6 +241,42 @@ const TERMS: { id: string; term: string; short: string; body: React.ReactNode }[
         format (top three in each division plus two wild cards per conference) and we count how often each team gets in. <strong>Projected points</strong>{" "}
         is the average final total. The odds are <strong>green above 50%</strong> and <strong>red below</strong>. They&apos;re estimates: injuries,
         trades and the NHL&apos;s later tiebreakers aren&apos;t modelled, and they move a lot in the first few weeks.
+      </>
+    ),
+  },
+  {
+    id: "stakes",
+    term: "What's at stake tonight",
+    short: "The Oilers' playoff odds after a win, an overtime loss or a regulation loss in their next game.",
+    body: (
+      <>
+        At each update we run the playoff simulation three more times with the next game&apos;s result fixed: a win (two points, counted as a
+        regulation win), an overtime or shootout loss (one point; the opponent gets two) and a regulation loss. Everything else is drawn exactly as in
+        the main run, so the differences come from that one game. Colours follow the odds: green above 50%, red below.
+      </>
+    ),
+  },
+  {
+    id: "streaks",
+    term: "Hot and cold: streaks and droughts",
+    short: "Who's on a point or goal streak, and who's in the longest drought.",
+    body: (
+      <>
+        From each player&apos;s NHL game log this season. A point streak needs {POINT_STREAK_MIN}+ games in a row with a point, a goal streak{" "}
+        {GOAL_STREAK_MIN}+ in a row with a goal. Droughts (games in a row without a goal or a point) only count for regulars with {REGULAR_GP}+ games,
+        and only once they reach {DROUGHT_MIN} games.
+      </>
+    ),
+  },
+  {
+    id: "milestones",
+    term: "Milestone watch",
+    short: "Round-number milestones a player is close to, in his career or with the Oilers.",
+    body: (
+      <>
+        Regular-season NHL totals: games every 100, goals every 50, assists and points every 100; for goalies, games every 100, wins every 50 and
+        shutouts every 10. The home page shows up to {HOME_MILESTONES} when someone is within 10 games, 5 goals, 10 assists, 10 points, 5 wins or 2
+        shutouts, and stays hidden otherwise. Player pages always show the next one.
       </>
     ),
   },

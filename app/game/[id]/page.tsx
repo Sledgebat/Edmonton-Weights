@@ -9,7 +9,8 @@ import { FullRink, type RinkShot } from "@/components/rink/FullRink";
 import { TeamLogo } from "@/components/ui/TeamLogo";
 import { load } from "@/lib/load";
 import { nhl, txt } from "@/lib/nhl";
-import { TEAM } from "@/lib/nhl/endpoints";
+import { TEAM, TEAM_ID } from "@/lib/nhl/endpoints";
+import { gameBadges, storedLastName, type Badge } from "@/lib/badges";
 import type { GameLanding } from "@/lib/nhl/schemas";
 import { formatGameDate, formatGameTime, savePct } from "@/lib/oilers";
 import { builtGameIds, builtPlayerIds, playerHref } from "@/lib/site";
@@ -75,6 +76,8 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
   const live = g.gameState === "LIVE" || g.gameState === "CRIT";
   const pbp = started ? await load(() => nhl.playByPlay(gameId)) : null;
   const report = pbp?.ok ? analyzeGame(pbp.data, g) : null;
+  // Comeback and stolen-game notes, from the Oilers' side, once the game is over.
+  const badges = g.gameState === "OFF" || g.gameState === "FINAL" ? gameBadges(gameId, TEAM_ID, g.season, storedLastName) : [];
   // Ratings and lines come from the shift charts, stored once the game is final.
   const ratings = report ? gameRatings(gameId) : [];
   const roster = new Map((pbp?.ok ? pbp.data.rosterSpots : []).map((r) => [r.playerId, r]));
@@ -97,7 +100,7 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
           </a>
         </p>
       )}
-      <Header g={g} report={report} live={live} />
+      <Header g={g} report={report} live={live} badges={badges} />
 
       {!started && (
         <Module title="Report coming at puck drop">
@@ -171,7 +174,7 @@ export default async function GamePage({ params }: PageProps<"/game/[id]">) {
 
 // ------------------------------------------------------------------ header
 
-function Header({ g, report, live }: { g: GameLanding; report: GameReport | null; live: boolean }) {
+function Header({ g, report, live, badges }: { g: GameLanding; report: GameReport | null; live: boolean; badges: Badge[] }) {
   const final = g.gameState === "OFF" || g.gameState === "FINAL";
   const suffix = final && g.gameOutcome?.lastPeriodType && g.gameOutcome.lastPeriodType !== "REG" ? ` (${g.gameOutcome.lastPeriodType})` : "";
   const clock = live && g.clock ? `${g.periodDescriptor ? (g.periodDescriptor.number <= 3 ? `P${g.periodDescriptor.number}` : "OT") : ""} · ${g.clock.inIntermission ? "Intermission" : g.clock.timeRemaining}` : "";
@@ -211,6 +214,15 @@ function Header({ g, report, live }: { g: GameLanding; report: GameReport | null
           {txt(g.venue)}
         </p>
         {report?.summary && <p className="mx-auto mt-4 max-w-3xl text-center text-base sm:text-lg">{report.summary}</p>}
+        {badges.length > 0 && (
+          <ul className="mt-3 flex flex-wrap justify-center gap-2">
+            {badges.map((b) => (
+              <li key={b.text} className="rounded-full border border-header-accent px-2.5 py-0.5 text-xs font-semibold text-header-accent">
+                {b.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       <div className="sleeve-stripes-thin" aria-hidden />
     </header>

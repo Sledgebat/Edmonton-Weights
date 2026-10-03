@@ -43,6 +43,15 @@ Independent fan site; the footer disclaimer must stay on every page.
 - **This season only** everywhere: no falling back to or blending with last season (the roster
   turned over). Small samples get a plain note instead (`sampleNote` in `lib/home.ts`). Last
   season is only on the Players page season switch and players' season-by-season tables.
+- **Home page dashboard extras** (`lib/dashboard.ts`, each shown only when it applies):
+  personality tag under the heading and an "Oilers Season In-Depth →" link; milestone watch strip
+  (`lib/milestones.ts`, ≤ 3, one per player); under the Next game bar a strip with what's at stake
+  (`stakes` table, written by `runStakes` in `npm run update`: same seed and draws as the main run,
+  win = regulation win; EDM only for now) and the season series (`lib/h2h.ts`), whose meetings are
+  listed in the pre-game breakdown; Last game badges (`lib/badges.ts`: comeback from 2+ down,
+  stolen game; also on game reports); PDO tile shows 5v5 Sh%/Sv% and a small luck gauge linking
+  to the in-depth meter; "Hot and cold" card (Streaks from game logs via `lib/streaks.ts` /
+  Shooting vs career). Player pages show "Next milestone".
 - **Home page:** snapshot (record, points pace, playoff magic number from game 41, estimate),
   Next game with a **collapsed "Pre-game breakdown"** (tale of the tape, keys, recent form,
   chance maps, goalie matchup with *all* goalies on both rosters, since starters aren't known),
@@ -140,7 +149,8 @@ build. If Playwright's browser is missing: `npx playwright install chromium`.
 - **Season In-Depth plan:** `docs/season-in-depth-plan.md`, four phases, stop for Josh's review
   after each. Phase 1 (colours, standings columns, hits/giveaways/takeaways, Players tabs, goalie
   starts) built 3 Oct 2026. Phase 2 (Season In-Depth page) built 3 Oct 2026; the Schedule tab
-  comes with Phase 4's remaining-schedule numbers.
+  comes with Phase 4's remaining-schedule numbers. Phase 3 (home dashboard) built 3 Oct 2026;
+  the plan pauses here while Josh tests with Oilers fans before Phase 4.
 
 - Playoffs: games are stored, but pages are built around the regular season. Review before April.
 - Step 5 polish from the plan (accessibility pass, mobile check) is not finished.

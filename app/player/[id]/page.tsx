@@ -15,6 +15,7 @@ import { builtPlayerIds, playerHref } from "@/lib/site";
 import { linemates, onIceTable, ratingLog } from "@/lib/stats/onice";
 import { goalieSeasons, playerShooting } from "@/lib/stats/team";
 import { age, formatGameDate, gaa, heightFtIn, savePct, seasonShort, signed } from "@/lib/oilers";
+import { nextMilestoneFor } from "@/lib/dashboard";
 
 const POSITION: Record<string, string> = { C: "Centre", L: "Left wing", R: "Right wing", D: "Defence", G: "Goalie" };
 /** NHL goalie decisions: W, L, and O for an overtime/shootout loss. */
@@ -249,6 +250,8 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
     { key: "team", label: "Team", title: "Team", value: (s) => txt(s.teamCommonName) || txt(s.teamName) },
   ];
   const regSeasons = nhlSeasons(p, 2);
+  // Active players only: a retired player isn't chasing anything.
+  const milestone = p.isActive ? nextMilestoneFor(p, "Edmonton Oilers", "an Oiler") : null;
   const career = p.careerTotals;
 
   return (
@@ -268,6 +271,11 @@ export default async function PlayerPage({ params }: PageProps<"/player/[id]">) 
               <span className="block text-3xl opacity-85 sm:text-4xl">{txt(p.firstName)}</span>
               <span className="block text-6xl sm:text-8xl">{txt(p.lastName)}</span>
             </h1>
+            {milestone && (
+              <p className="mt-2 text-sm">
+                <span className="font-semibold uppercase tracking-wider text-header-accent">Next milestone</span> <span className="opacity-90">{milestone}</span>
+              </p>
+            )}
             <Rivets className="mt-3 text-header-accent" />
           </div>
         </div>

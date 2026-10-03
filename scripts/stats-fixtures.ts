@@ -7,7 +7,7 @@ import path from "node:path";
 import { endpoints, fixturePathFor, isFinished } from "../lib/nhl/endpoints";
 import { ClubSchedule, PlayByPlay, ShiftCharts, Standings } from "../lib/nhl/schemas";
 import { ingestGame, storeShifts } from "../lib/stats/ingest";
-import { runPlayoffOdds } from "../lib/stats/odds";
+import { runPlayoffOdds, runStakes } from "../lib/stats/odds";
 
 const dir = path.join(process.cwd(), "fixtures", "v1", "gamecenter");
 let stored = 0;
@@ -38,6 +38,7 @@ try {
   const standings = Standings.parse(read(fixturePathFor(endpoints.standingsNow()))).standings;
   const schedule = ClubSchedule.parse(read(fixturePathFor(endpoints.scheduleNow())));
   const odds = runPlayoffOdds(schedule.currentSeason, standings, schedule.games);
+  runStakes(schedule.currentSeason, standings, schedule.games, "EDM");
   console.log(`Playoff odds for ${odds.length} teams.`);
 } catch (err) {
   console.log(`No playoff odds: ${err instanceof Error ? err.message : String(err)}`);

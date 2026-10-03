@@ -242,3 +242,19 @@ export const playerNames = sqliteTable("player_names", {
   /** Date of the game this row was last updated from, so an older game never overwrites a trade. */
   lastGameDate: text("last_game_date").notNull(),
 });
+
+/** What one upcoming game means for a team's playoff odds: now, and after a win, OT loss or loss. */
+export const stakes = sqliteTable(
+  "stakes",
+  {
+    runAt: integer("run_at").notNull(),
+    season: integer("season").notNull(),
+    gameId: integer("game_id").notNull(),
+    team: text("team").notNull(),
+    oddsNow: real("odds_now").notNull(),
+    ifWin: real("if_win").notNull(),
+    ifOtLoss: real("if_ot_loss").notNull(),
+    ifLoss: real("if_loss").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.runAt, t.team, t.gameId] }), index("stakes_team").on(t.season, t.team, t.gameId)],
+);

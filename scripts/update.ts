@@ -6,7 +6,8 @@
  *      doesn't have them yet; the one-time backfill is capped per run and carries on next run
  *   4. stores the goals (for Clutch Score) of any game of this season that doesn't have them yet,
  *      and hits, giveaways and takeaways for any of this season's games stored before they were counted
- *   5. simulates the rest of the regular season for every team's playoff odds, and saves them
+ *   5. simulates the rest of the regular season for every team's playoff odds, and saves them,
+ *      plus what the Oilers' next game means for their odds (win / OT loss / loss)
  *   6. packs the database into one file, ready to save for the next run
  *
  *   npm run update
@@ -16,7 +17,7 @@ import { fetchFresh } from "../lib/nhl/client";
 import { endpoints, previousSeason, seasonLabel } from "../lib/nhl/endpoints";
 import { ClubSchedule, Standings } from "../lib/nhl/schemas";
 import { ingestGoalsMissing, ingestMissing, ingestPhysicalMissing, ingestShiftsMissing, listSeasonGames, listSeasonSchedule, statsCounts } from "../lib/stats/ingest";
-import { formatOdds, runPlayoffOdds } from "../lib/stats/odds";
+import { formatOdds, runPlayoffOdds, runStakes } from "../lib/stats/odds";
 
 /** A full regular season is 1,312 games; below this we treat last season as not yet loaded. */
 const FULL_SEASON = 1300;
@@ -67,6 +68,9 @@ async function main() {
       const odds = runPlayoffOdds(current, standings.standings, schedule);
       const edm = odds.find((o) => o.abbrev === "EDM");
       console.log(`Playoff odds: ${odds.length} teams in ${((Date.now() - started) / 1000).toFixed(1)} s${edm ? ` · Oilers ${formatOdds(edm.odds)}` : ""}`);
+      // Written for any team (the league version will want all 32); only the Oilers for now.
+      const st = runStakes(current, standings.standings, schedule, "EDM");
+      if (st) console.log(`What's at stake in game ${st.gameId}: win ${formatOdds(st.win)} · OT loss ${formatOdds(st.otLoss)} · loss ${formatOdds(st.loss)}`);
     } catch (err) {
       console.log(`Playoff odds skipped this run: ${err instanceof Error ? err.message : String(err)}`);
     }

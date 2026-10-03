@@ -50,6 +50,13 @@
       "when": 1791039882516,
       "tag": "0006_physical",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1791042348518,
+      "tag": "0007_stakes",
+      "breakpoints": true
     }
   ]
 }

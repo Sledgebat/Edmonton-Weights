@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOME_EDGE, OT_SHARE, formatOdds, homeWinChance, seasonLength, simulate, strengthOf, type Fixture, type OddsTeam } from "@/lib/stats/odds";
+import { HOME_EDGE, OT_SHARE, formatOdds, gameStakes, homeWinChance, seasonLength, simulate, strengthOf, type Fixture, type OddsTeam } from "@/lib/stats/odds";
 
 /** A 32-team league: two conferences of two divisions, every team playing `games` games (circle method). */
 function league(games = 84, played = 0): { teams: OddsTeam[]; fixtures: Fixture[] } {
@@ -80,6 +80,32 @@ describe("simulation", () => {
     const { teams } = league();
     const odds = simulate(teams, [], { runs: 2000 });
     expect(odds.reduce((s, o) => s + o.projPoints, 0) / odds.length).toBeCloseTo(84 * (1 + OT_SHARE / 2), 0);
+  });
+});
+
+describe("what's at stake", () => {
+  it("a win helps more than an OT loss, which helps more than a loss", () => {
+    // 16 teams, two divisions: 6 division places + 2 wild cards, so half get in.
+    const teams: OddsTeam[] = Array.from({ length: 16 }, (_, i) => ({
+      abbrev: `T${i}`,
+      conference: "W",
+      division: i < 8 ? "P" : "C",
+      gp: 40,
+      points: 44,
+      regulationWins: 15,
+      strength: 0.5,
+    }));
+    const fixtures: Fixture[] = [];
+    let id = 1;
+    for (let r = 0; r < 3; r++) for (let i = 0; i < 16; i++) for (let j = i + 1; j < 16; j++) fixtures.push({ home: `T${i}`, away: `T${j}`, id: id++ });
+    const s = gameStakes(teams, fixtures, 1, "T0", { runs: 2000 })!;
+    expect(s.win).toBeGreaterThan(s.otLoss);
+    expect(s.otLoss).toBeGreaterThan(s.loss);
+    expect(s.now).toBeGreaterThan(s.loss);
+    expect(s.now).toBeLessThan(s.win);
+    // From the away side too, and only for a team that's actually in the game.
+    expect(gameStakes(teams, fixtures, 1, "T1", { runs: 500 })!.win).toBeGreaterThan(gameStakes(teams, fixtures, 1, "T1", { runs: 500 })!.loss);
+    expect(gameStakes(teams, fixtures, 1, "T5")).toBeNull();
   });
 });
 

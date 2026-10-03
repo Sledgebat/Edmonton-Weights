@@ -105,9 +105,13 @@ test("Team stats view lists every team, sorts by any stat and marks the Oilers",
   await expect(page).toHaveURL(/\/team\/[A-Z]{3}\/?$/);
 });
 
-test("shooting vs career: home box links to the full list, and picking a player charts his career", async ({ page }) => {
+test("hot and cold: streaks first, then shooting vs career, which links to the full list", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Shooting vs career" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hot and cold" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Streaks" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText("On a roll")).toBeVisible();
+  await page.getByRole("tab", { name: "Shooting vs career" }).click();
+  await expect(page.getByText("Running hot")).toBeVisible();
   await page.getByRole("link", { name: /Every Oilers shooter/ }).click();
   await expect(page).toHaveURL(/\/shooting\/?$/);
   const rows = page.locator("table tbody tr");
@@ -119,6 +123,14 @@ test("shooting vs career: home box links to the full list, and picking a player 
   await expect(page.getByRole("heading", { level: 2, name })).toBeVisible();
   await expect(page).toHaveURL(/player=\d{7}/);
   await expect(page.locator(".career-chart circle").first()).toBeAttached();
+});
+
+test("home links to the Oilers Season In-Depth page and shows what's at stake tonight", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Playoff odds after tonight")).toBeVisible();
+  await expect(page.getByText(/^(Season series|First of|Second of|Third of|Fourth of|Only meeting)/).first()).toBeVisible();
+  await page.getByRole("link", { name: "Oilers Season In-Depth" }).click();
+  await expect(page).toHaveURL(/\/team\/EDM\/?$/);
 });
 
 test.describe("pages", () => {

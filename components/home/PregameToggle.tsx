@@ -11,11 +11,14 @@ export function PregameToggle({
   bar,
   actions,
   footer,
+  strip,
   children,
 }: {
   bar: React.ReactNode;
   actions: React.ReactNode;
   footer?: React.ReactNode;
+  /** A thin always-visible line under the bar (what's at stake, season series). */
+  strip?: React.ReactNode;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -41,6 +44,7 @@ export function PregameToggle({
         </div>
         {footer}
       </div>
+      {strip}
       <div id={id} hidden={!open} className="space-y-4">
         {children}
       </div>

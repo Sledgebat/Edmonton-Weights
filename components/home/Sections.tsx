@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Crosshair, Minus, Radio, Tv, Zap } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Flame, Minus, Radio, Trophy, Tv, Zap } from "lucide-react";
 import { ShareChart } from "@/components/charts/ShareChart";
 import { DataError } from "@/components/data/Module";
 import { RatingBadge } from "@/components/data/RatingBadge";
 import { ResultBadge } from "@/components/data/ResultBadge";
 import { HalfRink } from "@/components/rink/HalfRink";
 import { RankPill } from "@/components/ui/RankPill";
+import { LuckGauge } from "@/components/team/InDepth";
+import { CardTabs } from "@/components/ui/CardTabs";
+import { GOAL_STREAK_MIN, POINT_STREAK_MIN, REGULAR_GP } from "@/lib/streaks";
 import { EdgeTiles, type EdgeTileData } from "@/components/home/EdgeTiles";
 import { PregameToggle } from "@/components/home/PregameToggle";
 import { Countdown } from "@/components/ui/Countdown";
@@ -260,6 +263,7 @@ export function NextGame({ d }: { d: HomeData }) {
     <div className="space-y-4">
       <PregameToggle
         footer={<div className="sleeve-stripes-thin" aria-hidden />}
+        strip={<StakesStrip d={d} />}
         bar={
           <div className="flex items-center gap-4">
             <TeamLogo abbrev={v.opp.abbrev} logo={v.opp.logo} darkLogo={v.opp.darkLogo} size={52} />
@@ -382,6 +386,30 @@ export function NextGame({ d }: { d: HomeData }) {
           </section>
         )}
 
+        {d.dash.series && d.dash.series.meetings.length > 0 && (
+          <section className="card p-4 sm:p-5" aria-labelledby="series">
+            <h3 id="series" className="display text-2xl">
+              Season series
+            </h3>
+            <p className="text-xs text-fg-muted">{d.dash.series.line} · expected goals from our model, all situations</p>
+            <ul className="mt-2 space-y-1.5">
+              {d.dash.series.meetings.map((m) => (
+                <li key={m.gameId} className="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
+                  <Link href={`/game/${m.gameId}`} className="inline-flex items-center gap-2 hover:underline">
+                    <ResultBadge outcome={m.outcome} />
+                    {shortDate(m.date)} {m.isHome ? "vs" : "@"} {oppShort}
+                  </Link>
+                  <span className="numeral text-fg-muted">
+                    {m.gf}–{m.ga}
+                    {m.decidedIn !== "REG" ? ` ${m.decidedIn}` : ""}
+                    {m.xgf !== null && m.xga !== null ? ` · xG ${m.xgf.toFixed(1)}–${m.xga.toFixed(1)}` : ""}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="card p-4 sm:p-5" aria-labelledby="goalies">
           <h3 id="goalies" className="display text-2xl">
             Goalie matchup
@@ -400,6 +428,49 @@ export function NextGame({ d }: { d: HomeData }) {
 }
 
 const share = (f: number, a: number) => (f + a > 0 ? (f / (f + a)) * 100 : 50);
+
+/** Under the Next game bar: what tonight means for the playoff odds, and the season series. */
+function StakesStrip({ d }: { d: HomeData }) {
+  const s = d.dash.stakes;
+  const series = d.dash.series;
+  if (!s && !series) return null;
+  const item = (label: string, odds: number) => (
+    <span className="whitespace-nowrap">
+      {label} → <span className={`numeral font-semibold ${oddsTone(odds)}`}>{formatOdds(odds)}</span>
+    </span>
+  );
+  return (
+    <div className="card flex flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm">
+      {s && (
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-fg-muted" title={`Playoff odds now ${formatOdds(s.now)}`}>
+            Playoff odds after tonight
+          </span>
+          {item("Win", s.win)}
+          <span aria-hidden className="text-fg-muted">·</span>
+          {item("OT loss", s.otLoss)}
+          <span aria-hidden className="text-fg-muted">·</span>
+          {item("Loss", s.loss)}
+        </p>
+      )}
+      {series && <p className="text-fg-muted">{series.line}</p>}
+    </div>
+  );
+}
+
+/** Comeback and stolen-game badges, only when they apply. */
+export function GameBadges({ badges }: { badges: { kind: string; text: string }[] }) {
+  if (!badges.length) return null;
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {badges.map((b) => (
+        <li key={b.text} className="rounded-full border border-accent px-2.5 py-0.5 text-xs font-semibold text-accent-ink">
+          {b.text}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 // ------------------------------------------------------------------ last game
 
@@ -436,7 +507,8 @@ export function LastGame({ d }: { d: HomeData }) {
           </p>
         </div>
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 space-y-2">
+        <GameBadges badges={d.dash.lastBadges} />
         {r?.summary && <p className="text-sm sm:text-base">{r.summary}</p>}
         {stats.length > 0 && (
           <dl className="mt-3 grid grid-cols-2 gap-2 text-center text-sm sm:grid-cols-4">
@@ -476,7 +548,7 @@ export function LastGame({ d }: { d: HomeData }) {
 
 // ------------------------------------------------------------------ 3. stat tiles
 
-export function TileCard({ t }: { t: Tile }) {
+export function TileCard({ t, extra }: { t: Tile; extra?: React.ReactNode }) {
   return (
     <div className="card flex flex-col p-4">
       <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t.label}</p>
@@ -484,6 +556,8 @@ export function TileCard({ t }: { t: Tile }) {
         <p className="numeral text-3xl leading-none">{t.value}</p>
         <RankPill rank={t.rank} of={t.of} />
       </div>
+      {t.detail && <p className="numeral mt-1 text-xs text-fg-muted">{t.detail}</p>}
+      {extra}
       <div className="mt-1 min-h-4">
         <TrendTag trend={t.trend} recent={t.recent} />
       </div>
@@ -492,14 +566,29 @@ export function TileCard({ t }: { t: Tile }) {
   );
 }
 
-export function StatTiles({ d }: { d: Pick<HomeData, "advancedTiles" | "basicTiles"> }) {
+/** The small luck gauge on the home page's PDO tile, linking to the full meter. */
+function TileLuck({ luck, href }: { luck: NonNullable<HomeData["dash"]["luck"]>; href: string }) {
+  return (
+    <Link href={href} className="mt-2 flex items-center gap-2 rounded-md bg-sunken px-2 py-1 text-xs hover:underline" title="Luck meter: points vs what their chances deserved">
+      <LuckGauge diff={luck.diff} clip={luck.clip} size={64} />
+      <span>
+        <span className="font-semibold">Luck</span>
+        <span className="block text-fg-muted">
+          {luck.actual} pts · deserved {luck.deserved.toFixed(1)}
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+export function StatTiles({ d, luck, luckHref = "/team/EDM#luck" }: { d: Pick<HomeData, "advancedTiles" | "basicTiles">; luck?: HomeData["dash"]["luck"]; luckHref?: string }) {
   return (
     <div className="space-y-5">
       <div>
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-widest text-fg-muted">Advanced (5-on-5 unless noted)</h3>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {d.advancedTiles.map((t) => (
-            <TileCard key={t.key} t={t} />
+            <TileCard key={t.key} t={t} extra={t.key === "pdo" && luck ? <TileLuck luck={luck} href={luckHref} /> : undefined} />
           ))}
         </div>
       </div>
@@ -855,22 +944,16 @@ function ShooterLine({ s }: { s: Shooter }) {
 }
 
 /** Shooting vs career: the three running hottest and coldest, set apart in Oilers blue. */
-export function ShootingBox({ d }: { d: HomeData }) {
+function ShootingPanel({ d }: { d: HomeData }) {
   const { hot, cold, note } = d.shooting;
   return (
-    <section className="shooting-card mt-4 p-4" aria-labelledby="lead-shooting">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 id="lead-shooting" className="display inline-flex items-center gap-1.5 text-2xl">
-          <Crosshair size={20} aria-hidden />
-          Shooting vs career
-        </h3>
-        <p className="text-xs text-fg-muted">
-          {seasonLabel(d.season)} shooting % against each player&apos;s NHL career · goals above or below his career rate ·{" "}
-          <Link href="/stats-guide#shooting" className="underline">
-            What&apos;s this?
-          </Link>
-        </p>
-      </div>
+    <div>
+      <p className="text-xs text-fg-muted">
+        {seasonLabel(d.season)} shooting % against each player&apos;s NHL career · goals above or below his career rate ·{" "}
+        <Link href="/stats-guide#shooting" className="underline">
+          What&apos;s this?
+        </Link>
+      </p>
       {hot.length + cold.length === 0 ? (
         <p className="mt-3 text-sm text-fg-muted">Shows up once the Oilers have taken some shots this season.</p>
       ) : (
@@ -899,7 +982,89 @@ export function ShootingBox({ d }: { d: HomeData }) {
       <Link href="/shooting" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold hover:underline">
         Every Oilers shooter, with career charts <ArrowRight size={14} aria-hidden />
       </Link>
+    </div>
+  );
+}
+
+const games = (n: number) => `${n} ${n === 1 ? "game" : "games"}`;
+
+/** Point and goal streaks, and the longest droughts among regulars. */
+function StreaksPanel({ d }: { d: HomeData }) {
+  const s = d.dash.streaks;
+  const row = (id: number, name: string, value: string, detail: string, tone = "") => (
+    <li key={`${id}-${value}`} className="flex items-baseline justify-between gap-3">
+      <Link href={`/player/${id}`} className="truncate font-semibold hover:underline">
+        {name}
+      </Link>
+      <span className="whitespace-nowrap text-right">
+        <span className={`numeral ${tone}`}>{value}</span> <span className="text-xs text-fg-muted">{detail}</span>
+      </span>
+    </li>
+  );
+  const hot = [
+    ...s.pointStreaks.map((p) => row(p.id, p.name, games(p.runs.points), `with a point (${p.runs.pointsGoals} G, ${p.runs.pointsAssists} A)`, "text-win")),
+    ...s.goalStreaks.map((p) => row(p.id, p.name, games(p.runs.goals), `with a goal (${p.runs.goalsScored} G)`, "text-win")),
+  ];
+  const cold = [
+    ...s.goalless.map((p) => row(p.id, p.name, games(p.runs.goalless), "without a goal", "text-loss")),
+    ...s.pointless.map((p) => row(p.id, p.name, games(p.runs.pointless), "without a point", "text-loss")),
+  ];
+  return (
+    <div>
+      <p className="text-xs text-fg-muted">
+        Active runs, regular season: point streaks of {POINT_STREAK_MIN}+ games and goal streaks of {GOAL_STREAK_MIN}+; droughts among players with{" "}
+        {REGULAR_GP}+ games.
+      </p>
+      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg bg-raised/70 px-3 py-2">
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">On a roll</p>
+          <ol className="space-y-2 text-sm">{hot.length ? hot : <li className="text-fg-muted">No active point or goal streaks right now.</li>}</ol>
+        </div>
+        <div className="rounded-lg bg-raised/70 px-3 py-2">
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">Droughts</p>
+          <ol className="space-y-2 text-sm">{cold.length ? cold : <li className="text-fg-muted">No long droughts among the regulars.</li>}</ol>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Hot and cold: streaks (default) and shooting vs career, set apart in Oilers blue. */
+export function HotAndCold({ d }: { d: HomeData }) {
+  return (
+    <section className="shooting-card mt-4 p-4" aria-labelledby="hot-cold">
+      <h3 id="hot-cold" className="display mb-2 inline-flex items-center gap-1.5 text-2xl">
+        <Flame size={20} aria-hidden />
+        Hot and cold
+      </h3>
+      <CardTabs
+        label="Hot and cold"
+        tabs={[
+          { key: "streaks", label: "Streaks", panel: <StreaksPanel d={d} /> },
+          { key: "shooting", label: "Shooting vs career", panel: <ShootingPanel d={d} /> },
+        ]}
+      />
     </section>
+  );
+}
+
+/** Milestone watch: only when someone is close. */
+export function MilestoneStrip({ d }: { d: HomeData }) {
+  if (!d.dash.milestones.length) return null;
+  return (
+    <div className="card mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1 px-4 py-2 text-sm">
+      <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-fg-muted">
+        <Trophy size={14} aria-hidden /> Milestone watch
+      </span>
+      {d.dash.milestones.map((m) => (
+        <span key={m.id}>
+          <Link href={`/player/${m.id}`} className="font-semibold hover:underline">
+            {m.name}
+          </Link>{" "}
+          <span className="text-fg-muted">{m.text}</span>
+        </span>
+      ))}
+    </div>
   );
 }
 
